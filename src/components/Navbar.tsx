@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Heart, Lock, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { buildWhatsAppUrl } from "@/data/site";
@@ -129,6 +129,15 @@ export default function Navbar() {
                 )}
               </Link>
 
+              <Link
+                href="/admin"
+                title="Painel do Lojista"
+                aria-label="Painel do Lojista"
+                className="hidden h-11 w-11 items-center justify-center rounded-full text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-800 md:flex"
+              >
+                <Lock className="h-4 w-4" />
+              </Link>
+
               <a
                 href={buildWhatsAppUrl("Olá! Gostaria de tirar uma dúvida sobre suplementos importados.")}
                 target="_blank"
@@ -228,6 +237,14 @@ export default function Navbar() {
                 <WhatsAppIcon className="h-5 w-5 text-emerald-400" />
                 Falar no WhatsApp
               </a>
+              <Link
+                href="/admin"
+                title="Painel do Lojista"
+                onClick={() => setDrawerOpen(false)}
+                className="mt-3 flex min-h-[44px] items-center justify-center gap-2 rounded-xl text-xs font-semibold text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800"
+              >
+                <Lock className="h-4 w-4" aria-hidden /> Painel do Lojista
+              </Link>
             </div>
           </aside>
         </div>

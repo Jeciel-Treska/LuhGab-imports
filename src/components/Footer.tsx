@@ -132,7 +132,16 @@ export default function Footer() {
               </span>
             ))}
           </div>
-          <p>© {new Date().getFullYear()} LuhGab Imports. Todos os direitos reservados.</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            <p>© {new Date().getFullYear()} LuhGab Imports. Todos os direitos reservados.</p>
+            <Link
+              href="/admin"
+              title="Painel do Lojista"
+              className="inline-flex min-h-[44px] items-center gap-1.5 text-zinc-500 transition hover:text-zinc-200 md:min-h-0"
+            >
+              <Lock className="h-3.5 w-3.5" aria-hidden /> Área do Lojista
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
