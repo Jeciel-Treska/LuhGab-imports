@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Check, MessageCircle, PiggyBank, ShoppingBag } from "lucide-react";
+import { Check, PiggyBank, ShoppingBag } from "lucide-react";
 import ProductThumb from "@/components/ProductThumb";
 import { useCart } from "@/context/CartContext";
 import { getComboCandidates, getProductById } from "@/data/products";
 import { buildWhatsAppUrl, PIX_DISCOUNT_PERCENT } from "@/data/site";
 import { formatBRL } from "@/lib/format";
 import type { ComboRole, Product } from "@/types/product";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 interface Selection {
   productId: string;
@@ -299,7 +300,7 @@ export default function ComboBuilder() {
               count === 0 ? "pointer-events-none opacity-40" : ""
             }`}
           >
-            <MessageCircle className="h-4 w-4" aria-hidden />
+            <WhatsAppIcon className="h-4 w-4" aria-hidden />
             Finalizar pelo WhatsApp
           </a>
           <button

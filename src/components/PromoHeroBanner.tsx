@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, CreditCard, MessageCircle, ShieldCheck, ShoppingBag, Star, Truck, Zap } from "lucide-react";
+import { ArrowRight, Check, CreditCard, ShieldCheck, ShoppingBag, Star, Truck, Zap } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { getProductById } from "@/data/products";
+import { getProductById, products } from "@/data/products";
 import { PIX_DISCOUNT_PERCENT, SHOW_RATINGS, buildWhatsAppUrl } from "@/data/site";
 import { formatBRL } from "@/lib/format";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { useHeroConfig } from "@/components/StoreConfigProvider";
 
-const FEATURED_ID = "under-labz-dimethylex";
+const HERO_PICK_KEY = "lg-hero-pick";
 
 const buildSeals = (installments: number) => [
   { icon: ShieldCheck, label: "100% Original", desc: "Com laudo e lacre de procedência" },
@@ -19,9 +21,36 @@ const buildSeals = (installments: number) => [
 ];
 
 export default function PromoHeroBanner() {
-  const product = getProductById(FEATURED_ID);
+  const hero = useHeroConfig();
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  const [randomPick, setRandomPick] = useState<string | null>(null);
+
+  // Sorteio entre os destaques: feito no navegador (a página é estática) e mantido
+  // durante a sessão para o Hero não trocar a cada navegação.
+  useEffect(() => {
+    if (hero.mode !== "random") return;
+    const ids = products.filter((p) => p.isFeatured).map((p) => p.id);
+    if (ids.length === 0) return;
+    let pick: string | undefined;
+    try {
+      const saved = sessionStorage.getItem(HERO_PICK_KEY);
+      if (saved && ids.includes(saved)) pick = saved;
+    } catch {}
+    if (!pick) {
+      pick = ids[Math.floor(Math.random() * ids.length)];
+      try {
+        sessionStorage.setItem(HERO_PICK_KEY, pick);
+      } catch {}
+    }
+    setRandomPick(pick);
+  }, [hero.mode]);
+
+  const firstFeatured = products.find((p) => p.isFeatured);
+  const product =
+    hero.mode === "pinned"
+      ? getProductById(hero.productId ?? "") ?? firstFeatured ?? products[0]
+      : getProductById(randomPick ?? "") ?? firstFeatured ?? products[0];
 
   if (!product) return null;
   const flavor = product.flavors[0];
@@ -63,15 +92,19 @@ export default function PromoHeroBanner() {
               <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-zinc-700">
                 Condição Especial
               </span>
-              <span className="rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-bold text-rose-700">
-                -{product.discountPercentage}% OFF
-              </span>
+              {product.discountPercentage > 0 && (
+                <span className="rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-bold text-rose-700">
+                  -{product.discountPercentage}% OFF
+                </span>
+              )}
             </div>
 
             <div className="mt-4 flex items-baseline gap-3">
-              <span className="text-sm text-zinc-500 line-through">
-                {formatBRL(product.originalPrice)}
-              </span>
+              {product.discountPercentage > 0 && (
+                <span className="text-sm text-zinc-500 line-through">
+                  {formatBRL(product.originalPrice)}
+                </span>
+              )}
               <span className="font-display text-4xl font-extrabold text-zinc-950 sm:text-5xl">
                 {formatBRL(product.price)}
               </span>
@@ -111,7 +144,7 @@ export default function PromoHeroBanner() {
               rel="noopener noreferrer"
               className="flex h-14 items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-7 text-sm font-bold uppercase tracking-wider text-zinc-800 transition hover:bg-zinc-50 hover:border-zinc-400 active:scale-95"
             >
-              <MessageCircle className="h-5 w-5 text-emerald-600" />
+              <WhatsAppIcon className="h-5 w-5 text-emerald-600" />
               Pedir pelo WhatsApp
             </a>
           </div>
@@ -136,7 +169,7 @@ export default function PromoHeroBanner() {
           <div className="relative flex aspect-[4/5] w-full max-w-lg items-center justify-center rounded-3xl border border-zinc-200/80 bg-white p-8 shadow-xl">
             <div className="relative flex h-full w-full items-center justify-center">
               <Image
-                src="/products/under-labz-dimethylex.png"
+                src={product.imageUrl ?? "/products/under-labz-dimethylex.png"}
                 alt={product.name}
                 width={420}
                 height={560}

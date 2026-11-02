@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageCircle } from "lucide-react";
 import { buildWhatsAppUrl } from "@/data/site";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 export default function FloatingWhatsApp() {
   const [hint, setHint] = useState(false);
@@ -38,7 +38,7 @@ export default function FloatingWhatsApp() {
           aria-hidden
           className="absolute inset-0 animate-ping rounded-full bg-emerald-500/50 motion-reduce:hidden"
         />
-        <MessageCircle className="relative h-7 w-7" aria-hidden />
+        <WhatsAppIcon className="relative h-7 w-7" aria-hidden />
       </a>
     </div>
   );

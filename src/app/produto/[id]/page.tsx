@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import JsonLd, { breadcrumbSchema, productSchema } from "@/components/JsonLd";
 import ProductCard from "@/components/ProductCard";
 import ProductDetail from "@/components/ProductDetail";
-import { getProductById, getProductBySlug, products } from "@/data/products";
+import { applyStoreOverrides, getProductById, getProductBySlug, products } from "@/data/products";
+import { loadStoreConfig } from "@/lib/storeConfig";
 import { categoryLabels, SITE_NAME } from "@/data/site";
 import { formatBRL } from "@/lib/format";
 import type { Product } from "@/types/product";
@@ -12,8 +13,11 @@ import type { Product } from "@/types/product";
 type PageProps = { params: Promise<{ id: string }> };
 
 /** Aceita id ou slug. */
-const resolveProduct = (id: string): Product | undefined =>
-  getProductById(id) ?? getProductBySlug(id);
+const resolveProduct = (id: string): Product | undefined => {
+  // Garante que preços e destaques do lojista valem também nesta camada de servidor.
+  applyStoreOverrides(loadStoreConfig().products);
+  return getProductById(id) ?? getProductBySlug(id);
+};
 
 export function generateStaticParams() {
   return products.map((product) => ({ id: product.slug }));

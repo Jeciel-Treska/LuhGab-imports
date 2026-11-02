@@ -4,11 +4,12 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Heart, Menu, MessageCircle, Search, ShoppingBag, X } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { buildWhatsAppUrl } from "@/data/site";
 import { formatBRL } from "@/lib/format";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 const NAV_LINKS = [
   { label: "Destaques", href: "/#destaques" },
@@ -134,7 +135,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className="hidden items-center gap-1.5 rounded-full border border-zinc-200 px-3.5 py-2 text-xs font-semibold text-zinc-800 transition hover:bg-zinc-50 sm:flex lg:hidden"
               >
-                <MessageCircle className="h-4 w-4 text-emerald-600" />
+                <WhatsAppIcon className="h-4 w-4 text-emerald-600" />
                 <span>WhatsApp VIP</span>
               </a>
 
@@ -224,7 +225,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 rounded-xl bg-zinc-950 px-4 py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-zinc-800"
               >
-                <MessageCircle className="h-5 w-5 text-emerald-400" />
+                <WhatsAppIcon className="h-5 w-5 text-emerald-400" />
                 Falar no WhatsApp
               </a>
             </div>

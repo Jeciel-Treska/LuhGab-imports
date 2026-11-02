@@ -1,3 +1,6 @@
+import StoreConfigProvider from "@/components/StoreConfigProvider";
+import { applyStoreOverrides } from "@/data/products";
+import { loadStoreConfig } from "@/lib/storeConfig";
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 import "./globals.css";
@@ -65,10 +68,13 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const storeConfig = loadStoreConfig();
+  applyStoreOverrides(storeConfig.products);
   return (
     <html lang="pt-BR" className={`${display.variable} ${body.variable}`}>
       <body className="min-h-screen bg-[#F8F9FA] font-sans text-zinc-900 antialiased">
         <JsonLd data={organizationSchema()} />
+        <StoreConfigProvider config={storeConfig}>
         <Providers>
           <a
             href="#conteudo"
@@ -84,6 +90,7 @@ export default function RootLayout({
           <CartDrawer />
           <CompareModal />
         </Providers>
+        </StoreConfigProvider>
       </body>
     </html>
   );

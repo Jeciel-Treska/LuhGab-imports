@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BadgeCheck, Lock, MessageCircle, Truck } from "lucide-react";
+import { BadgeCheck, Lock, Truck } from "lucide-react";
 import { buildWhatsAppUrl } from "@/data/site";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 const COLUMNS: { title: string; links: { label: string; href: string; external?: boolean }[] }[] = [
   {
@@ -66,7 +67,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-bold text-zinc-950 transition hover:bg-zinc-200"
           >
-            <MessageCircle className="h-4 w-4" aria-hidden />
+            <WhatsAppIcon className="h-4 w-4" aria-hidden />
             Quero receber ofertas
           </a>
         </div>

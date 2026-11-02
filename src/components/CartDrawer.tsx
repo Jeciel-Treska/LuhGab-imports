@@ -8,6 +8,7 @@ import { getProductById } from "@/data/products";
 import { FREE_SHIPPING_THRESHOLD, PIX_DISCOUNT_PERCENT } from "@/data/site";
 import { formatBRL } from "@/lib/format";
 import { buildOrderUrl, lineTotal } from "@/lib/whatsapp";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
 
@@ -289,6 +290,7 @@ export default function CartDrawer() {
                 rel="noopener noreferrer"
                 className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:bg-emerald-500 active:scale-95"
               >
+                <WhatsAppIcon className="h-5 w-5" />
                 Finalizar Pedido pelo WhatsApp
               </a>
             </div>

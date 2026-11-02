@@ -8,7 +8,6 @@ import {
   ChevronDown,
   GitCompareArrows,
   Heart,
-  MessageCircle,
   Minus,
   Plus,
   ShieldCheck,
@@ -30,6 +29,7 @@ import {
 import { formatBRL } from "@/lib/format";
 import { getAminogram, getDoses } from "@/lib/nutrition";
 import type { Product } from "@/types/product";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
 
@@ -431,7 +431,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 cepComplete ? "" : "pointer-events-none opacity-40"
               }`}
             >
-              <MessageCircle className="h-4 w-4" aria-hidden />
+              <WhatsAppIcon className="h-4 w-4" aria-hidden />
               Consultar
             </a>
           </div>

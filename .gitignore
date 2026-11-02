@@ -45,3 +45,7 @@ next-env.d.ts
 # logs / temp
 *.log
 .ignore
+
+# estado gravado pelo painel /admin (preços/destaques do lojista)
+/data/store-config.json
+/data/*.tmp

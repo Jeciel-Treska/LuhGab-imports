@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { MessageCircle } from "lucide-react";
 import { buildWhatsAppUrl } from "@/data/site";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 interface InfoPageProps {
   title: string;
@@ -34,7 +34,7 @@ export default function InfoPage({
           rel="noopener noreferrer"
           className="mt-8 inline-flex h-12 items-center gap-2 rounded-xl bg-emerald-700 px-6 text-sm font-bold text-white transition hover:bg-emerald-600"
         >
-          <MessageCircle className="h-4 w-4" aria-hidden />
+          <WhatsAppIcon className="h-4 w-4" aria-hidden />
           {whatsappLabel}
         </a>
       )}

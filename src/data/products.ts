@@ -8,6 +8,7 @@ import type {
   ProductObjective,
   ProductSize,
 } from "@/types/product";
+import type { StoreConfig } from "@/types/store";
 import { brands, getBrandById } from "./brands";
 
 /** Embalagens que não são potes: o 3D usa a foto recortada do produto. */
@@ -1308,6 +1309,42 @@ const RAW_SEEDS: ProductSeed[] = [
 ];
 
 export const products: Product[] = RAW_SEEDS.map(defineProduct);
+
+// ---------------------------------------------------------------------------
+// Sobrescritas do lojista (/admin)
+// ---------------------------------------------------------------------------
+
+type EditableFields = Pick<Product, "price" | "originalPrice" | "isFeatured" | "isBestSeller">;
+
+const baseline = new Map<string, EditableFields>(
+  products.map((p) => [
+    p.id,
+    { price: p.price, originalPrice: p.originalPrice, isFeatured: p.isFeatured, isBestSeller: p.isBestSeller },
+  ]),
+);
+
+/** Valores originais do código, antes de qualquer edição do lojista. */
+export function getBaselineProduct(id: string): EditableFields | undefined {
+  return baseline.get(id);
+}
+
+/**
+ * Aplica (de forma idempotente) as edições do lojista sobre o catálogo em memória.
+ * Parte sempre dos valores originais, então remover uma edição restaura o padrão.
+ */
+export function applyStoreOverrides(overrides: StoreConfig["products"]): void {
+  for (const product of products) {
+    const base = baseline.get(product.id);
+    if (!base) continue;
+    const o = overrides[product.id] ?? {};
+    product.price = o.price ?? base.price;
+    product.originalPrice = o.originalPrice ?? base.originalPrice;
+    product.isFeatured = o.isFeatured ?? base.isFeatured;
+    product.isBestSeller = o.isBestSeller ?? base.isBestSeller;
+    product.discountPercentage =
+      o.discountPercentage ?? Math.max(0, Math.round((1 - product.price / product.originalPrice) * 100));
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Consultas
