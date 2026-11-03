@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+// Hero/config vêm do /admin: nunca servir HTML estático do build.
+export const dynamic = "force-dynamic";
+
 // TestimonialsSection fica fora até existirem depoimentos reais (ver data/testimonials.ts).
 export default function Home() {
   return (

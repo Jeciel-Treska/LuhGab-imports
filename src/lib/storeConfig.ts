@@ -245,7 +245,9 @@ async function readConfigFromStorage(): Promise<StoreConfig> {
   }
 }
 
-const CACHE_TTL_MS = 10_000;
+// Curto o suficiente para outra instância da Vercel enxergar um save quase
+// imediatamente (KV é a fonte da verdade), sem fazer um GET por render.
+const CACHE_TTL_MS = 2_000;
 let cache: { at: number; config: StoreConfig } | null = null;
 
 /**

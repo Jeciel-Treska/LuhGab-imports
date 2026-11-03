@@ -27,9 +27,9 @@ export default function PromoHeroBanner() {
   const [randomPick, setRandomPick] = useState<string | null>(null);
   const lotteryKey = (hero.lotteryProductIds ?? []).join(",");
 
-  // Sorteio do Hero: feito no navegador (a página é estática) e mantido durante a
-  // sessão para o Hero não trocar a cada navegação. A lista explícita do admin
-  // (`lotteryProductIds`) tem prioridade; sem ela, sorteia entre os destaques.
+  // Sorteio do Hero: feito no navegador e mantido durante a sessão para não
+  // trocar a cada navegação. A lista explícita do admin (`lotteryProductIds`)
+  // tem prioridade; sem ela, sorteia entre os destaques.
   useEffect(() => {
     if (hero.mode !== "random") return;
     const explicit = lotteryKey

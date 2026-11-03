@@ -65,6 +65,14 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+/**
+ * O Hero e os preços vêm da configuração do lojista (KV/arquivo) e mudam a
+ * qualquer momento pelo /admin. Renderizar sob demanda garante que a home e as
+ * demais rotas sempre leiam o estado atual — em SSG a Vercel serviria o HTML
+ * congelado do build e o Hero não trocaria após salvar.
+ */
+export const dynamic = "force-dynamic";
+
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
