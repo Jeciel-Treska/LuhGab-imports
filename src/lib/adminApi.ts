@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/adminAuth";
-import { ConfigValidationError } from "@/lib/storeConfig";
+import { ConfigValidationError, StoreConfigStorageError } from "@/lib/storeConfig";
 
 /**
  * Autorização das rotas de administração.
@@ -38,12 +38,16 @@ export function errorResponse(error: unknown, fallback: string): NextResponse {
   if (error instanceof ConfigValidationError) {
     return NextResponse.json({ ok: false, error: error.message }, { status: 422 });
   }
+  if (error instanceof StoreConfigStorageError) {
+    console.error(`[admin/api] ${fallback}`, error);
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  }
   if (error instanceof SyntaxError) {
     return NextResponse.json({ ok: false, error: "JSON inválido." }, { status: 400 });
   }
   console.error(`[admin/api] ${fallback}`, error);
   return NextResponse.json(
-    { ok: false, error: "Não foi possível gravar no disco. Em hospedagem serverless o sistema de arquivos é somente leitura." },
+    { ok: false, error: "Não foi possível salvar a configuração. Tente novamente em instantes." },
     { status: 500 },
   );
 }

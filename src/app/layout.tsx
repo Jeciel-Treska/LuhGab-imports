@@ -65,10 +65,10 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const storeConfig = loadStoreConfig();
+  const storeConfig = await loadStoreConfig();
   applyStoreOverrides(storeConfig.products);
   return (
     <html lang="pt-BR" className={`${display.variable} ${body.variable}`}>

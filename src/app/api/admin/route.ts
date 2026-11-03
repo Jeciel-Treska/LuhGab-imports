@@ -8,7 +8,12 @@ import {
   unauthorized,
 } from "@/lib/adminApi";
 import { products } from "@/data/products";
-import { getEffectiveProduct, loadStoreConfig, saveStoreConfig } from "@/lib/storeConfig";
+import {
+  getEffectiveProduct,
+  getStoreConfigBackend,
+  loadStoreConfig,
+  saveStoreConfig,
+} from "@/lib/storeConfig";
 import type { StoreConfig } from "@/types/store";
 
 export const runtime = "nodejs";
@@ -22,7 +27,7 @@ export const revalidate = 0;
 export async function GET(request: Request) {
   if (!(await isAuthorized(request))) return unauthorized();
 
-  const config = loadStoreConfig();
+  const config = await loadStoreConfig();
   const heroMode = config.hero.mode === "pinned" ? "fixed" : "random";
 
   const catalog = products.map((product) => ({
@@ -33,7 +38,7 @@ export async function GET(request: Request) {
     category: product.category,
     inStock: product.inStock,
     imageUrl: product.imageUrl ?? null,
-    ...getEffectiveProduct(product.id),
+    ...getEffectiveProduct(product.id, config),
   }));
 
   return NextResponse.json({
@@ -50,6 +55,7 @@ export async function GET(request: Request) {
         productId: config.hero.productId,
       },
       updatedAt: config.updatedAt ?? null,
+      storage: getStoreConfigBackend(),
       overrides: config.products,
       overrideCount: Object.keys(config.products).length,
       products: catalog,

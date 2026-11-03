@@ -61,7 +61,7 @@ const respond = (overrides: Record<string, ProductOverride>, updatedAt?: string)
 
 export async function GET(request: Request) {
   if (!(await isAuthorized(request))) return unauthorized();
-  const config = loadStoreConfig();
+  const config = await loadStoreConfig();
   return respond(config.products, config.updatedAt);
 }
 

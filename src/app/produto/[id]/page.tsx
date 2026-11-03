@@ -13,9 +13,9 @@ import type { Product } from "@/types/product";
 type PageProps = { params: Promise<{ id: string }> };
 
 /** Aceita id ou slug. */
-const resolveProduct = (id: string): Product | undefined => {
+const resolveProduct = async (id: string): Promise<Product | undefined> => {
   // Garante que preços e destaques do lojista valem também nesta camada de servidor.
-  applyStoreOverrides(loadStoreConfig().products);
+  applyStoreOverrides((await loadStoreConfig()).products);
   return getProductById(id) ?? getProductBySlug(id);
 };
 
@@ -25,7 +25,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const product = resolveProduct(id);
+  const product = await resolveProduct(id);
   if (!product) return { title: "Produto não encontrado" };
 
   const title = `${product.name} por ${formatBRL(product.price)}`;
@@ -73,7 +73,7 @@ function getCrossSell(product: Product): Product[] {
 
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
-  const product = resolveProduct(id);
+  const product = await resolveProduct(id);
   if (!product) notFound();
 
   const categoryLabel = categoryLabels[product.category];

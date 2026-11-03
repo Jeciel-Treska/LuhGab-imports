@@ -1,17 +1,53 @@
-import { promises as fs, readFileSync } from "node:fs";
+import { promises as fs } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { getBaselineProduct, getProductById, products } from "@/data/products";
 import { DEFAULT_STORE_CONFIG, type HeroMode, type StoreConfig } from "@/types/store";
 
 /**
- * Somente servidor: lê e grava a configuração do lojista em disco.
+ * Somente servidor: lê e grava a configuração do lojista.
  *
- * Fonte da verdade: `data/store-config.json` (sobrescrevível por `STORE_CONFIG_PATH`).
- * Gravações são atômicas (tmp + rename) e serializadas por uma fila para evitar
- * corrupção quando dois requests chegam juntos.
+ * Backends, por ordem de preferência:
+ * 1. Upstash Redis / Vercel KV via REST (`KV_REST_API_URL` + `KV_REST_API_TOKEN`
+ *    ou `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`) — persistente e
+ *    compartilhado entre instâncias (recomendado na Vercel).
+ * 2. Arquivo JSON em disco (`data/store-config.json`, sobrescrevível por
+ *    `STORE_CONFIG_PATH`) — ambiente local/VPS.
+ * 3. Na Vercel sem KV: `/tmp/store-config.json` (gravável, mas efêmero e por
+ *    instância) + baseline somente-leitura do deploy.
+ *
+ * Gravações são atômicas (tmp + rename) e serializadas por uma fila.
  */
+
+const IS_VERCEL = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
+
 export const STORE_CONFIG_PATH =
   process.env.STORE_CONFIG_PATH?.trim() || path.join(process.cwd(), "data", "store-config.json");
+
+/** Diretório temporário gravável (na Vercel, sempre /tmp). */
+const TMP_PATH = IS_VERCEL
+  ? path.join("/tmp", "store-config.json")
+  : path.join(os.tmpdir(), "luhgab-store-config.json");
+
+interface KvBackend {
+  url: string;
+  token: string;
+  key: string;
+}
+
+function resolveKv(): KvBackend | null {
+  const url = process.env.KV_REST_API_URL?.trim() || process.env.UPSTASH_REDIS_REST_URL?.trim();
+  const token =
+    process.env.KV_REST_API_TOKEN?.trim() || process.env.UPSTASH_REDIS_REST_TOKEN?.trim();
+  if (!url || !token) return null;
+  return {
+    url: url.replace(/\/+$/, ""),
+    token,
+    key: process.env.STORE_CONFIG_KV_KEY?.trim() || "luhgab_store_config",
+  };
+}
+
+const KV = resolveKv();
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
   typeof v === "object" && v !== null && !Array.isArray(v);
@@ -20,6 +56,16 @@ const isMoney = (v: unknown): v is number =>
   typeof v === "number" && Number.isFinite(v) && v > 0 && v < 1_000_000;
 
 export class ConfigValidationError extends Error {}
+
+/** Falha de persistência já traduzida para uma mensagem acionável. */
+export class StoreConfigStorageError extends Error {}
+
+/** Onde a configuração está sendo persistida neste processo. */
+export type StoreConfigBackend = "kv" | "tmp" | "file";
+export function getStoreConfigBackend(): StoreConfigBackend {
+  if (KV) return "kv";
+  return IS_VERCEL ? "tmp" : "file";
+}
 
 /** Valida o corpo recebido e devolve só campos conhecidos e coerentes. */
 export function parseStoreConfig(input: unknown): StoreConfig {
@@ -109,13 +155,86 @@ export function parseStoreConfig(input: unknown): StoreConfig {
   return result;
 }
 
-export function loadStoreConfig(): StoreConfig {
+// ---------------------------------------------------------------------------
+// Leitura
+// ---------------------------------------------------------------------------
+
+/** Executa um comando no REST do Upstash: ["GET", key] / ["SET", key, value]. */
+async function kvCommand(command: (string | number)[]): Promise<unknown> {
+  if (!KV) return null;
+  const response = await fetch(KV.url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${KV.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(command),
+    cache: "no-store",
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!response.ok) throw new Error(`Upstash respondeu HTTP ${response.status}.`);
+  const payload = (await response.json()) as { result?: unknown; error?: string };
+  if (payload.error) throw new Error(`Upstash: ${payload.error}`);
+  return payload.result;
+}
+
+/** Ordem de leitura: KV → (na Vercel) /tmp → baseline do deploy → /tmp local. */
+async function readRaw(): Promise<string | null> {
+  if (KV) {
+    try {
+      const value = await kvCommand(["GET", KV.key]);
+      if (typeof value === "string" && value.trim()) return value;
+    } catch (error) {
+      console.error("[storeConfig] falha ao ler do KV; usando fallback local:", error);
+    }
+  }
+
+  const candidates = [
+    ...new Set(IS_VERCEL ? [TMP_PATH, STORE_CONFIG_PATH] : [STORE_CONFIG_PATH, TMP_PATH]),
+  ];
+  for (const candidate of candidates) {
+    try {
+      const raw = await fs.readFile(candidate, "utf8");
+      if (raw.trim()) return raw;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code !== "ENOENT") {
+        console.warn(`[storeConfig] não foi possível ler ${candidate} (${code ?? "erro"}).`);
+      }
+    }
+  }
+  return null;
+}
+
+/** Lê sem cache e já validando o formato (config inválida cai no padrão). */
+async function readConfigFromStorage(): Promise<StoreConfig> {
+  const raw = await readRaw();
+  if (!raw) return DEFAULT_STORE_CONFIG;
   try {
-    return parseStoreConfig(JSON.parse(readFileSync(STORE_CONFIG_PATH, "utf8")));
-  } catch {
+    return parseStoreConfig(JSON.parse(raw));
+  } catch (error) {
+    console.error("[storeConfig] configuração inválida no storage; usando padrão:", error);
     return DEFAULT_STORE_CONFIG;
   }
 }
+
+const CACHE_TTL_MS = 10_000;
+let cache: { at: number; config: StoreConfig } | null = null;
+
+/**
+ * Configuração vigente da loja. Nunca lança: se o storage falhar, devolve o
+ * padrão para a vitrine continuar no ar.
+ */
+export async function loadStoreConfig(): Promise<StoreConfig> {
+  if (cache && Date.now() - cache.at < CACHE_TTL_MS) return cache.config;
+  const config = await readConfigFromStorage();
+  cache = { at: Date.now(), config };
+  return config;
+}
+
+// ---------------------------------------------------------------------------
+// Escrita
+// ---------------------------------------------------------------------------
 
 let writeQueue: Promise<unknown> = Promise.resolve();
 
@@ -126,33 +245,69 @@ function enqueue<T>(job: () => Promise<T>): Promise<T> {
   return task;
 }
 
-async function writeAtomic(config: StoreConfig): Promise<StoreConfig> {
+async function writeJsonFile(target: string, json: string): Promise<void> {
+  await fs.mkdir(path.dirname(target), { recursive: true });
+  const tmp = `${target}.${process.pid}.${Date.now()}.tmp`;
+  await fs.writeFile(tmp, json, "utf8");
+  await fs.rename(tmp, target);
+}
+
+/**
+ * Tenta KV primeiro e cai para arquivo/tmp em qualquer falha (EROFS, EACCES,
+ * rede). Só lança `StoreConfigStorageError` quando nenhum destino funcionou,
+ * com uma mensagem que diz o que configurar — nunca um EROFS cru.
+ */
+async function persist(config: StoreConfig): Promise<StoreConfig> {
   const payload: StoreConfig = { ...parseStoreConfig(config), updatedAt: new Date().toISOString() };
-  await fs.mkdir(path.dirname(STORE_CONFIG_PATH), { recursive: true });
-  const tmp = `${STORE_CONFIG_PATH}.${process.pid}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(payload, null, 2), "utf8");
-  await fs.rename(tmp, STORE_CONFIG_PATH);
-  return payload;
+  const json = JSON.stringify(payload, null, 2);
+
+  if (KV) {
+    try {
+      await kvCommand(["SET", KV.key, json]);
+      cache = { at: Date.now(), config: payload };
+      return payload;
+    } catch (error) {
+      console.error("[storeConfig] falha ao gravar no KV; tentando fallback local:", error);
+    }
+  }
+
+  const targets = [
+    ...new Set(IS_VERCEL ? [TMP_PATH, STORE_CONFIG_PATH] : [STORE_CONFIG_PATH, TMP_PATH]),
+  ];
+  for (const target of targets) {
+    try {
+      await writeJsonFile(target, json);
+      cache = { at: Date.now(), config: payload };
+      return payload;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code ?? "erro";
+      console.warn(`[storeConfig] não foi possível gravar em ${target} (${code}); tentando próximo destino.`);
+    }
+  }
+
+  throw new StoreConfigStorageError(
+    "Não foi possível salvar a configuração: nenhum destino gravável. Na Vercel, conecte um Upstash Redis e defina KV_REST_API_URL + KV_REST_API_TOKEN.",
+  );
 }
 
 /** Substitui a configuração inteira, de forma atômica e serializada. */
 export function saveStoreConfig(config: StoreConfig): Promise<StoreConfig> {
-  return enqueue(() => writeAtomic(config));
+  return enqueue(() => persist(config));
 }
 
 /**
- * Lê o estado atual, aplica a mutação, valida e grava — tudo dentro da fila,
- * para que patches concorrentes não se percam.
+ * Lê o estado atual (sem cache), aplica a mutação, valida e grava — tudo dentro
+ * da fila, para que patches concorrentes não se percam.
  */
 export function updateStoreConfig(mutator: (current: StoreConfig) => StoreConfig): Promise<StoreConfig> {
-  return enqueue(() => writeAtomic(mutator(loadStoreConfig())));
+  return enqueue(async () => persist(mutator(await readConfigFromStorage())));
 }
 
 /** Valores efetivos de um produto (baseline do código + override do lojista). */
-export function getEffectiveProduct(id: string) {
+export function getEffectiveProduct(id: string, config?: StoreConfig) {
   const base = getBaselineProduct(id);
   if (!base) return null;
-  const override = loadStoreConfig().products[id] ?? {};
+  const override = (config ?? cache?.config ?? DEFAULT_STORE_CONFIG).products[id] ?? {};
   const price = override.price ?? base.price;
   const originalPrice = override.originalPrice ?? base.originalPrice;
   return {

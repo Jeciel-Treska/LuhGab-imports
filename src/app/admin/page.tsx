@@ -35,5 +35,5 @@ export default async function AdminPage() {
     ];
   });
 
-  return <AdminDashboard catalog={catalog} initialConfig={loadStoreConfig()} />;
+  return <AdminDashboard catalog={catalog} initialConfig={await loadStoreConfig()} />;
 }

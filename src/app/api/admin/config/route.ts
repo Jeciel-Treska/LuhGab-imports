@@ -39,7 +39,7 @@ const respond = (config: StoreConfig, status = 200) => {
 
 export async function GET(request: Request) {
   if (!(await isAuthorized(request))) return unauthorized();
-  return respond(loadStoreConfig());
+  return respond(await loadStoreConfig());
 }
 
 async function applyPatch(request: Request) {
