@@ -106,9 +106,10 @@ export default function PromoHeroBanner() {
 
   return (
     <section className="relative overflow-hidden border-b border-zinc-200 bg-gradient-to-b from-white via-zinc-50 to-white py-12 lg:py-20">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16">
-        {/* Coluna Texto & Compra */}
-        <div className="flex flex-col items-start gap-6">
+      {/* Mobile: coluna única na ordem Texto → Foto → Preço/Botões/Selos (via `order`).
+          Desktop (lg): 2 colunas — textos/compra à esquerda, foto grande à direita. */}
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:content-center lg:gap-x-16 lg:gap-y-6">
+        <div className="order-1 flex flex-col items-start gap-6 lg:col-start-1 lg:row-start-1">
           <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-100/80 px-3.5 py-1 text-xs font-semibold text-zinc-800">
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             Destaque da loja • Laudo e lacre
@@ -125,9 +126,11 @@ export default function PromoHeroBanner() {
               {product.shortDescription}
             </p>
           </div>
+        </div>
 
-          {/* Preço de Conversão */}
-          <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+        {/* Preço de Conversão */}
+        <div className="order-3 w-full max-w-md lg:col-start-1 lg:row-start-2">
+          <div className="w-full rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-zinc-700">
                 Condição Especial
@@ -159,8 +162,10 @@ export default function PromoHeroBanner() {
               <span className="text-sm font-black text-emerald-700">{formatBRL(pixPrice)}</span>
             </div>
           </div>
+        </div>
 
-          {/* Botões de Ação */}
+        {/* Botões de Ação */}
+        <div className="order-4 flex flex-col items-start gap-3 lg:col-start-1 lg:row-start-3">
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <button
               type="button"
@@ -191,22 +196,22 @@ export default function PromoHeroBanner() {
           <p className="text-xs font-medium text-emerald-700">
             Pague no Pix e economize {formatBRL(product.price - pixPrice)}
           </p>
-
-          {/* Selos de Confiança */}
-          <div className="grid w-full max-w-xl grid-cols-2 gap-4 border-t border-zinc-200/80 pt-6 sm:grid-cols-4">
-            {buildSeals(product.installments).map(({ icon: Icon, label, desc }) => (
-              <div key={label} className="flex flex-col">
-                <Icon className="h-5 w-5 text-zinc-800" />
-                <span className="mt-1 text-xs font-bold text-zinc-900">{label}</span>
-                <span className="text-xs text-zinc-500">{desc}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* Coluna Fotografia do Produto */}
-        <div className="relative mx-auto flex w-full max-w-md items-center justify-center lg:max-w-none">
-          <div className="relative flex aspect-[4/5] w-full max-w-lg items-center justify-center rounded-3xl border border-zinc-200/80 bg-white p-8 shadow-xl">
+        {/* Selos de Confiança */}
+        <div className="order-5 grid w-full max-w-xl grid-cols-2 gap-4 border-t border-zinc-200/80 pt-6 sm:grid-cols-4 lg:col-start-1 lg:row-start-4">
+          {buildSeals(product.installments).map(({ icon: Icon, label, desc }) => (
+            <div key={label} className="flex flex-col">
+              <Icon className="h-5 w-5 text-zinc-800" />
+              <span className="mt-1 text-xs font-bold text-zinc-900">{label}</span>
+              <span className="text-xs text-zinc-500">{desc}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Fotografia do Produto: mobile logo abaixo do texto; desktop na coluna direita */}
+        <div className="relative order-2 mx-auto flex w-full max-w-sm items-center justify-center py-2 sm:max-w-md lg:col-start-2 lg:row-span-4 lg:row-start-1 lg:max-w-none lg:self-center lg:py-0">
+          <div className="relative flex aspect-square w-full max-w-lg items-center justify-center rounded-3xl border border-zinc-200/80 bg-white p-6 shadow-xl sm:p-8 lg:aspect-[4/5]">
             <div className="relative flex h-full w-full items-center justify-center">
               <Image
                 src={product.imageUrl ?? "/products/under-labz-dimethylex.png"}
