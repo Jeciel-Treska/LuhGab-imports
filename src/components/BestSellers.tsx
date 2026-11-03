@@ -1,30 +1,22 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import SectionHeader from "@/components/SectionHeader";
 import { products } from "@/data/products";
+import { useStoreOverrides } from "@/components/StoreConfigProvider";
 
-// Produtos em destaque garantindo a presença dos produtos reais solicitados pelo usuário
-const FEATURED_SLUGS = [
-  "growth-creatina-monohidratada",
-  "bvs-beast-kaos",
-  "vitafor-whey-fort-3w",
-  "demons-lab-psycho-killer",
-  "adaptogen-tasty-whey-original",
-  "max-femini-whey",
-  "biovigor-curcumen",
-  "diabo-verde-ftw-whey",
-  "danone-yopro-shake-morango",
-  "gecaps-magnesio-inositol",
-  "im-whey-100-pure",
-  "under-labz-dimethylex",
-];
-
-const featuredProducts = FEATURED_SLUGS
-  .map((slug) => products.find((p) => p.slug === slug || p.id === slug))
-  .filter((p): p is (typeof products)[number] => Boolean(p));
+const FALLBACK_COUNT = 4;
 
 export default function BestSellers() {
+  // Assina as edições do lojista: ao salvar, `products` já vem atualizado e re-renderiza.
+  useStoreOverrides();
+
+  const featured = products.filter((p) => p.isFeatured);
+  const hasFeatured = featured.length > 0;
+  const list = hasFeatured ? featured : products.slice(0, FALLBACK_COUNT);
+
   return (
     <section id="destaques" aria-labelledby="best-title" className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6">
       <div className="flex flex-col justify-between gap-4 border-b border-zinc-200 pb-5 sm:flex-row sm:items-end">
@@ -49,8 +41,14 @@ export default function BestSellers() {
         </Link>
       </div>
 
+      {!hasFeatured && (
+        <p className="mt-6 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-600">
+          Nenhum destaque selecionado no momento. Confira algumas opções do nosso catálogo:
+        </p>
+      )}
+
       <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {featuredProducts.map((product) => (
+        {list.map((product) => (
           <li key={product.id}>
             <ProductCard product={product} />
           </li>

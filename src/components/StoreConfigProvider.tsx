@@ -10,6 +10,12 @@ const HeroContext = createContext<HeroConfig>({ mode: "pinned", productId: null 
 
 export const useHeroConfig = () => useContext(HeroContext);
 
+// Muda de identidade sempre que o lojista altera preços/destaques: componentes
+// cliente que leem `products` (mutado em memória) assinam aqui para re-renderizar.
+const OverridesContext = createContext<StoreConfig["products"]>({});
+
+export const useStoreOverrides = () => useContext(OverridesContext);
+
 const sameHero = (a: HeroConfig, b: HeroConfig) =>
   a.mode === b.mode &&
   a.productId === b.productId &&
@@ -87,5 +93,9 @@ export default function StoreConfigProvider({
     };
   }, [router]);
 
-  return <HeroContext.Provider value={current.hero}>{children}</HeroContext.Provider>;
+  return (
+    <HeroContext.Provider value={current.hero}>
+      <OverridesContext.Provider value={current.products}>{children}</OverridesContext.Provider>
+    </HeroContext.Provider>
+  );
 }
