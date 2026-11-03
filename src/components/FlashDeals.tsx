@@ -4,14 +4,12 @@ import { useEffect, useState } from "react";
 import { Zap } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import SectionHeader from "@/components/SectionHeader";
-import { products } from "@/data/products";
+import { getProductById, products } from "@/data/products";
+import { useFlashDealsConfig, useStoreOverrides } from "@/components/StoreConfigProvider";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-const deals = [...products]
-  .filter((p) => p.inStock && p.discountPercentage > 0)
-  .sort((a, b) => b.discountPercentage - a.discountPercentage)
-  .slice(0, 4);
+const MAX_DEALS = 4;
 
 /** Contagem regressiva até o fim do dia. */
 function Countdown() {
@@ -52,6 +50,26 @@ function Countdown() {
 }
 
 export default function FlashDeals() {
+  const { mode, productIds } = useFlashDealsConfig();
+  useStoreOverrides(); // re-renderiza quando preços/descontos mudam
+
+  // Manual: exatamente os produtos escolhidos pelo lojista. Auto (ou lista manual
+  // vazia): os maiores descontos em estoque.
+  const manual =
+    mode === "manual"
+      ? (productIds ?? []).flatMap((id) => {
+          const product = getProductById(id);
+          return product ? [product] : [];
+        })
+      : [];
+  const deals =
+    manual.length > 0
+      ? manual
+      : [...products]
+          .filter((p) => p.inStock && p.discountPercentage > 0)
+          .sort((a, b) => b.discountPercentage - a.discountPercentage)
+          .slice(0, MAX_DEALS);
+
   if (deals.length === 0) return null;
   return (
     <section aria-labelledby="flash-title" className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6">

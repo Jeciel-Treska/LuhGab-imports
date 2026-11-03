@@ -13,6 +13,15 @@ export interface HeroConfig {
   lotteryProductIds?: string[];
 }
 
+/** "auto" escolhe os produtos da seção; "manual" usa só `productIds`. */
+export type FlashDealsMode = "auto" | "manual";
+
+export interface FlashDealsConfig {
+  mode: FlashDealsMode;
+  /** Produtos escolhidos pelo lojista (usados no modo "manual"). */
+  productIds?: string[];
+}
+
 /** Campos do produto que o lojista pode sobrescrever. */
 export interface ProductOverride {
   price?: number;
@@ -28,6 +37,7 @@ export interface ProductOverride {
 
 export interface StoreConfig {
   hero: HeroConfig;
+  flashDeals?: FlashDealsConfig;
   products: Record<string, ProductOverride>;
   /** ISO da última gravação — gerenciado pelo servidor, ignorado se inválido. */
   updatedAt?: string;
@@ -35,5 +45,6 @@ export interface StoreConfig {
 
 export const DEFAULT_STORE_CONFIG: StoreConfig = {
   hero: { mode: "pinned", productId: "under-labz-dimethylex" },
+  flashDeals: { mode: "auto", productIds: [] },
   products: {},
 };

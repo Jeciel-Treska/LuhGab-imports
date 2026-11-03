@@ -1,9 +1,10 @@
 "use client";
 
-import type { HeroConfig, ProductOverride } from "@/types/store";
+import type { FlashDealsConfig, HeroConfig, ProductOverride } from "@/types/store";
 
 export interface PublicStoreConfig {
   hero: HeroConfig;
+  flashDeals?: FlashDealsConfig;
   products: Record<string, ProductOverride>;
 }
 

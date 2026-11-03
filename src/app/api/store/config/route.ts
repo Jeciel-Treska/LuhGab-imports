@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const config = await loadStoreConfig();
   return NextResponse.json(
-    { hero: config.hero, products: config.products },
+    { hero: config.hero, flashDeals: config.flashDeals, products: config.products },
     {
       headers: {
         "Cache-Control": "public, s-maxage=1, stale-while-revalidate=5",

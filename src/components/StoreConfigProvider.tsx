@@ -4,11 +4,16 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import { useRouter } from "next/navigation";
 import { applyStoreOverrides } from "@/data/products";
 import { fetchPublicStoreConfig } from "@/lib/storeConfigClient";
-import type { HeroConfig, StoreConfig } from "@/types/store";
+import type { FlashDealsConfig, HeroConfig, StoreConfig } from "@/types/store";
 
 const HeroContext = createContext<HeroConfig>({ mode: "pinned", productId: null });
 
 export const useHeroConfig = () => useContext(HeroContext);
+
+const DEFAULT_FLASH_DEALS: FlashDealsConfig = { mode: "auto", productIds: [] };
+const FlashDealsContext = createContext<FlashDealsConfig>(DEFAULT_FLASH_DEALS);
+
+export const useFlashDealsConfig = () => useContext(FlashDealsContext);
 
 // Muda de identidade sempre que o lojista altera preços/destaques: componentes
 // cliente que leem `products` (mutado em memória) assinam aqui para re-renderizar.
@@ -22,7 +27,8 @@ const sameHero = (a: HeroConfig, b: HeroConfig) =>
   (a.lotteryProductIds ?? []).join(",") === (b.lotteryProductIds ?? []).join(",");
 
 const sameConfig = (a: StoreConfig, b: StoreConfig) =>
-  sameHero(a.hero, b.hero) && JSON.stringify(a.products) === JSON.stringify(b.products);
+  sameHero(a.hero, b.hero) &&
+  JSON.stringify(a.flashDeals ?? null) === JSON.stringify(b.flashDeals ?? null) && JSON.stringify(a.products) === JSON.stringify(b.products);
 
 /** Evita laço de router.refresh() em navegações rápidas. */
 const REFRESH_THROTTLE_MS = 30_000;
@@ -64,7 +70,7 @@ export default function StoreConfigProvider({
       const data = await fetchPublicStoreConfig();
       if (!active || !data) return;
 
-      const next: StoreConfig = { hero: data.hero, products: data.products };
+      const next: StoreConfig = { hero: data.hero, flashDeals: data.flashDeals, products: data.products };
       if (sameConfig(applied.current, next)) return;
 
       applied.current = next;
@@ -95,7 +101,9 @@ export default function StoreConfigProvider({
 
   return (
     <HeroContext.Provider value={current.hero}>
-      <OverridesContext.Provider value={current.products}>{children}</OverridesContext.Provider>
+      <FlashDealsContext.Provider value={current.flashDeals ?? DEFAULT_FLASH_DEALS}>
+        <OverridesContext.Provider value={current.products}>{children}</OverridesContext.Provider>
+      </FlashDealsContext.Provider>
     </HeroContext.Provider>
   );
 }

@@ -2,7 +2,13 @@ import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { getBaselineProduct, getProductById, products } from "@/data/products";
-import { DEFAULT_STORE_CONFIG, type HeroMode, type StoreConfig } from "@/types/store";
+import {
+  DEFAULT_STORE_CONFIG,
+  type FlashDealsConfig,
+  type FlashDealsMode,
+  type HeroMode,
+  type StoreConfig,
+} from "@/types/store";
 
 /**
  * Somente servidor: lê e grava a configuração do lojista.
@@ -127,8 +133,31 @@ export function parseStoreConfig(input: unknown): StoreConfig {
     if (unique.length > 0) lotteryProductIds = unique as string[];
   }
 
+  let flashDeals: FlashDealsConfig = { mode: "auto", productIds: [] };
+  const rawFlash = input.flashDeals;
+  if (rawFlash !== undefined && rawFlash !== null) {
+    if (!isRecord(rawFlash)) throw new ConfigValidationError("Ofertas Relâmpago inválidas.");
+    if (rawFlash.mode !== "auto" && rawFlash.mode !== "manual") {
+      throw new ConfigValidationError("Modo das Ofertas Relâmpago inválido.");
+    }
+    let flashIds: string[] = [];
+    if (rawFlash.productIds !== undefined && rawFlash.productIds !== null) {
+      if (!Array.isArray(rawFlash.productIds)) {
+        throw new ConfigValidationError("flashDeals.productIds deve ser uma lista de IDs.");
+      }
+      flashIds = [...new Set(rawFlash.productIds)] as string[];
+      for (const id of flashIds) {
+        if (typeof id !== "string" || !getProductById(id)) {
+          throw new ConfigValidationError(`Produto das Ofertas Relâmpago inexistente: ${String(id)}.`);
+        }
+      }
+    }
+    flashDeals = { mode: rawFlash.mode as FlashDealsMode, productIds: flashIds };
+  }
+
   const result: StoreConfig = {
     hero: { mode: mode as HeroMode, productId: heroId, lotteryProductIds },
+    flashDeals,
     products: {},
   };
   if (typeof input.updatedAt === "string" && !Number.isNaN(Date.parse(input.updatedAt))) {

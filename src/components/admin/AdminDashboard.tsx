@@ -15,11 +15,14 @@ import {
   Search,
   Shuffle,
   X,
+  Zap,
 } from "lucide-react";
 import Switch from "@/components/admin/Switch";
 import ProductThumb from "@/components/ProductThumb";
 import { formatBRL } from "@/lib/format";
-import type { HeroMode, ProductOverride, StoreConfig } from "@/types/store";
+import type { FlashDealsConfig, HeroMode, ProductOverride, StoreConfig } from "@/types/store";
+
+const DEFAULT_FLASH: FlashDealsConfig = { mode: "auto", productIds: [] };
 
 export interface AdminProduct {
   id: string;
@@ -34,13 +37,14 @@ export interface AdminProduct {
   base: { price: number; originalPrice: number; isFeatured: boolean; isBestSeller: boolean };
 }
 
-type Filter = "all" | "featured" | "bestseller" | "lottery" | "edited";
+type Filter = "all" | "featured" | "bestseller" | "lottery" | "flash" | "edited";
 
 const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "Todos" },
   { id: "featured", label: "Destaques" },
   { id: "bestseller", label: "Mais vendidos" },
   { id: "lottery", label: "No Sorteio" },
+  { id: "flash", label: "Ofertas Relâmpago" },
   { id: "edited", label: "Alterados" },
 ];
 
@@ -61,6 +65,7 @@ const stable = (c: StoreConfig) =>
       productId: c.hero.productId,
       lottery: [...(c.hero.lotteryProductIds ?? [])].sort(),
     },
+    flash: { mode: (c.flashDeals ?? DEFAULT_FLASH).mode, ids: [...((c.flashDeals ?? DEFAULT_FLASH).productIds ?? [])].sort() },
     products: Object.fromEntries(Object.entries(c.products).sort(([a], [b]) => a.localeCompare(b))),
   });
 
@@ -279,6 +284,20 @@ export default function AdminDashboard({
     setLottery([...next]);
   };
 
+  const flashCfg = draft.flashDeals ?? DEFAULT_FLASH;
+  const flashIds = useMemo(
+    () => new Set((flashCfg.productIds ?? []).filter((id) => byId.has(id))),
+    [flashCfg.productIds, byId],
+  );
+  const setFlash = (patch: Partial<FlashDealsConfig>) =>
+    setDraft((cur) => ({ ...cur, flashDeals: { ...(cur.flashDeals ?? DEFAULT_FLASH), ...patch } }));
+  const toggleFlash = (id: string) => {
+    const next = new Set(flashIds);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setFlash({ productIds: [...next] });
+  };
+
   let heroError = "";
   if (draft.hero.mode === "pinned" && !draft.hero.productId) heroError = "Escolha o produto a ser fixado no Hero.";
   if (draft.hero.mode === "random" && lotteryPool.length === 0)
@@ -334,10 +353,11 @@ export default function AdminDashboard({
       if (filter === "featured" && !e.isFeatured) return false;
       if (filter === "bestseller" && !e.isBestSeller) return false;
       if (filter === "lottery" && !poolIds.has(p.id)) return false;
+      if (filter === "flash" && !flashIds.has(p.id)) return false;
       if (filter === "edited" && !draft.products[p.id]) return false;
       return !q || normalize(`${p.name} ${p.brandName} ${p.id}`).includes(q);
     });
-  }, [catalog, draft, query, filter, poolIds]);
+  }, [catalog, draft, query, filter, poolIds, flashIds]);
 
   const heroProduct =
     draft.hero.mode === "pinned" && draft.hero.productId ? byId.get(draft.hero.productId) : undefined;
@@ -485,6 +505,62 @@ export default function AdminDashboard({
           </div>
         </section>
 
+        {/* Ofertas Relâmpago */}
+        <section aria-labelledby="flash-title" className="mt-6 rounded-2xl border border-zinc-200 bg-zinc-50 p-4 sm:p-6">
+          <h2 id="flash-title" className="flex items-center gap-2 font-sans text-lg font-bold">
+            <Zap className="h-5 w-5 fill-amber-400 text-amber-500" aria-hidden /> Ofertas Relâmpago
+          </h2>
+          <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div>
+              <div role="radiogroup" aria-label="Modo das Ofertas Relâmpago" className="flex gap-1 rounded-xl border border-zinc-200 bg-white p-1">
+                {(
+                  [
+                    ["auto", "Automático (Maiores Descontos)"],
+                    ["manual", "Manual (Escolher a Dedo)"],
+                  ] as const
+                ).map(([mode, label]) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    role="radio"
+                    aria-checked={flashCfg.mode === mode}
+                    onClick={() => setFlash({ mode })}
+                    className={`flex min-h-11 flex-1 items-center justify-center rounded-lg px-2 text-center text-sm font-semibold leading-tight transition ${
+                      flashCfg.mode === mode ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              {flashCfg.mode === "auto" ? (
+                <p className="text-sm leading-relaxed text-zinc-600">
+                  A loja mostra automaticamente os produtos com os maiores descontos. Mude para o modo Manual para escolher os produtos nos cards abaixo.
+                </p>
+              ) : (
+                <div>
+                  <p className="text-sm font-semibold text-zinc-950">
+                    {flashIds.size} {flashIds.size === 1 ? "produto selecionado" : "produtos selecionados"} nas Ofertas Relâmpago
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-zinc-600">
+                    Use o botão “Oferta Relâmpago” nos cards para incluir ou remover produtos.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setFlash({ productIds: [] })}
+                    disabled={flashIds.size === 0}
+                    className="mt-3 h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-semibold text-zinc-700 transition hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Limpar todos
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
         {/* Produtos */}
         <section aria-labelledby="products-title" className="mt-10">
           <h2 id="products-title" className="font-sans text-lg font-bold">
@@ -549,6 +625,7 @@ export default function AdminDashboard({
                 const edited = Boolean(draft.products[p.id]);
                 const isHero = draft.hero.mode === "pinned" && draft.hero.productId === p.id;
                 const inLottery = lotteryIds.has(p.id);
+                const inFlash = flashIds.has(p.id);
                 const fallbackPick = usingFallback && e.isFeatured;
                 const error = rowErrors.get(p.id);
                 return (
@@ -664,6 +741,26 @@ export default function AdminDashboard({
                             {inLottery && <Check className="h-3 w-3" strokeWidth={3} />}
                           </span>
                           <span className="truncate">No Sorteio do Hero</span>
+                        </button>
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={inFlash}
+                          onClick={() => toggleFlash(p.id)}
+                          className={`flex h-11 w-full basis-full items-center justify-center gap-2 rounded-lg border px-3 text-sm font-semibold transition ${
+                            inFlash
+                              ? "border-amber-500 bg-amber-50 text-amber-800"
+                              : "border-zinc-300 text-zinc-700 hover:border-zinc-950"
+                          }`}
+                        >
+                          <Zap
+                            className={`h-4 w-4 ${inFlash ? "fill-amber-400 text-amber-500" : "text-zinc-400"}`}
+                            aria-hidden
+                          />
+                          Oferta Relâmpago
+                          {flashCfg.mode === "auto" && (
+                            <span className="text-[0.6875rem] font-medium text-zinc-500">(modo manual)</span>
+                          )}
                         </button>
                         {draft.hero.mode === "pinned" && !isHero && (
                           <button
