@@ -5,11 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, CreditCard, ShieldCheck, ShoppingBag, Star, Truck, Zap } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { getProductById, products } from "@/data/products";
+import { applyStoreOverrides, getProductById, products } from "@/data/products";
 import { PIX_DISCOUNT_PERCENT, SHOW_RATINGS, buildWhatsAppUrl } from "@/data/site";
 import { formatBRL } from "@/lib/format";
+import { fetchPublicStoreConfig } from "@/lib/storeConfigClient";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { useHeroConfig } from "@/components/StoreConfigProvider";
+import type { HeroConfig } from "@/types/store";
 
 const HERO_PICK_KEY = "lg-hero-pick";
 
@@ -21,10 +23,41 @@ const buildSeals = (installments: number) => [
 ];
 
 export default function PromoHeroBanner() {
-  const hero = useHeroConfig();
+  const contextHero = useHeroConfig();
+  const [syncedHero, setSyncedHero] = useState<HeroConfig | null>(null);
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const [randomPick, setRandomPick] = useState<string | null>(null);
+
+  // Se a CDN/router entregarem um HTML de segundos atrás, confirma Hero e preços
+  // direto na rota pública (mesma requisição deduplicada do StoreConfigProvider).
+  useEffect(() => {
+    let active = true;
+    const sync = async () => {
+      const data = await fetchPublicStoreConfig();
+      if (!active || !data) return;
+      applyStoreOverrides(data.products);
+      setSyncedHero(data.hero);
+    };
+    void sync();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void sync();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    const timer = window.setInterval(() => void sync(), 60_000);
+    return () => {
+      active = false;
+      document.removeEventListener("visibilitychange", onVisible);
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  // Quando o provider recebe uma config mais nova, ele passa a ser a fonte.
+  useEffect(() => {
+    setSyncedHero(null);
+  }, [contextHero]);
+
+  const hero = syncedHero ?? contextHero;
   const lotteryKey = (hero.lotteryProductIds ?? []).join(",");
 
   // Sorteio do Hero: feito no navegador e mantido durante a sessão para não
