@@ -23,7 +23,7 @@ import type { Product, ProductFlavor, ProductSize } from "@/types/product";
 
 const STORAGE_KEY = "luhgab:cart";
 const MAX_QUANTITY = 99;
-const VALID_COMBO_DISCOUNTS = [0, 10, 15];
+const VALID_COMBO_DISCOUNTS = [0, 10, 15, 20];
 
 const COUPONS: Record<string, Coupon> = {
   LUHGAB10: { code: "LUHGAB10", percentage: 10, description: "10% de desconto" },

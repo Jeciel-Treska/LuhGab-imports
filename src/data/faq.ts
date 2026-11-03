@@ -27,7 +27,7 @@ export const faq: FaqItem[] = [
     id: "desconto",
     question: "Como funciona o desconto no Pix e no Combo?",
     answer:
-      "No Montador de Combo, o desconto é progressivo: 10% com 2 produtos e 15% com 3 produtos. No Pix, você ganha mais 10% sobre o total já com os descontos de combo e cupom. O carrinho mostra os totais no cartão e no Pix antes de você finalizar o pedido.",
+      "No Montador de Combo, o desconto é progressivo: 10% com 2 produtos, 15% com 3 e 20% com 4 ou mais. No Pix, você ganha mais 10% sobre o total já com os descontos de combo e cupom. O carrinho mostra os totais no cartão e no Pix antes de você finalizar o pedido.",
   },
   {
     id: "objetivo",

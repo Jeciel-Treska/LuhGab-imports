@@ -29,7 +29,7 @@ const body = Inter({
 });
 
 const DESCRIPTION =
-  "Whey protein, creatina, pré-treino e vitaminas 100% originais, nacionais e importados, com entrega para todo o Brasil. Monte seu combo e ganhe até 15% OFF.";
+  "Whey protein, creatina, pré-treino e vitaminas 100% originais, nacionais e importados, com entrega para todo o Brasil. Monte seu combo e ganhe até 20% OFF.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
