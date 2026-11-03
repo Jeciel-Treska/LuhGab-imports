@@ -6,6 +6,11 @@ export interface HeroConfig {
   mode: HeroMode;
   /** Produto fixado no Hero quando `mode` é "pinned". */
   productId: string | null;
+  /**
+   * Lista explícita de produtos que podem ser sorteados quando `mode` é "random".
+   * Se vazia/ausente, o sorteio cai nos produtos marcados como `isFeatured`.
+   */
+  lotteryProductIds?: string[];
 }
 
 /** Campos do produto que o lojista pode sobrescrever. */

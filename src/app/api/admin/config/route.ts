@@ -19,13 +19,15 @@ export const revalidate = 0;
 function present(config: StoreConfig) {
   const mode = config.hero.mode;
   const productId = config.hero.productId;
+  const lotteryProductIds = config.hero.lotteryProductIds ?? [];
   const heroMode = mode === "pinned" ? "fixed" : "random";
   return {
     heroMode,
     mode,
     featuredProductId: productId,
     productId,
-    hero: { heroMode, mode, featuredProductId: productId, productId },
+    lotteryProductIds,
+    hero: { heroMode, mode, featuredProductId: productId, productId, lotteryProductIds },
     updatedAt: config.updatedAt ?? null,
   };
 }
@@ -69,9 +71,23 @@ async function applyPatch(request: Request) {
   if (rawFeatured !== undefined && rawFeatured !== null && typeof rawFeatured !== "string") {
     return NextResponse.json({ ok: false, error: "featuredProductId deve ser string ou null." }, { status: 422 });
   }
-  if (nextMode === undefined && rawFeatured === undefined) {
+
+  const rawLottery =
+    hero.lotteryProductIds !== undefined ? hero.lotteryProductIds : body.lotteryProductIds;
+  if (
+    rawLottery !== undefined &&
+    rawLottery !== null &&
+    (!Array.isArray(rawLottery) || rawLottery.some((id) => typeof id !== "string"))
+  ) {
     return NextResponse.json(
-      { ok: false, error: "Nenhum campo válido enviado (heroMode/featuredProductId)." },
+      { ok: false, error: "lotteryProductIds deve ser uma lista de IDs ou null." },
+      { status: 422 },
+    );
+  }
+
+  if (nextMode === undefined && rawFeatured === undefined && rawLottery === undefined) {
+    return NextResponse.json(
+      { ok: false, error: "Nenhum campo válido enviado (heroMode/featuredProductId/lotteryProductIds)." },
       { status: 422 },
     );
   }
@@ -83,7 +99,13 @@ async function applyPatch(request: Request) {
         rawFeatured === null
           ? null
           : ((rawFeatured as string | undefined) ?? current.hero.productId);
-      return { ...current, hero: { mode, productId } };
+      const lotteryProductIds =
+        rawLottery === undefined
+          ? current.hero.lotteryProductIds
+          : rawLottery === null
+            ? undefined
+            : (rawLottery as string[]);
+      return { ...current, hero: { ...current.hero, mode, productId, lotteryProductIds } };
     });
     revalidateCatalog();
     return respond(config);

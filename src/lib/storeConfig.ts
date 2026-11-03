@@ -39,8 +39,23 @@ export function parseStoreConfig(input: unknown): StoreConfig {
     throw new ConfigValidationError("Escolha o produto a ser fixado no Hero.");
   }
 
+  const rawLottery = input.hero.lotteryProductIds;
+  let lotteryProductIds: string[] | undefined;
+  if (rawLottery !== undefined && rawLottery !== null) {
+    if (!Array.isArray(rawLottery)) {
+      throw new ConfigValidationError("lotteryProductIds deve ser uma lista de IDs.");
+    }
+    const unique = [...new Set(rawLottery)];
+    for (const id of unique) {
+      if (typeof id !== "string" || !getProductById(id)) {
+        throw new ConfigValidationError(`Produto do sorteio inexistente: ${String(id)}.`);
+      }
+    }
+    if (unique.length > 0) lotteryProductIds = unique as string[];
+  }
+
   const result: StoreConfig = {
-    hero: { mode: mode as HeroMode, productId: heroId },
+    hero: { mode: mode as HeroMode, productId: heroId, lotteryProductIds },
     products: {},
   };
   if (typeof input.updatedAt === "string" && !Number.isNaN(Date.parse(input.updatedAt))) {
@@ -83,10 +98,12 @@ export function parseStoreConfig(input: unknown): StoreConfig {
     if (Object.keys(out).length > 0) result.products[id] = out;
   }
 
-  if (mode === "random") {
+  if (mode === "random" && !lotteryProductIds) {
     const featured = products.some((p) => (result.products[p.id]?.isFeatured ?? getBaselineProduct(p.id)?.isFeatured));
     if (!featured) {
-      throw new ConfigValidationError("Marque ao menos um produto como Destaque para usar o sorteio automático.");
+      throw new ConfigValidationError(
+        "Marque ao menos um produto como Destaque (ou defina lotteryProductIds) para usar o sorteio automático.",
+      );
     }
   }
   return result;

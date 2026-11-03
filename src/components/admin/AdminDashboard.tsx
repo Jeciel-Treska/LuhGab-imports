@@ -34,12 +34,13 @@ export interface AdminProduct {
   base: { price: number; originalPrice: number; isFeatured: boolean; isBestSeller: boolean };
 }
 
-type Filter = "all" | "featured" | "bestseller" | "edited";
+type Filter = "all" | "featured" | "bestseller" | "lottery" | "edited";
 
 const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "Todos" },
   { id: "featured", label: "Destaques" },
   { id: "bestseller", label: "Mais vendidos" },
+  { id: "lottery", label: "No Sorteio" },
   { id: "edited", label: "Alterados" },
 ];
 
@@ -55,7 +56,11 @@ function parseMoney(text: string): number | null {
 
 const stable = (c: StoreConfig) =>
   JSON.stringify({
-    hero: c.hero,
+    hero: {
+      mode: c.hero.mode,
+      productId: c.hero.productId,
+      lottery: [...(c.hero.lotteryProductIds ?? [])].sort(),
+    },
     products: Object.fromEntries(Object.entries(c.products).sort(([a], [b]) => a.localeCompare(b))),
   });
 
@@ -254,10 +259,30 @@ export default function AdminDashboard({
 
   const featuredPool = useMemo(() => catalog.filter((p) => effective(p, draft).isFeatured), [catalog, draft]);
 
+  // Lista explícita do sorteio; vazia = o Hero usa todos os Destaques como fallback.
+  const lotteryIds = useMemo(
+    () => new Set((draft.hero.lotteryProductIds ?? []).filter((id) => byId.has(id))),
+    [draft.hero.lotteryProductIds, byId],
+  );
+  const usingFallback = lotteryIds.size === 0;
+  const lotteryPool = useMemo(
+    () => (usingFallback ? featuredPool : catalog.filter((p) => lotteryIds.has(p.id))),
+    [usingFallback, featuredPool, catalog, lotteryIds],
+  );
+  const poolIds = useMemo(() => new Set(lotteryPool.map((p) => p.id)), [lotteryPool]);
+
+  const setLottery = (ids: string[]) => setHero({ lotteryProductIds: ids });
+  const toggleLottery = (id: string) => {
+    const next = new Set(lotteryIds);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setLottery([...next]);
+  };
+
   let heroError = "";
   if (draft.hero.mode === "pinned" && !draft.hero.productId) heroError = "Escolha o produto a ser fixado no Hero.";
-  if (draft.hero.mode === "random" && featuredPool.length === 0)
-    heroError = "Marque ao menos um produto como Destaque para usar o sorteio.";
+  if (draft.hero.mode === "random" && lotteryPool.length === 0)
+    heroError = "Selecione produtos para o sorteio ou marque ao menos um Destaque.";
 
   const canSave = dirty && !saving && rowErrors.size === 0 && !heroError;
 
@@ -308,10 +333,11 @@ export default function AdminDashboard({
       const e = effective(p, draft);
       if (filter === "featured" && !e.isFeatured) return false;
       if (filter === "bestseller" && !e.isBestSeller) return false;
+      if (filter === "lottery" && !poolIds.has(p.id)) return false;
       if (filter === "edited" && !draft.products[p.id]) return false;
       return !q || normalize(`${p.name} ${p.brandName} ${p.id}`).includes(q);
     });
-  }, [catalog, draft, query, filter]);
+  }, [catalog, draft, query, filter, poolIds]);
 
   const heroProduct =
     draft.hero.mode === "pinned" && draft.hero.productId ? byId.get(draft.hero.productId) : undefined;
@@ -335,7 +361,7 @@ export default function AdminDashboard({
 
   return (
     <div className="bg-white pb-32 text-zinc-950">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
         {/* Cabeçalho */}
         <header className="flex flex-wrap items-center gap-3">
           <div className="mr-auto">
@@ -393,10 +419,36 @@ export default function AdminDashboard({
                   <p className="mt-2 text-sm text-zinc-500">O mesmo produto aparece para todos os visitantes.</p>
                 </div>
               ) : (
-                <p className="mt-4 text-sm leading-relaxed text-zinc-600">
-                  A cada visita, a loja sorteia um dos produtos marcados como <strong>Destaque</strong>. Ative ou
-                  desative o Destaque na lista abaixo para controlar o grupo sorteado.
-                </p>
+                <div className="mt-4">
+                  <p className="text-sm font-semibold text-zinc-950">
+                    {usingFallback
+                      ? `${lotteryPool.length} ${lotteryPool.length === 1 ? "Destaque" : "Destaques"} no sorteio (automático)`
+                      : `${lotteryPool.length} ${lotteryPool.length === 1 ? "produto selecionado" : "produtos selecionados"} para o sorteio`}
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-zinc-600">
+                    {usingFallback
+                      ? "Nenhum produto foi escolhido, então o sorteio usa todos os Destaques como fallback. Marque “No Sorteio do Hero” nos cards para montar sua própria lista."
+                      : "A cada visita, a loja sorteia um destes produtos. Use o botão “No Sorteio do Hero” nos cards para ajustar."}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setLottery(featuredPool.map((p) => p.id))}
+                      disabled={featuredPool.length === 0}
+                      className="h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-semibold text-zinc-700 transition hover:border-zinc-950 hover:text-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Selecionar todos os destaques
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLottery([])}
+                      disabled={usingFallback}
+                      className="h-10 rounded-lg px-3 text-sm font-semibold text-zinc-600 transition hover:bg-zinc-200/60 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Limpar todos
+                    </button>
+                  </div>
+                </div>
               )}
 
               {heroError && (
@@ -418,10 +470,10 @@ export default function AdminDashboard({
               ) : (
                 <div>
                   <p className="mb-2 text-sm font-semibold text-zinc-700">
-                    Grupo do sorteio · {featuredPool.length} {featuredPool.length === 1 ? "produto" : "produtos"}
+                    Grupo do sorteio · {lotteryPool.length} {lotteryPool.length === 1 ? "produto" : "produtos"}
                   </p>
                   <ul className="grid max-h-80 gap-2 overflow-y-auto sm:grid-cols-2">
-                    {featuredPool.map((p) => (
+                    {lotteryPool.map((p) => (
                       <li key={p.id}>
                         <HeroPreviewCard product={p} draft={draft} mode="random" />
                       </li>
@@ -491,16 +543,23 @@ export default function AdminDashboard({
               Nenhum produto encontrado{query ? ` para "${query}"` : ""}.
             </p>
           ) : (
-            <ul className="mt-3 grid gap-3">
+            <ul className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
               {visible.map((p) => {
                 const e = effective(p, draft);
                 const edited = Boolean(draft.products[p.id]);
                 const isHero = draft.hero.mode === "pinned" && draft.hero.productId === p.id;
+                const inLottery = lotteryIds.has(p.id);
+                const fallbackPick = usingFallback && e.isFeatured;
                 const error = rowErrors.get(p.id);
                 return (
-                  <li key={p.id}>
-                    <article className="rounded-2xl border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 sm:p-5">
-                      <div className="flex items-start gap-3 sm:gap-4">
+                  <li key={p.id} className="flex">
+                    <article
+                      className={`flex w-full flex-col rounded-2xl border bg-white p-4 transition hover:shadow-sm sm:p-5 ${
+                        isHero ? "border-emerald-500 ring-1 ring-emerald-500/30" : "border-zinc-200 hover:border-zinc-300"
+                      }`}
+                    >
+                      {/* Foto, nome, marca e estoque */}
+                      <div className="flex items-start gap-3">
                         <ProductThumb
                           type={p.type}
                           color={p.color}
@@ -508,87 +567,130 @@ export default function AdminDashboard({
                           imageUrl={p.imageUrl}
                           alt={p.name}
                           sizes="96px"
-                          className="h-16 w-16 shrink-0 rounded-xl bg-zinc-50 sm:h-20 sm:w-20"
+                          className="h-20 w-20 shrink-0 rounded-xl bg-zinc-50"
                         />
                         <div className="min-w-0 flex-1">
-                          <h3 className="font-sans text-[0.9375rem] font-semibold leading-snug">{p.name}</h3>
-                          <p className="text-xs uppercase tracking-wide text-zinc-500">{p.brandName}</p>
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            {isHero && (
-                              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[0.6875rem] font-bold text-emerald-700">
-                                No Hero
-                              </span>
-                            )}
-                            {e.discount > 0 && (
-                              <span className="rounded-full bg-red-50 px-2 py-0.5 text-[0.6875rem] font-bold text-red-700">
-                                -{e.discount}% OFF
-                              </span>
-                            )}
-                            {edited && (
-                              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[0.6875rem] font-bold text-amber-700">
-                                Alterado
-                              </span>
-                            )}
-                            {!p.inStock && (
-                              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[0.6875rem] font-bold text-zinc-600">
-                                Sem estoque
-                              </span>
-                            )}
-                          </div>
+                          <h3 className="line-clamp-2 font-sans text-[0.9375rem] font-semibold leading-snug">{p.name}</h3>
+                          <p className="mt-0.5 text-xs uppercase tracking-wide text-zinc-500">{p.brandName}</p>
+                          <p
+                            className={`mt-1.5 flex items-center gap-1.5 text-xs font-semibold ${
+                              p.inStock ? "text-emerald-700" : "text-zinc-500"
+                            }`}
+                          >
+                            <span
+                              aria-hidden
+                              className={`h-1.5 w-1.5 rounded-full ${p.inStock ? "bg-emerald-500" : "bg-zinc-400"}`}
+                            />
+                            {p.inStock ? "Em estoque" : "Sem estoque"}
+                          </p>
                         </div>
                       </div>
 
-                      <div className="mt-4 grid grid-cols-2 gap-3 sm:max-w-md">
+                      <div className="mt-3 flex min-h-6 flex-wrap gap-1.5">
+                        {isHero && (
+                          <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[0.6875rem] font-bold text-white">
+                            No Hero
+                          </span>
+                        )}
+                        {edited && (
+                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[0.6875rem] font-bold text-amber-700">
+                            Alterado
+                          </span>
+                        )}
+                        {fallbackPick && draft.hero.mode === "random" && (
+                          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[0.6875rem] font-bold text-zinc-600">
+                            Sorteio (automático)
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Preços lado a lado + % OFF ao vivo */}
+                      <div className="mt-3 grid grid-cols-2 gap-3">
                         <PriceInput
                           id={`price-${p.id}`}
-                          label="Preço"
+                          label="Preço (R$)"
                           value={e.price}
                           invalid={Boolean(error)}
                           onCommit={(n) => setProduct(p.id, { price: n })}
                         />
                         <PriceInput
                           id={`orig-${p.id}`}
-                          label="Preço original"
+                          label="Preço De (R$)"
                           value={e.originalPrice}
                           invalid={Boolean(error)}
                           onCommit={(n) => setProduct(p.id, { originalPrice: n })}
                         />
                       </div>
+                      <div className="mt-2 flex min-h-6 items-center gap-2" aria-live="polite">
+                        {e.discount > 0 ? (
+                          <span className="rounded bg-red-600 px-2 py-0.5 text-xs font-bold text-white">
+                            -{e.discount}% OFF
+                          </span>
+                        ) : (
+                          <span className="text-xs text-zinc-400">Sem desconto</span>
+                        )}
+                      </div>
                       {error && (
-                        <p role="alert" className="mt-2 text-sm text-red-600">
+                        <p role="alert" className="mt-1 text-sm text-red-600">
                           {error}
                         </p>
                       )}
 
-                      <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 border-t border-zinc-100 pt-3">
+                      {/* Switches */}
+                      <div className="mt-3 grid grid-cols-2 gap-x-3 border-t border-zinc-100 pt-3">
                         <Switch label="Destaque" checked={e.isFeatured} onChange={(v) => setProduct(p.id, { isFeatured: v })} />
                         <Switch label="Mais vendido" checked={e.isBestSeller} onChange={(v) => setProduct(p.id, { isBestSeller: v })} />
-                        <div className="ml-auto flex items-center gap-1">
-                          {!isHero && (
-                            <button
-                              type="button"
-                              onClick={() => setHero({ mode: "pinned", productId: p.id })}
-                              className="flex h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-50"
-                            >
-                              <Pin className="h-4 w-4" aria-hidden /> Usar no Hero
-                            </button>
-                          )}
-                          {edited && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setDraft((cur) => {
-                                  const products = { ...cur.products };
-                                  delete products[p.id];
-                                  return { ...cur, products };
-                                })
-                              }
-                              className="flex h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-zinc-600 transition hover:bg-zinc-100"
-                            >
-                              <RotateCcw className="h-4 w-4" aria-hidden /> Restaurar
-                            </button>
-                          )}
-                        </div>
+                      </div>
+
+                      {/* Ações do Hero */}
+                      <div className="mt-auto flex flex-wrap items-center gap-2 pt-3">
+                        <button
+                          type="button"
+                          role="checkbox"
+                          aria-checked={inLottery}
+                          onClick={() => toggleLottery(p.id)}
+                          className={`flex h-11 min-w-0 flex-1 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-semibold transition ${
+                            inLottery
+                              ? "border-emerald-600 bg-emerald-50 text-emerald-800"
+                              : "border-zinc-300 text-zinc-700 hover:border-zinc-950"
+                          }`}
+                        >
+                          <span
+                            aria-hidden
+                            className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
+                              inLottery ? "border-emerald-600 bg-emerald-600 text-white" : "border-zinc-400 bg-white"
+                            }`}
+                          >
+                            {inLottery && <Check className="h-3 w-3" strokeWidth={3} />}
+                          </span>
+                          <span className="truncate">No Sorteio do Hero</span>
+                        </button>
+                        {draft.hero.mode === "pinned" && !isHero && (
+                          <button
+                            type="button"
+                            onClick={() => setHero({ productId: p.id })}
+                            className="flex h-11 items-center gap-1.5 rounded-lg bg-emerald-600 px-3 text-sm font-bold text-white transition hover:bg-emerald-700"
+                          >
+                            <Pin className="h-4 w-4" aria-hidden /> Fixar no Hero
+                          </button>
+                        )}
+                        {edited && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setDraft((cur) => {
+                                const products = { ...cur.products };
+                                delete products[p.id];
+                                return { ...cur, products };
+                              })
+                            }
+                            aria-label={`Restaurar valores originais de ${p.name}`}
+                            title="Restaurar valores originais"
+                            className="flex h-11 w-11 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-950"
+                          >
+                            <RotateCcw className="h-4 w-4" aria-hidden />
+                          </button>
+                        )}
                       </div>
                     </article>
                   </li>
@@ -602,7 +704,7 @@ export default function AdminDashboard({
       {/* Barra de publicação */}
       {(dirty || status) && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))]">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3">
             <p
               role={status?.type === "error" ? "alert" : "status"}
               className={`mr-auto flex items-center gap-2 text-sm font-medium ${

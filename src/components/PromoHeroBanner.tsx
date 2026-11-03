@@ -25,12 +25,19 @@ export default function PromoHeroBanner() {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const [randomPick, setRandomPick] = useState<string | null>(null);
+  const lotteryKey = (hero.lotteryProductIds ?? []).join(",");
 
-  // Sorteio entre os destaques: feito no navegador (a página é estática) e mantido
-  // durante a sessão para o Hero não trocar a cada navegação.
+  // Sorteio do Hero: feito no navegador (a página é estática) e mantido durante a
+  // sessão para o Hero não trocar a cada navegação. A lista explícita do admin
+  // (`lotteryProductIds`) tem prioridade; sem ela, sorteia entre os destaques.
   useEffect(() => {
     if (hero.mode !== "random") return;
-    const ids = products.filter((p) => p.isFeatured).map((p) => p.id);
+    const explicit = lotteryKey
+      .split(",")
+      .map((id) => id.trim())
+      .filter((id) => Boolean(getProductById(id)));
+    const ids =
+      explicit.length > 0 ? explicit : products.filter((p) => p.isFeatured).map((p) => p.id);
     if (ids.length === 0) return;
     let pick: string | undefined;
     try {
@@ -44,7 +51,7 @@ export default function PromoHeroBanner() {
       } catch {}
     }
     setRandomPick(pick);
-  }, [hero.mode]);
+  }, [hero.mode, lotteryKey]);
 
   const firstFeatured = products.find((p) => p.isFeatured);
   const product =

@@ -1,9 +1,9 @@
 /**
- * Número do WhatsApp da loja, com DDI e DDD, só dígitos.
- * Defina NEXT_PUBLIC_WHATSAPP_NUMBER no ambiente; o valor abaixo é fictício.
+ * Número do WhatsApp de vendas, com DDI e DDD, só dígitos.
+ * Pode ser sobrescrito por NEXT_PUBLIC_WHATSAPP_NUMBER no ambiente.
  */
 export const WHATSAPP_NUMBER = (
-  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5500000000000"
+  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5541995609501"
 ).replace(/\D/g, "");
 
 /**
