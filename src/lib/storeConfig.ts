@@ -35,16 +35,43 @@ interface KvBackend {
   key: string;
 }
 
+/** Sufixos aceitos — funcionam com qualquer prefixo escolhido na integração. */
+const KV_URL_SUFFIX = "_REST_API_URL";
+const KV_TOKEN_SUFFIX = "_REST_API_TOKEN";
+
+/** Prefixos conhecidos, apenas para desempatar quando há mais de um par no ambiente. */
+const KV_PREFERRED_PREFIXES = ["KV", "UPSTASH_REDIS", "STORAGE", "ARMAZENAR"];
+
+/**
+ * Descobre credenciais de KV/Upstash sem depender do prefixo exato da integração:
+ * qualquer `*_REST_API_URL` (KV_, UPSTASH_REDIS_, STORAGE_, ARMAZENAR_, …) é
+ * pareado com o `*_REST_API_TOKEN` do mesmo prefixo. Assim funciona com Vercel KV,
+ * Upstash direto e integrações renomeadas.
+ */
 function resolveKv(): KvBackend | null {
-  const url = process.env.KV_REST_API_URL?.trim() || process.env.UPSTASH_REDIS_REST_URL?.trim();
-  const token =
-    process.env.KV_REST_API_TOKEN?.trim() || process.env.UPSTASH_REDIS_REST_TOKEN?.trim();
-  if (!url || !token) return null;
-  return {
-    url: url.replace(/\/+$/, ""),
-    token,
-    key: process.env.STORE_CONFIG_KV_KEY?.trim() || "luhgab_store_config",
+  const env = process.env;
+  const read = (key: string) => env[key]?.trim() || undefined;
+
+  const urlKeys = Object.keys(env).filter((key) => key.endsWith(KV_URL_SUFFIX) && read(key));
+  if (urlKeys.length === 0) return null;
+
+  const prefixOf = (key: string) => key.slice(0, -KV_URL_SUFFIX.length);
+  const rank = (key: string) => {
+    const index = KV_PREFERRED_PREFIXES.indexOf(prefixOf(key));
+    return index === -1 ? KV_PREFERRED_PREFIXES.length : index;
   };
+  const ordered = [...urlKeys].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+
+  for (const urlKey of ordered) {
+    const token = read(`${prefixOf(urlKey)}${KV_TOKEN_SUFFIX}`);
+    if (!token) continue;
+    return {
+      url: read(urlKey)!.replace(/\/+$/, ""),
+      token,
+      key: read("STORE_CONFIG_KV_KEY") || "luhgab_store_config",
+    };
+  }
+  return null;
 }
 
 const KV = resolveKv();
