@@ -1,7 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { Check, ChevronUp, Minus, PiggyBank, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import { useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
+import {
+  ArrowRight,
+  Check,
+  ChevronUp,
+  Lock,
+  Minus,
+  PiggyBank,
+  Plus,
+  ShoppingBag,
+  Trash2,
+  X,
+} from "lucide-react";
 import ProductThumb from "@/components/ProductThumb";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { useCart } from "@/context/CartContext";
@@ -10,25 +22,22 @@ import { buildWhatsAppUrl, PIX_DISCOUNT_PERCENT } from "@/data/site";
 import { formatBRL } from "@/lib/format";
 import type { ComboRole, Product } from "@/types/product";
 
-/** Uma linha do combo: um produto com sabor, tamanho e quantidade. */
-interface Line {
-  productId: string;
+interface Variant {
   flavorId: string;
   sizeId: string;
-  quantity: number;
 }
 
-const STEPS: { role: ComboRole; title: string; hint: string }[] = [
-  { role: "protein", title: "Proteína", hint: "Whey Concentrado, Isolado ou 3W" },
-  { role: "energy", title: "Energia e Força", hint: "Creatina ou Pré-Treino" },
-  { role: "health", title: "Saúde e Recuperação", hint: "Multivitamínico, Vitamina D3 ou Ômega 3" },
+const STEPS: { role: ComboRole; title: string; short: string; subtitle: string }[] = [
+  { role: "protein", title: "Proteínas", short: "Proteínas", subtitle: "Whey Isolado, Concentrado e 3W" },
+  { role: "energy", title: "Energia & Força", short: "Energia", subtitle: "Creatina e Pré-Treino" },
+  { role: "health", title: "Saúde & Vitalidade", short: "Saúde", subtitle: "Vitaminas, Minerais e Ômega 3" },
 ];
 
 /** Desconto progressivo pelo total de itens (unidades) no combo. */
 const TIERS = [
-  { min: 2, pct: 10 },
-  { min: 3, pct: 15 },
-  { min: 4, pct: 20 },
+  { min: 2, pct: 10, label: "2 itens" },
+  { min: 3, pct: 15, label: "3 itens" },
+  { min: 4, pct: 20, label: "4+ itens · VIP" },
 ] as const;
 const MAX_QTY = 10;
 
@@ -37,12 +46,10 @@ const discountFor = (count: number) =>
 
 const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
 
-function defaultLine(product: Product): Line | null {
+function defaultVariant(product: Product): Variant | null {
   const flavor = product.flavors.find((f) => f.inStock);
   const size = product.sizes.find((s) => s.inStock);
-  return flavor && size
-    ? { productId: product.id, flavorId: flavor.id, sizeId: size.id, quantity: 1 }
-    : null;
+  return flavor && size ? { flavorId: flavor.id, sizeId: size.id } : null;
 }
 
 function Stepper({
@@ -55,16 +62,16 @@ function Stepper({
   onChange: (n: number) => void;
 }) {
   return (
-    <div className="inline-flex h-9 items-center rounded-lg border border-zinc-300 bg-white">
+    <div className="inline-flex h-10 items-center rounded-xl border border-zinc-300 bg-white">
       <button
         type="button"
         onClick={() => onChange(value - 1)}
         aria-label={`Diminuir quantidade de ${label}`}
-        className="flex h-9 w-9 items-center justify-center rounded-l-lg text-zinc-700 transition hover:bg-zinc-100"
+        className="flex h-10 w-10 items-center justify-center rounded-l-xl text-zinc-700 transition hover:bg-zinc-100"
       >
         {value <= 1 ? <Trash2 className="h-4 w-4" aria-hidden /> : <Minus className="h-4 w-4" aria-hidden />}
       </button>
-      <span className="w-7 text-center text-sm font-bold tabular-nums" aria-live="polite">
+      <span className="w-8 text-center text-sm font-bold tabular-nums" aria-live="polite">
         {value}
       </span>
       <button
@@ -72,7 +79,7 @@ function Stepper({
         onClick={() => onChange(value + 1)}
         disabled={value >= MAX_QTY}
         aria-label={`Aumentar quantidade de ${label}`}
-        className="flex h-9 w-9 items-center justify-center rounded-r-lg text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-40"
+        className="flex h-10 w-10 items-center justify-center rounded-r-xl text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-40"
       >
         <Plus className="h-4 w-4" aria-hidden />
       </button>
@@ -80,25 +87,35 @@ function Stepper({
   );
 }
 
+const selectCls =
+  "h-9 min-w-0 flex-1 rounded-lg border border-zinc-200 bg-white px-2 text-xs font-medium text-zinc-800 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/20";
+
 export default function ComboBuilder() {
   const { addCombo } = useCart();
-  const [lines, setLines] = useState<Line[]>([]);
+  const [qty, setQty] = useState<Record<string, number>>({});
+  const [variants, setVariants] = useState<Record<string, Variant>>({});
+  const [tab, setTab] = useState(0);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const asideRef = useRef<HTMLElement>(null);
 
-  const chosen = lines.flatMap((line) => {
-    const product = getProductById(line.productId);
-    const flavor = product?.flavors.find((f) => f.id === line.flavorId);
-    const size = product?.sizes.find((s) => s.id === line.sizeId);
-    return product && flavor && size ? [{ line, product, flavor, size }] : [];
+  const variantOf = (product: Product): Variant | null => variants[product.id] ?? defaultVariant(product);
+
+  const chosen = Object.entries(qty).flatMap(([id, quantity]) => {
+    const product = getProductById(id);
+    const v = product && variantOf(product);
+    const flavor = product?.flavors.find((f) => f.id === v?.flavorId);
+    const size = product?.sizes.find((s) => s.id === v?.sizeId);
+    return product && flavor && size && quantity > 0 ? [{ quantity, product, flavor, size }] : [];
   });
 
-  const count = chosen.reduce((sum, c) => sum + c.line.quantity, 0);
+  const count = chosen.reduce((sum, c) => sum + c.quantity, 0);
   const discountPct = discountFor(count);
   // Mesmo cálculo por linha do carrinho, para os totais coincidirem ao centavo.
   const unit = (c: (typeof chosen)[number]) => round2(c.product.price * c.size.priceMultiplier);
-  const original = round2(chosen.reduce((sum, c) => sum + unit(c) * c.line.quantity, 0));
+  const original = round2(chosen.reduce((sum, c) => sum + unit(c) * c.quantity, 0));
   const final = round2(
-    chosen.reduce((sum, c) => sum + round2(unit(c) * (1 - discountPct / 100) * c.line.quantity), 0),
+    chosen.reduce((sum, c) => sum + round2(unit(c) * (1 - discountPct / 100) * c.quantity), 0),
   );
   const pixFinal = round2(final * (1 - PIX_DISCOUNT_PERCENT / 100));
   const savings = round2(original - final);
@@ -106,45 +123,60 @@ export default function ComboBuilder() {
   const nextTier = TIERS.find((t) => count < t.min);
   const missing = nextTier ? nextTier.min - count : 0;
   const nudge = !nextTier
-    ? "Desconto máximo de 20% OFF liberado!"
+    ? "Desconto VIP de 20% ativado!"
     : count === 0
-      ? "Adicione 2 itens para ganhar 10% OFF"
-      : nextTier.pct === 20
-        ? `Mais ${missing} para o desconto VIP de 20% OFF!`
-        : `Adicione mais ${missing} ${missing === 1 ? "item" : "itens"} para ${nextTier.pct}% OFF`;
+      ? "Adicione 2 itens e ganhe 10% OFF"
+      : `Falta${missing === 1 ? "" : "m"} ${missing} ${missing === 1 ? "item" : "itens"} para ${nextTier.pct}% OFF${nextTier.pct === 20 ? " VIP" : ""}`;
   const progress = Math.min(100, Math.round((count / TIERS[TIERS.length - 1].min) * 100));
 
-  const patchLine = (productId: string, patch: Partial<Line>) =>
-    setLines((prev) => prev.map((l) => (l.productId === productId ? { ...l, ...patch } : l)));
-
-  const add = (product: Product) =>
-    setLines((prev) => {
-      if (prev.some((l) => l.productId === product.id)) return prev;
-      const line = defaultLine(product);
-      return line ? [...prev, line] : prev;
+  const setQuantity = (productId: string, quantity: number) =>
+    setQty((prev) => {
+      const next = { ...prev };
+      if (quantity < 1) delete next[productId];
+      else next[productId] = Math.min(MAX_QTY, quantity);
+      return next;
     });
 
-  const setQty = (productId: string, quantity: number) =>
-    setLines((prev) =>
-      quantity < 1
-        ? prev.filter((l) => l.productId !== productId)
-        : prev.map((l) => (l.productId === productId ? { ...l, quantity: Math.min(MAX_QTY, quantity) } : l)),
-    );
+  const setVariant = (product: Product, patch: Partial<Variant>) => {
+    const current = variantOf(product);
+    if (current) setVariants((prev) => ({ ...prev, [product.id]: { ...current, ...patch } }));
+  };
 
   const addToCart = () => {
     addCombo(
-      chosen.map(({ line, product, flavor, size }) => ({ product, flavor, size, quantity: line.quantity })),
+      chosen.map(({ quantity, product, flavor, size }) => ({ product, flavor, size, quantity })),
       discountPct,
     );
     setSheetOpen(false);
+  };
+
+  const goToTab = (i: number) => {
+    setTab(i);
+    tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const onTabKey = (e: KeyboardEvent<HTMLButtonElement>) => {
+    const dir = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!dir) return;
+    e.preventDefault();
+    const next = (tab + dir + STEPS.length) % STEPS.length;
+    setTab(next);
+    (tabsRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next])?.focus();
+  };
+
+  const showSummary = () => {
+    if (window.matchMedia("(min-width: 1024px)").matches) {
+      asideRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      setSheetOpen(true);
+    }
   };
 
   const whatsappUrl = buildWhatsAppUrl(
     [
       "Olá! Quero finalizar este combo:",
       ...chosen.map(
-        ({ line, product, flavor, size }) =>
-          `• ${line.quantity}x ${product.name} (${flavor.name}, ${size.label}) - ${formatBRL(unit({ line, product, flavor, size }))}`,
+        (c) => `• ${c.quantity}x ${c.product.name} (${c.flavor.name}, ${c.size.label}) - ${formatBRL(unit(c))}`,
       ),
       `Desconto do combo: ${discountPct}%`,
       `Total no Pix: ${formatBRL(pixFinal)}`,
@@ -152,88 +184,91 @@ export default function ComboBuilder() {
     ].join("\n"),
   );
 
-  const selectCls =
-    "min-w-0 flex-1 rounded-md border border-zinc-200 bg-white px-1.5 py-1.5 text-xs text-zinc-800 focus:border-emerald-600 focus:outline-none";
+  const stepCount = (role: ComboRole) =>
+    chosen.filter((c) => c.product.comboRole === role).reduce((s, c) => s + c.quantity, 0);
 
-  const progressBar = (
-    <div>
-      <p className="text-sm font-bold text-zinc-950">{nudge}</p>
+  // ---------------------------------------------------------------- Barra de patamares
+  const tierBar = (
+    <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm font-bold text-zinc-950" aria-live="polite">
+          {nudge}
+        </p>
+        <span
+          className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+            discountPct > 0 ? "bg-emerald-600 text-white" : "bg-zinc-100 text-zinc-500"
+          }`}
+        >
+          {discountPct > 0 ? `${discountPct}% OFF ativo` : "Sem desconto ainda"}
+        </span>
+      </div>
       <div
         role="progressbar"
         aria-label="Progresso do desconto"
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={progress}
-        className="mt-2 h-2 overflow-hidden rounded-full bg-zinc-200"
+        className="mt-3 h-2 overflow-hidden rounded-full bg-zinc-200"
       >
         <div className="h-full rounded-full bg-emerald-600 transition-all duration-500" style={{ width: `${progress}%` }} />
       </div>
-      <div className="mt-2 grid grid-cols-3 gap-1 text-center text-[0.6875rem] font-semibold">
-        {TIERS.map((t) => (
-          <span
-            key={t.min}
-            className={`rounded-md px-1 py-1 ${count >= t.min ? "bg-emerald-600 text-white" : "bg-zinc-100 text-zinc-500"}`}
-          >
-            {t.min}
-            {t.min === 4 ? "+" : ""} itens · {t.pct}%
-          </span>
-        ))}
-      </div>
+      <ul className="mt-3 grid grid-cols-3 gap-2">
+        {TIERS.map((t) => {
+          const on = count >= t.min;
+          return (
+            <li
+              key={t.min}
+              className={`flex flex-col items-center rounded-xl border px-1 py-2 text-center transition ${
+                on ? "border-emerald-600 bg-emerald-50" : "border-zinc-200 bg-zinc-50"
+              }`}
+            >
+              <span className={`flex items-center gap-1 text-base font-black ${on ? "text-emerald-700" : "text-zinc-400"}`}>
+                {on ? <Check className="h-4 w-4" strokeWidth={3} aria-hidden /> : <Lock className="h-3.5 w-3.5" aria-hidden />}
+                {t.pct}%
+              </span>
+              <span className={`text-[0.6875rem] font-semibold ${on ? "text-emerald-800" : "text-zinc-500"}`}>
+                {t.label}
+              </span>
+              <span className={`text-[0.625rem] font-bold uppercase tracking-wide ${on ? "text-emerald-700" : "text-zinc-400"}`}>
+                {on ? "Desbloqueado" : "Bloqueado"}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 
-  const summary = (
+  // ---------------------------------------------------------------- Resumo
+  const summary = (withBar: boolean) => (
     <>
-      <h2 className="font-sans text-lg font-bold text-zinc-950">Resumo do combo</h2>
-      <div className="mt-4">{progressBar}</div>
+      <h2 className="font-sans text-lg font-bold text-zinc-950">Seu combo</h2>
+      {withBar && <div className="mt-4">{tierBar}</div>}
 
       {chosen.length === 0 ? (
         <p className="py-8 text-center text-sm text-zinc-500">Adicione produtos para montar seu combo.</p>
       ) : (
         <ul className="mt-5 space-y-4">
-          {chosen.map(({ line, product, flavor, size }) => (
-            <li key={product.id} className="flex gap-3">
+          {chosen.map((c) => (
+            <li key={c.product.id} className="flex gap-3">
               <ProductThumb
-                type={product.model3DConfig.type}
-                color={product.model3DConfig.color}
-                productId={product.id}
-                imageUrl={product.imageUrl}
+                type={c.product.model3DConfig.type}
+                color={c.product.model3DConfig.color}
+                productId={c.product.id}
+                imageUrl={c.product.imageUrl}
                 alt=""
                 sizes="56px"
                 className="h-14 w-14 shrink-0 rounded-lg bg-zinc-50"
               />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-zinc-950">{product.name}</p>
-                <div className="mt-1 flex gap-2">
-                  <select
-                    aria-label={`Sabor de ${product.name}`}
-                    value={flavor.id}
-                    onChange={(e) => patchLine(product.id, { flavorId: e.target.value })}
-                    className={selectCls}
-                  >
-                    {product.flavors.map((f) => (
-                      <option key={f.id} value={f.id} disabled={!f.inStock}>
-                        {f.name}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    aria-label={`Tamanho de ${product.name}`}
-                    value={size.id}
-                    onChange={(e) => patchLine(product.id, { sizeId: e.target.value })}
-                    className={selectCls}
-                  >
-                    {product.sizes.map((s) => (
-                      <option key={s.id} value={s.id} disabled={!s.inStock}>
-                        {s.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <p className="truncate text-sm font-semibold text-zinc-950">{c.product.name}</p>
+                <p className="truncate text-xs text-zinc-500">
+                  {c.flavor.name} · {c.size.label}
+                </p>
                 <div className="mt-2 flex items-center justify-between">
-                  <Stepper value={line.quantity} label={product.name} onChange={(n) => setQty(product.id, n)} />
+                  <Stepper value={c.quantity} label={c.product.name} onChange={(n) => setQuantity(c.product.id, n)} />
                   <span className="text-sm font-semibold tabular-nums text-zinc-800">
-                    {formatBRL(round2(unit({ line, product, flavor, size }) * line.quantity))}
+                    {formatBRL(round2(unit(c) * c.quantity))}
                   </span>
                 </div>
               </div>
@@ -243,25 +278,23 @@ export default function ComboBuilder() {
       )}
 
       <div className="mt-5 space-y-2 border-t border-zinc-200 pt-4">
-        {discountPct > 0 && (
-          <p className="text-sm text-zinc-500 line-through">{formatBRL(original)}</p>
+        {savings > 0 && (
+          <p className="flex items-center justify-between rounded-xl bg-emerald-600 px-3 py-2.5 text-sm font-bold text-white">
+            <span className="flex items-center gap-2">
+              <PiggyBank className="h-4 w-4" aria-hidden /> Você economiza
+            </span>
+            <span className="tabular-nums">{formatBRL(savings)}</span>
+          </p>
         )}
+        {discountPct > 0 && <p className="text-sm text-zinc-500 line-through">{formatBRL(original)}</p>}
         <p className="flex items-baseline justify-between">
-          <span className="text-sm text-zinc-600">
-            No cartão{discountPct > 0 ? ` (${discountPct}% OFF)` : ""}
-          </span>
+          <span className="text-sm text-zinc-600">No cartão{discountPct > 0 ? ` (${discountPct}% OFF)` : ""}</span>
           <span className="text-2xl font-black tabular-nums text-zinc-950">{formatBRL(final)}</span>
         </p>
         {count > 0 && (
-          <p className="flex items-baseline justify-between rounded-lg bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800">
+          <p className="flex items-baseline justify-between rounded-xl bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800">
             <span>No Pix ({PIX_DISCOUNT_PERCENT}% OFF)</span>
             <span className="text-base tabular-nums text-emerald-700">{formatBRL(pixFinal)}</span>
-          </p>
-        )}
-        {savings > 0 && (
-          <p className="flex items-center gap-2 text-sm font-bold text-emerald-700">
-            <PiggyBank className="h-4 w-4" aria-hidden />
-            Você economiza {formatBRL(savings)}
           </p>
         )}
       </div>
@@ -270,7 +303,7 @@ export default function ComboBuilder() {
         type="button"
         onClick={addToCart}
         disabled={count === 0}
-        className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-emerald-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-500"
+        className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-zinc-950 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-zinc-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-500"
       >
         <ShoppingBag className="h-4 w-4" aria-hidden />
         Adicionar ao carrinho
@@ -290,176 +323,309 @@ export default function ComboBuilder() {
     </>
   );
 
+  const step = STEPS[tab];
+  const candidates = getComboCandidates(step.role);
+  const isLast = tab === STEPS.length - 1;
+
   return (
     <section
       id="combo"
       aria-labelledby="combo-title"
-      className="mx-auto w-full max-w-7xl scroll-mt-20 px-4 py-10 pb-32 sm:px-6 lg:pb-10"
+      className="mx-auto w-full max-w-7xl scroll-mt-20 px-4 py-10 pb-36 sm:px-6 lg:pb-10"
     >
-      <header className="mb-8">
+      <header className="mb-6">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">Compre junto e economize</p>
         <h1 id="combo-title" className="mt-2 font-display text-3xl font-black uppercase tracking-tight text-zinc-950 sm:text-5xl">
           Monte seu combo
         </h1>
         <p className="mt-3 max-w-2xl text-sm text-zinc-600">
-          Adicione quantos produtos quiser em cada etapa. 2 itens = 10% OFF, 3 itens = 15% OFF e 4 ou mais = 20% OFF,
-          calculado em tempo real.
+          Escolha em cada etapa quantos produtos quiser. Quanto mais itens, maior o desconto: até 20% OFF.
         </p>
       </header>
 
+      <div className="mb-6">{tierBar}</div>
+
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-        <div className="space-y-10">
-          {STEPS.map((step, i) => {
-            const candidates = getComboCandidates(step.role);
-            const inStep = chosen.filter((c) => c.product.comboRole === step.role);
-            const stepQty = inStep.reduce((s, c) => s + c.line.quantity, 0);
-            return (
-              <div key={step.role}>
-                <h2 className="flex items-center gap-3 text-sm font-bold uppercase tracking-wider">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-950 text-xs text-white">
-                    {i + 1}
+        <div className="min-w-0">
+          {/* Abas */}
+          <div
+            ref={tabsRef}
+            role="tablist"
+            aria-label="Etapas do combo"
+            className="sticky top-0 z-20 -mx-4 grid scroll-mt-16 grid-cols-3 gap-1 border-b border-zinc-200 bg-white/95 p-2 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border"
+          >
+            {STEPS.map((s, i) => {
+              const active = tab === i;
+              const n = stepCount(s.role);
+              return (
+                <button
+                  key={s.role}
+                  type="button"
+                  role="tab"
+                  id={`tab-${s.role}`}
+                  aria-selected={active}
+                  aria-controls={`panel-${s.role}`}
+                  tabIndex={active ? 0 : -1}
+                  onClick={() => setTab(i)}
+                  onKeyDown={onTabKey}
+                  className={`relative flex min-h-14 flex-col items-center justify-center rounded-xl px-2 py-2 text-center transition ${
+                    active ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-600 hover:bg-zinc-100"
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5 text-sm font-bold leading-tight">
+                    <span className="hidden sm:inline">{i + 1}.</span>
+                    <span className="sm:hidden">{s.short}</span>
+                    <span className="hidden sm:inline">{s.title}</span>
+                    {n > 0 && (
+                      <span
+                        className={`flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[0.6875rem] font-bold ${
+                          active ? "bg-emerald-500 text-white" : "bg-emerald-600 text-white"
+                        }`}
+                      >
+                        <Check className="h-3 w-3" strokeWidth={3} aria-hidden /> {n}
+                      </span>
+                    )}
                   </span>
-                  <span className="text-zinc-950">{step.title}</span>
-                  {stepQty > 0 && (
-                    <span className="ml-auto rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
-                      {stepQty} {stepQty === 1 ? "item" : "itens"}
-                    </span>
-                  )}
-                </h2>
-                <p className="mb-4 mt-1 pl-10 text-xs text-zinc-500">{step.hint}</p>
-                <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                  {candidates.map((product) => {
-                    const line = lines.find((l) => l.productId === product.id);
-                    const selected = Boolean(line);
-                    return (
-                      <li key={product.id} className="flex">
-                        <article
-                          className={`relative flex w-full flex-col rounded-2xl border bg-white p-3 shadow-sm transition ${
-                            selected ? "border-emerald-600 ring-1 ring-emerald-600/30" : "border-zinc-200 hover:border-zinc-300"
-                          }`}
-                        >
-                          {selected && (
-                            <span className="absolute left-3 top-3 z-10 flex items-center gap-1 rounded-full bg-emerald-600 px-2 py-0.5 text-[0.6875rem] font-bold text-white">
-                              <Check className="h-3 w-3" strokeWidth={3} aria-hidden /> No combo
-                            </span>
-                          )}
-                          <ProductThumb
-                            type={product.model3DConfig.type}
-                            color={product.model3DConfig.color}
-                            productId={product.id}
-                            imageUrl={product.imageUrl}
-                            alt={product.name}
-                            sizes="(min-width: 1280px) 220px, (min-width: 640px) 33vw, 90vw"
-                            className="aspect-square w-full rounded-xl bg-zinc-50"
-                          />
-                          <div className="mt-3 flex-1">
-                            <p className="text-[0.6875rem] font-bold uppercase tracking-wider text-zinc-500">
-                              {product.brandName}
-                            </p>
-                            <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug text-zinc-950">
-                              {product.name}
-                            </h3>
-                            <p className="mt-1 text-lg font-black tabular-nums text-zinc-950">
-                              {formatBRL(product.price)}
-                            </p>
+                  <span className={`mt-0.5 hidden text-xs sm:block ${active ? "text-zinc-300" : "text-zinc-500"}`}>
+                    {s.subtitle}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Painel da aba */}
+          <div
+            role="tabpanel"
+            id={`panel-${step.role}`}
+            aria-labelledby={`tab-${step.role}`}
+            tabIndex={0}
+            className="mt-6 focus:outline-none"
+          >
+            <p className="mb-4 text-sm text-zinc-500 sm:hidden">{step.subtitle}</p>
+            <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {candidates.map((product) => {
+                const quantity = qty[product.id] ?? 0;
+                const selected = quantity > 0;
+                const v = variantOf(product);
+                return (
+                  <li key={product.id} className="flex">
+                    <article
+                      className={`relative flex w-full flex-col rounded-3xl border bg-white p-4 shadow-sm transition ${
+                        selected
+                          ? "border-emerald-600 shadow-md ring-1 ring-emerald-600/20"
+                          : "border-zinc-200 hover:border-zinc-300 hover:shadow-md"
+                      }`}
+                    >
+                      {selected && (
+                        <span className="absolute left-4 top-4 z-10 flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+                          <Check className="h-3 w-3" strokeWidth={3} aria-hidden /> No Combo
+                        </span>
+                      )}
+                      <ProductThumb
+                        type={product.model3DConfig.type}
+                        color={product.model3DConfig.color}
+                        productId={product.id}
+                        imageUrl={product.imageUrl}
+                        alt={product.name}
+                        sizes="(min-width: 1280px) 260px, (min-width: 640px) 33vw, 90vw"
+                        className="aspect-square w-full rounded-2xl bg-gradient-to-b from-zinc-50 to-zinc-100/60 [&_img]:drop-shadow-[0_14px_18px_rgba(0,0,0,0.18)]"
+                      />
+                      <div className="mt-4 flex-1">
+                        <span className="inline-block rounded-full bg-zinc-100 px-2.5 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-zinc-600">
+                          {product.brandName}
+                        </span>
+                        <h3 className="mt-2 line-clamp-2 text-[0.9375rem] font-semibold leading-snug text-zinc-950">
+                          {product.name}
+                        </h3>
+                        <p className="mt-1 text-xl font-black tabular-nums text-zinc-950">{formatBRL(product.price)}</p>
+                      </div>
+
+                      {v && (
+                        <div className="mt-3 flex gap-2">
+                          <select
+                            aria-label={`Sabor de ${product.name}`}
+                            value={v.flavorId}
+                            onChange={(e) => setVariant(product, { flavorId: e.target.value })}
+                            className={selectCls}
+                          >
+                            {product.flavors.map((f) => (
+                              <option key={f.id} value={f.id} disabled={!f.inStock}>
+                                {f.name}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            aria-label={`Tamanho de ${product.name}`}
+                            value={v.sizeId}
+                            onChange={(e) => setVariant(product, { sizeId: e.target.value })}
+                            className={selectCls}
+                          >
+                            {product.sizes.map((s) => (
+                              <option key={s.id} value={s.id} disabled={!s.inStock}>
+                                {s.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+
+                      <div className="mt-3">
+                        {selected ? (
+                          <div className="flex items-center justify-between gap-2">
+                            <Stepper value={quantity} label={product.name} onChange={(n) => setQuantity(product.id, n)} />
+                            <button
+                              type="button"
+                              onClick={() => setQuantity(product.id, 0)}
+                              className="h-10 rounded-lg px-2 text-xs font-semibold text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-950"
+                            >
+                              Remover
+                            </button>
                           </div>
-                          <div className="mt-3">
-                            {line ? (
-                              <div className="flex items-center justify-between gap-2">
-                                <Stepper value={line.quantity} label={product.name} onChange={(n) => setQty(product.id, n)} />
-                                <button
-                                  type="button"
-                                  onClick={() => setQty(product.id, 0)}
-                                  className="h-9 rounded-lg px-2 text-xs font-semibold text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-950"
-                                >
-                                  Remover
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => add(product)}
-                                disabled={!defaultLine(product)}
-                                className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-zinc-950 text-sm font-bold text-white transition hover:bg-zinc-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-500"
-                              >
-                                <Plus className="h-4 w-4" aria-hidden />
-                                {defaultLine(product) ? "Adicionar ao Combo" : "Indisponível"}
-                              </button>
-                            )}
-                          </div>
-                        </article>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            );
-          })}
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => v && setQuantity(product.id, 1)}
+                            disabled={!v}
+                            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-zinc-950 text-sm font-bold text-zinc-950 transition hover:bg-zinc-950 hover:text-white active:scale-[0.98] disabled:cursor-not-allowed disabled:border-zinc-200 disabled:text-zinc-400 disabled:hover:bg-transparent"
+                          >
+                            <Plus className="h-4 w-4" aria-hidden />
+                            {v ? "Adicionar ao Combo" : "Indisponível"}
+                          </button>
+                        )}
+                      </div>
+                    </article>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 pt-6">
+              {tab > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => goToTab(tab - 1)}
+                  className="h-12 rounded-xl px-4 text-sm font-semibold text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-950"
+                >
+                  ← Voltar
+                </button>
+              ) : (
+                <span />
+              )}
+              <button
+                type="button"
+                onClick={isLast ? showSummary : () => goToTab(tab + 1)}
+                className="flex h-12 items-center gap-2 rounded-xl bg-emerald-600 px-6 text-sm font-bold text-white transition hover:bg-emerald-700 active:scale-[0.98]"
+              >
+                {isLast ? "Ver Resumo do Combo" : `Avançar para ${STEPS[tab + 1].title}`}
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
+          </div>
         </div>
 
         <aside
+          ref={asideRef}
           aria-label="Resumo do combo"
-          className="hidden h-fit rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm lg:sticky lg:top-24 lg:block"
+          className="hidden h-fit rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm lg:sticky lg:top-24 lg:block"
         >
-          {summary}
+          {summary(false)}
         </aside>
       </div>
 
-      {/* Mobile: barra fixa + resumo expansível */}
+      {/* Mobile: Smart Dock + gaveta de detalhes */}
       <div className="lg:hidden">
-        {sheetOpen && (
-          <div className="fixed inset-0 z-50 flex flex-col justify-end" role="dialog" aria-modal="true" aria-label="Resumo do combo">
+        <div
+          aria-hidden={!sheetOpen}
+          className={`fixed inset-0 z-50 flex flex-col justify-end transition-all duration-300 ${
+            sheetOpen ? "visible opacity-100" : "invisible opacity-0"
+          }`}
+        >
+          <button
+            type="button"
+            tabIndex={sheetOpen ? 0 : -1}
+            aria-label="Fechar resumo"
+            onClick={() => setSheetOpen(false)}
+            className="absolute inset-0 bg-zinc-950/50"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Resumo do combo"
+            className={`relative max-h-[85vh] overflow-y-auto rounded-t-3xl bg-white p-5 shadow-2xl transition-transform duration-300 [padding-bottom:max(1.25rem,env(safe-area-inset-bottom))] ${
+              sheetOpen ? "translate-y-0" : "translate-y-full"
+            }`}
+          >
+            <span aria-hidden className="mx-auto mb-3 block h-1 w-10 rounded-full bg-zinc-300" />
             <button
               type="button"
-              aria-label="Fechar resumo"
               onClick={() => setSheetOpen(false)}
-              className="absolute inset-0 bg-zinc-950/50"
-            />
-            <div className="relative max-h-[85vh] overflow-y-auto rounded-t-3xl bg-white p-5 shadow-2xl [padding-bottom:max(1.25rem,env(safe-area-inset-bottom))]">
-              <button
-                type="button"
-                onClick={() => setSheetOpen(false)}
-                aria-label="Fechar"
-                className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100"
-              >
-                <X className="h-5 w-5" aria-hidden />
-              </button>
-              {summary}
-            </div>
+              aria-label="Fechar"
+              className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-100"
+            >
+              <X className="h-5 w-5" aria-hidden />
+            </button>
+            {summary(true)}
           </div>
-        )}
-        {!sheetOpen && count > 0 && (
-          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200 bg-white/95 px-4 py-3 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))]">
-            <div className="mx-auto flex max-w-7xl items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setSheetOpen(true)}
-                aria-label="Ver resumo do combo"
-                className="min-w-0 flex-1 text-left"
-              >
+        </div>
+
+        <div
+          className={`fixed inset-x-3 bottom-3 z-40 transition-all duration-300 [margin-bottom:env(safe-area-inset-bottom)] ${
+            count > 0 && !sheetOpen ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
+          }`}
+        >
+          <div className="flex items-center gap-3 rounded-2xl border border-zinc-200 bg-white/95 p-2.5 pl-3 shadow-[0_12px_32px_rgba(0,0,0,0.18)] backdrop-blur">
+            <button
+              type="button"
+              onClick={() => setSheetOpen(true)}
+              aria-label="Ver detalhes do combo"
+              tabIndex={count > 0 && !sheetOpen ? 0 : -1}
+              className="flex min-w-0 flex-1 items-center gap-3 text-left"
+            >
+              <span className="flex shrink-0 -space-x-3">
+                {chosen.slice(0, 3).map((c) => (
+                  <ProductThumb
+                    key={c.product.id}
+                    type={c.product.model3DConfig.type}
+                    color={c.product.model3DConfig.color}
+                    productId={c.product.id}
+                    imageUrl={c.product.imageUrl}
+                    alt=""
+                    sizes="44px"
+                    className="h-11 w-11 rounded-full border-2 border-white bg-zinc-100"
+                  />
+                ))}
+                {chosen.length > 3 && (
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-zinc-950 text-xs font-bold text-white">
+                    +{chosen.length - 3}
+                  </span>
+                )}
+              </span>
+              <span className="min-w-0">
                 <span className="flex items-center gap-1 text-xs font-semibold text-zinc-500">
                   {count} {count === 1 ? "item" : "itens"}
                   {discountPct > 0 && <span className="text-emerald-700">· {discountPct}% OFF</span>}
                   <ChevronUp className="h-3.5 w-3.5" aria-hidden />
                 </span>
-                <span className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="text-lg font-black tabular-nums text-zinc-950">{formatBRL(final)}</span>
+                <span className="block truncate text-base font-black tabular-nums text-zinc-950">
+                  {formatBRL(final)}
                   {savings > 0 && (
-                    <span className="text-xs font-bold text-emerald-700">Economia {formatBRL(savings)}</span>
+                    <span className="ml-1.5 text-xs font-bold text-emerald-700">−{formatBRL(savings)}</span>
                   )}
                 </span>
-              </button>
-              <button
-                type="button"
-                onClick={addToCart}
-                className="flex h-12 shrink-0 items-center gap-2 rounded-xl bg-emerald-600 px-5 text-sm font-bold text-white transition hover:bg-emerald-700 active:scale-95"
-              >
-                <ShoppingBag className="h-4 w-4" aria-hidden />
-                Adicionar
-              </button>
-            </div>
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={addToCart}
+              tabIndex={count > 0 && !sheetOpen ? 0 : -1}
+              className="flex h-12 shrink-0 items-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-bold text-white transition hover:bg-emerald-700 active:scale-95"
+            >
+              <ShoppingBag className="h-4 w-4" aria-hidden />
+              Adicionar
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </section>
   );
