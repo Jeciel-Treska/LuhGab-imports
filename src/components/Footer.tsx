@@ -49,13 +49,12 @@ const SECURITY = [
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-gold/30 bg-[#060608] text-zinc-400">
-      <div aria-hidden className="rule-brand absolute inset-x-0 top-0" />
+    <footer className="relative border-t border-white/10 bg-[#060608] text-zinc-400">
       {/* Ofertas pelo WhatsApp */}
-      <section aria-labelledby="newsletter-title" className="border-b border-white/10 bg-gradient-to-r from-[#1a0808] via-[#0c0c0f] to-[#1a0808] py-12">
+      <section aria-labelledby="newsletter-title" className="border-b border-white/10 bg-[#0F0F13] py-12">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 sm:px-6 lg:flex-row">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-gold">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#C9A55C]">
               Clube LuhGab VIP
             </span>
             <h2 id="newsletter-title" className="mt-1 font-display text-2xl font-black uppercase text-white sm:text-3xl">
@@ -96,7 +95,7 @@ export default function Footer() {
 
         {COLUMNS.map((column) => (
           <nav key={column.title} aria-label={column.title}>
-            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-gold">
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-[#C9A55C]">
               {column.title}
             </h3>
             <ul className="space-y-2.5 text-sm">
@@ -107,12 +106,12 @@ export default function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="transition hover:text-gold"
+                      className="transition hover:text-[#C9A55C]"
                     >
                       {link.label}
                     </a>
                   ) : (
-                    <Link href={link.href} className="transition hover:text-gold">
+                    <Link href={link.href} className="transition hover:text-[#C9A55C]">
                       {link.label}
                     </Link>
                   )}
@@ -129,7 +128,7 @@ export default function Footer() {
           <div className="flex flex-wrap items-center gap-6">
             {SECURITY.map(({ icon: Icon, label }) => (
               <span key={label} className="flex items-center gap-1.5">
-                <Icon className="h-4 w-4 text-gold" /> {label}
+                <Icon className="h-4 w-4 text-[#C9A55C]" /> {label}
               </span>
             ))}
           </div>
@@ -138,7 +137,7 @@ export default function Footer() {
             <Link
               href="/admin"
               title="Painel do Lojista"
-              className="inline-flex min-h-[44px] items-center gap-1.5 text-zinc-400 transition hover:text-gold md:min-h-0"
+              className="inline-flex min-h-[44px] items-center gap-1.5 text-zinc-400 transition hover:text-[#C9A55C] md:min-h-0"
             >
               <Lock className="h-3.5 w-3.5" aria-hidden /> Área do Lojista
             </Link>

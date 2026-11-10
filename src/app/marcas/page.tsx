@@ -19,14 +19,14 @@ export default function BrandsPage() {
           <li key={brand.id}>
             <Link
               href={`/produtos?marca=${brand.id}`}
-              className="flex h-full flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-5 transition hover:border-gold/50"
+              className="flex h-full flex-col gap-2 rounded-xl border border-white/[0.07] bg-[#131317] p-5 transition hover:border-zinc-600"
             >
-              <span className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+              <span className="text-xs font-semibold uppercase tracking-wide text-amber-400">
                 {brand.badgeText} • {brand.originCountry}
               </span>
               <span className="text-xl font-black uppercase">{brand.name}</span>
-              <span className="text-sm text-zinc-600">{brand.description}</span>
-              <span className="mt-auto pt-3 text-sm font-semibold text-amber-700">
+              <span className="text-sm text-zinc-400">{brand.description}</span>
+              <span className="mt-auto pt-3 text-sm font-semibold text-amber-400">
                 Ver {count} {count === 1 ? "produto" : "produtos"} &rarr;
               </span>
             </Link>

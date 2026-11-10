@@ -86,12 +86,11 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Carrinho de compras"
-        className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-gold/40 bg-[#0B0B0E] shadow-[-24px_0_60px_-20px_rgba(220,38,38,0.35)] transition-transform duration-300 ease-out"
+        className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-[#0B0B0E] transition-transform duration-300 ease-out"
       >
         <header className="flex items-center justify-between relative border-b border-white/10 px-6 py-4">
-          <span aria-hidden className="rule-brand absolute inset-x-0 bottom-0 opacity-70" />
           <h2 className="flex items-center gap-2 font-display text-xl font-black uppercase tracking-tight text-white">
-            <ShoppingBag className="h-5 w-5 text-gold" aria-hidden />
+            <ShoppingBag className="h-5 w-5 text-[#C9A55C]" aria-hidden />
             Seu Carrinho ({items.reduce((acc, i) => acc + i.quantity, 0)})
           </h2>
           <button
@@ -107,7 +106,7 @@ export default function CartDrawer() {
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-gold">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-amber-500/10 text-[#C9A55C]">
               <ShoppingBag className="h-8 w-8" />
             </div>
             <div>
@@ -134,7 +133,7 @@ export default function CartDrawer() {
                 ) : (
                   <>
                     Faltam apenas{" "}
-                    <strong className="font-bold text-gold">{formatBRL(remaining)}</strong> para
+                    <strong className="font-bold text-[#C9A55C]">{formatBRL(remaining)}</strong> para
                     Frete Grátis!
                   </>
                 )}
@@ -149,7 +148,7 @@ export default function CartDrawer() {
               >
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
-                    freeShipping ? "bg-emerald-500" : "bg-gradient-to-r from-gold to-energy-red-600"
+                    freeShipping ? "bg-emerald-500" : "bg-red-600"
                   }`}
                   style={{ width: `${progress}%` }}
                 />
@@ -162,7 +161,7 @@ export default function CartDrawer() {
                 const prod = getProductById(item.productId);
                 return (
                   <li key={item.id} className="flex gap-4 py-4">
-                    <div className="h-16 w-16 shrink-0 flex items-center justify-center rounded-xl border border-gold/20 bg-[radial-gradient(circle_at_50%_40%,#26262d,#15151a_70%)] p-1">
+                    <div className="h-16 w-16 shrink-0 flex items-center justify-center rounded-xl border border-white/10 bg-[#18181d] p-1">
                       <ProductThumb
                         type={prod?.model3DConfig.type ?? "whey-tub"}
                         color={prod?.model3DConfig.color ?? "#000000"}
@@ -178,7 +177,7 @@ export default function CartDrawer() {
                       <p className="text-xs text-zinc-400">
                         {item.flavor.name} · {item.size.label}
                         {item.comboDiscount > 0 && (
-                          <span className="ml-2 rounded border border-gold/40 bg-gold/10 px-1.5 py-0.5 text-xs font-bold text-gold">
+                          <span className="ml-2 rounded border border-white/10 bg-amber-500/10 px-1.5 py-0.5 text-xs font-bold text-[#C9A55C]">
                             Combo -{item.comboDiscount}%
                           </span>
                         )}
@@ -192,7 +191,7 @@ export default function CartDrawer() {
                             type="button"
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             aria-label={`Diminuir quantidade de ${item.name}`}
-                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-gold"
+                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-[#C9A55C]"
                           >
                             <Minus className="h-3 w-3" />
                           </button>
@@ -203,7 +202,7 @@ export default function CartDrawer() {
                             type="button"
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             aria-label={`Aumentar quantidade de ${item.name}`}
-                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-gold"
+                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-[#C9A55C]"
                           >
                             <Plus className="h-3 w-3" />
                           </button>
@@ -227,7 +226,7 @@ export default function CartDrawer() {
             </ul>
 
             {/* Footer do Carrinho */}
-            <div className="space-y-3 border-t border-gold/30 bg-[#0E0E12] p-6">
+            <div className="space-y-3 border-t border-white/10 bg-[#0E0E12] p-6">
               {activeCoupon ? (
                 <p className="flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-300">
                   <span className="flex items-center gap-1.5">
@@ -247,11 +246,11 @@ export default function CartDrawer() {
                     aria-label="Cupom de desconto"
                     placeholder="Cupom de desconto"
                     autoCapitalize="characters"
-                    className="h-9 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#121216] px-3 text-xs uppercase text-white outline-none placeholder:normal-case placeholder:text-zinc-500 focus:border-gold"
+                    className="h-9 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#121216] px-3 text-xs uppercase text-white outline-none placeholder:normal-case placeholder:text-zinc-500 focus:border-zinc-500"
                   />
                   <button
                     type="submit"
-                    className="h-9 rounded-xl border border-gold/60 px-3.5 text-xs font-bold text-gold transition hover:bg-gold hover:text-black"
+                    className="h-9 rounded-xl border border-white/10 px-3.5 text-xs font-bold text-[#C9A55C] transition hover:bg-amber-500 hover:text-black"
                   >
                     Aplicar
                   </button>
@@ -289,7 +288,7 @@ export default function CartDrawer() {
                 href={orderUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white shadow-[0_10px_24px_-10px_rgba(16,185,129,0.8)] transition hover:bg-emerald-500 active:scale-95"
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500 active:scale-95"
               >
                 <WhatsAppIcon className="h-5 w-5" />
                 Finalizar Pedido pelo WhatsApp

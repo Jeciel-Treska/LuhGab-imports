@@ -43,7 +43,7 @@ const normalize = (text: string) =>
   text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
 const selectClass =
-  "h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-800 focus:border-gold focus:outline-none";
+  "h-11 rounded-lg border border-white/[0.07] bg-[#131317] px-3 text-sm text-zinc-100 focus:border-zinc-500 focus:outline-none";
 
 const isCategory = (value: string | undefined): value is ProductCategory =>
   value !== undefined && Object.hasOwn(categoryLabels, value);
@@ -112,7 +112,7 @@ export default function ProductCatalog({ initial = {} }: { initial?: CatalogInit
       </h1>
 
       <div className="mb-6 mt-4 flex flex-wrap items-center gap-2">
-        <p aria-live="polite" className="mr-auto text-sm text-zinc-600">
+        <p aria-live="polite" className="mr-auto text-sm text-zinc-400">
           {visible.length} {visible.length === 1 ? "produto" : "produtos"}
         </p>
         <select
@@ -170,7 +170,7 @@ export default function ProductCatalog({ initial = {} }: { initial?: CatalogInit
           <button
             type="button"
             onClick={clear}
-            className="h-11 px-3 text-sm text-amber-700 underline-offset-4 hover:underline"
+            className="h-11 px-3 text-sm text-amber-400 underline-offset-4 hover:underline"
           >
             Limpar filtros
           </button>
@@ -178,16 +178,16 @@ export default function ProductCatalog({ initial = {} }: { initial?: CatalogInit
       </div>
 
       {visible.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 rounded-xl border border-zinc-200 bg-white px-6 py-16 text-center">
-          <SearchX className="h-10 w-10 text-amber-700" aria-hidden />
+        <div className="flex flex-col items-center gap-4 rounded-xl border border-white/[0.07] bg-[#131317] px-6 py-16 text-center">
+          <SearchX className="h-10 w-10 text-amber-400" aria-hidden />
           <p className="text-lg font-semibold">Nenhum produto encontrado</p>
-          <p className="max-w-sm text-sm text-zinc-600">
+          <p className="max-w-sm text-sm text-zinc-400">
             Tente outro termo ou remova alguns filtros.
           </p>
           <button
             type="button"
             onClick={clear}
-            className="min-h-[44px] rounded-lg bg-gradient-gold px-6 py-2.5 text-sm font-bold text-dark"
+            className="min-h-[44px] rounded-lg bg-amber-500 px-6 py-2.5 text-sm font-bold text-dark"
           >
             Limpar filtros
           </button>

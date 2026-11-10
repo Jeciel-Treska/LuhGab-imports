@@ -140,10 +140,10 @@ export default function CompareModal() {
         <div
           role="region"
           aria-label="Comparador de produtos"
-          className="fixed bottom-4 left-4 right-24 z-40 mx-auto flex max-w-xl items-center justify-between gap-3 rounded-2xl border border-gold/40 bg-dark-card/95 px-4 py-3 shadow-xl shadow-black/50 backdrop-blur"
+          className="fixed bottom-4 left-4 right-24 z-40 mx-auto flex max-w-xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-dark-card/95 px-4 py-3 shadow-xl shadow-black/50 backdrop-blur"
         >
           <p className="text-sm text-zinc-200">
-            <strong className="text-gold">{ids.length}</strong> produtos para comparar
+            <strong className="text-[#C9A55C]">{ids.length}</strong> produtos para comparar
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -156,7 +156,7 @@ export default function CompareModal() {
             <button
               type="button"
               onClick={open}
-              className="flex h-9 items-center gap-2 rounded-full bg-gradient-gold px-4 text-sm font-bold text-dark"
+              className="flex h-9 items-center gap-2 rounded-full bg-amber-500 px-4 text-sm font-bold text-dark"
             >
               <GitCompareArrows className="h-4 w-4" aria-hidden />
               Comparar
@@ -178,14 +178,14 @@ export default function CompareModal() {
           <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-dark-soft sm:rounded-2xl">
             <header className="flex items-center justify-between border-b border-white/10 px-5 py-4">
               <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-100">
-                <GitCompareArrows className="h-5 w-5 text-gold" aria-hidden />
+                <GitCompareArrows className="h-5 w-5 text-[#C9A55C]" aria-hidden />
                 Comparar produtos
               </h2>
               <button
                 type="button"
                 onClick={close}
                 aria-label="Fechar comparador"
-                className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-300 hover:bg-white/10"
+                className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-300 hover:bg-[#131317]/10"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -195,7 +195,7 @@ export default function CompareModal() {
               <table className="w-full min-w-[34rem] border-collapse text-sm">
                 <thead>
                   <tr>
-                    <th className="sticky left-0 z-10 w-36 bg-dark-soft p-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
+                    <th className="sticky left-0 z-10 w-36 bg-dark-soft p-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-400">
                       Produto
                     </th>
                     {columns.map((c) => (
@@ -203,11 +203,11 @@ export default function CompareModal() {
                         key={c.product.id}
                         scope="col"
                         className={`min-w-[10rem] p-3 text-left align-top ${
-                          c.product.id === winnerId ? "bg-gold/10" : ""
+                          c.product.id === winnerId ? "bg-amber-500/10" : ""
                         }`}
                       >
                         {c.product.id === winnerId && (
-                          <span className="mb-1 flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-gold">
+                          <span className="mb-1 flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-[#C9A55C]">
                             <Trophy className="h-3 w-3" aria-hidden /> Melhor custo-benefício
                           </span>
                         )}
@@ -254,8 +254,8 @@ export default function CompareModal() {
                           disabled={!c.product.inStock}
                           className={`flex h-10 w-full items-center justify-center gap-2 rounded-xl text-xs font-bold transition disabled:cursor-not-allowed disabled:opacity-40 ${
                             c.product.id === winnerId
-                              ? "bg-gradient-gold text-dark hover:shadow-gold"
-                              : "border border-white/15 text-zinc-200 hover:border-gold hover:text-gold"
+                              ? "bg-amber-500 text-dark hover:shadow-gold"
+                              : "border border-white/15 text-zinc-200 hover:border-amber-500/60 hover:text-[#C9A55C]"
                           }`}
                         >
                           <ShoppingBag className="h-4 w-4" aria-hidden />

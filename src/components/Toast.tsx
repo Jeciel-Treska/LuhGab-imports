@@ -35,7 +35,7 @@ const ICONS = {
 } as const;
 
 const STYLES: Record<ToastType, string> = {
-  success: "border-gold/60 text-gold",
+  success: "border-white/10 text-[#C9A55C]",
   error: "border-energy-red-500/60 text-energy-red-400",
   info: "border-dark-surface-700 text-zinc-200",
 };

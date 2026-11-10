@@ -18,7 +18,7 @@ function FAQAccordionItem({ item, isOpen, onToggle }: FAQItemProps) {
   return (
     <li
       className={`overflow-hidden rounded-2xl border bg-dark-card transition-colors duration-300 ${
-        isOpen ? "border-gold-subtle" : "border-white/10 hover:border-gold/40"
+        isOpen ? "border-gold-subtle" : "border-white/10 hover:border-zinc-600"
       }`}
     >
       <h3>
@@ -40,7 +40,7 @@ function FAQAccordionItem({ item, isOpen, onToggle }: FAQItemProps) {
           <ChevronDown
             size={20}
             aria-hidden
-            className={`shrink-0 text-gold transition-transform duration-300 ease-out ${
+            className={`shrink-0 text-[#C9A55C] transition-transform duration-300 ease-out ${
               isOpen ? "rotate-180" : "rotate-0"
             }`}
           />
@@ -69,10 +69,10 @@ export default function FAQSection() {
   return (
     <section aria-labelledby="faq-title" className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
       <header className="mb-10 flex flex-col items-center gap-3 text-center">
-        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-gold text-dark shadow-gold">
+        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-500 text-dark shadow-gold">
           <HelpCircle size={22} strokeWidth={2.4} aria-hidden />
         </span>
-        <p className="font-mono text-xs uppercase tracking-widest text-gold">Dúvidas frequentes</p>
+        <p className="font-mono text-xs uppercase tracking-widest text-[#C9A55C]">Dúvidas frequentes</p>
         <h2 id="faq-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Tudo o que você precisa saber
         </h2>

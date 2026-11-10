@@ -20,11 +20,11 @@ export default function InfoPage({
 }: InfoPageProps) {
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
-      <h1 className="font-display text-4xl font-black uppercase tracking-tight text-zinc-950">
+      <h1 className="font-display text-4xl font-black uppercase tracking-tight text-white">
         {title}
       </h1>
-      {intro && <p className="mt-3 text-base leading-relaxed text-zinc-600">{intro}</p>}
-      <div className="mt-8 space-y-6 text-sm leading-relaxed text-zinc-700 [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-zinc-950 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5">
+      {intro && <p className="mt-3 text-base leading-relaxed text-zinc-400">{intro}</p>}
+      <div className="mt-8 space-y-6 text-sm leading-relaxed text-zinc-200 [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-white [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5">
         {children}
       </div>
       {whatsappMessage && (

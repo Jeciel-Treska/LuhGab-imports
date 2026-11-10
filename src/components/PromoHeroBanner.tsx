@@ -71,18 +71,17 @@ export default function PromoHeroBanner() {
   };
 
   return (
-    <section className="stripe-band relative overflow-hidden border-b border-gold/20 py-12 lg:py-20">
-      <div aria-hidden className="rule-brand absolute inset-x-0 bottom-0" />
+    <section className="relative overflow-hidden border-b border-white/10 bg-[#0D0D11] py-12 lg:py-20">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16">
         {/* Coluna Texto & Compra */}
         <div className="flex flex-col items-start gap-6">
-          <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-black/40 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-gold">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-energy-red-500" />
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-zinc-300">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
             Destaque da loja • Laudo e lacre
           </span>
 
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-gold">{product.brandName}</p>
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#C9A55C]">{product.brandName}</p>
             <h1 className="mt-2 font-display text-5xl font-black uppercase tracking-tight text-white sm:text-6xl xl:text-7xl">
               {product.name}
             </h1>
@@ -92,13 +91,13 @@ export default function PromoHeroBanner() {
           </div>
 
           {/* Preço de Conversão */}
-          <div className="card-dark w-full max-w-md rounded-2xl p-5">
+          <div className="card-dark w-full max-w-md rounded-2xl p-5 hover:border-white/[0.07]">
             <div className="flex items-center justify-between">
-              <span className="rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-gold">
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-zinc-300">
                 Condição Especial
               </span>
               {product.discountPercentage > 0 && (
-                <span className="rounded-md bg-gradient-to-b from-energy-red-500 to-energy-red-700 px-2.5 py-0.5 text-xs font-black text-white">
+                <span className="rounded bg-red-700 px-2.5 py-0.5 text-xs font-bold text-white">
                   -{product.discountPercentage}% OFF
                 </span>
               )}
@@ -128,7 +127,7 @@ export default function PromoHeroBanner() {
             <button
               type="button"
               onClick={buy}
-              className="btn-red flex h-14 items-center justify-center gap-2 rounded-xl px-8 text-sm font-black uppercase tracking-wider active:scale-95"
+              className="btn-red flex h-14 items-center justify-center gap-2 rounded-xl px-8 text-sm font-bold uppercase tracking-wider active:scale-95"
             >
               {added ? (
                 <>
@@ -159,7 +158,7 @@ export default function PromoHeroBanner() {
           <div className="grid w-full max-w-xl grid-cols-2 gap-4 border-t border-white/10 pt-6 sm:grid-cols-4">
             {buildSeals(product.installments).map(({ icon: Icon, label, desc }) => (
               <div key={label} className="flex flex-col">
-                <Icon className="h-5 w-5 text-gold" />
+                <Icon className="h-5 w-5 text-[#C9A55C]" />
                 <span className="mt-1 text-xs font-bold text-white">{label}</span>
                 <span className="text-xs text-zinc-400">{desc}</span>
               </div>
@@ -169,37 +168,24 @@ export default function PromoHeroBanner() {
 
         {/* Coluna Fotografia do Produto */}
         <div className="relative mx-auto flex w-full max-w-md items-center justify-center lg:max-w-none">
-          {/* Halo + faixa esportiva atrás do produto */}
-          <div
-            aria-hidden
-            className="absolute left-1/2 top-1/2 h-[85%] w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-energy-red-600/30 blur-[90px]"
-          />
-          <div
-            aria-hidden
-            className="absolute left-1/2 top-1/2 h-[135%] w-[22%] -translate-x-1/2 -translate-y-1/2 rotate-[28deg] bg-gradient-to-b from-transparent via-gold/50 to-transparent opacity-70"
-          />
-          <div
-            aria-hidden
-            className="absolute left-[58%] top-1/2 h-[135%] w-[7%] -translate-x-1/2 -translate-y-1/2 rotate-[28deg] bg-gradient-to-b from-transparent via-energy-red-600/70 to-transparent"
-          />
-
-          <div className="card-dark relative flex aspect-[4/5] w-full max-w-lg items-center justify-center rounded-3xl border-gold/30 bg-[#0d0d11]/80 p-8 backdrop-blur-sm">
-            <span aria-hidden className="pointer-events-none absolute inset-2 rounded-[1.25rem] border border-gold/20" />
+          <div className="card-dark relative flex aspect-[4/5] w-full max-w-lg items-center justify-center rounded-3xl bg-[#121216] p-8 hover:border-white/[0.07]">
             <div className="relative flex h-full w-full items-center justify-center">
+              {/* sombra de contato de estúdio */}
+              <span aria-hidden className="absolute bottom-[6%] left-1/2 h-5 w-1/2 -translate-x-1/2 rounded-[50%] bg-black/70 blur-xl" />
               <Image
                 src={product.imageUrl ?? "/products/under-labz-dimethylex.png"}
                 alt={product.name}
                 width={420}
                 height={560}
                 priority
-                className="h-full w-auto object-contain drop-shadow-[0_24px_40px_rgba(220,38,38,0.45)]"
+                className="h-full w-auto object-contain drop-shadow-[0_14px_14px_rgba(0,0,0,0.5)]"
               />
             </div>
 
             {/* Badge de Avaliação */}
             {SHOW_RATINGS && (
-              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-2xl border border-gold/30 bg-black/60 px-3.5 py-2 backdrop-blur">
-                <Star className="h-5 w-5 fill-gold text-gold" />
+              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-2xl border border-white/10 bg-black/50 px-3.5 py-2 backdrop-blur">
+                <Star className="h-5 w-5 fill-[#C9A55C] text-[#C9A55C]" />
                 <div className="text-xs leading-tight">
                   <span className="font-extrabold text-white">{product.rating.toFixed(1)} / 5.0</span>
                   <span className="block text-xs text-zinc-400">{product.reviewCount} avaliações</span>

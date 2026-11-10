@@ -57,10 +57,10 @@ const config: Config = {
         marquee: "marquee 40s linear infinite",
       },
       backgroundImage: {
-        "gradient-gold": "linear-gradient(135deg, #E5C358 0%, #D4AF37 50%, #C49A2C 100%)",
+        "gradient-gold": "linear-gradient(180deg, #CDAA62 0%, #B8964A 100%)",
       },
       boxShadow: {
-        gold: "0 8px 24px -8px rgba(212, 175, 55, 0.45)",
+        gold: "0 1px 2px rgba(0, 0, 0, 0.4)",
         red: "none",
       },
     },

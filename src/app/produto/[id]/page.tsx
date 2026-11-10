@@ -90,21 +90,21 @@ export default async function ProductPage({ params }: PageProps) {
         ])}
       />
 
-      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-zinc-500">
+      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-zinc-400">
         <ol className="flex flex-wrap items-center gap-2">
           <li>
-            <Link href="/" className="hover:text-gold">
+            <Link href="/" className="hover:text-[#C9A55C]">
               Home
             </Link>
           </li>
           <li aria-hidden>/</li>
           <li>
-            <Link href={`/produtos?categoria=${product.category}`} className="hover:text-gold">
+            <Link href={`/produtos?categoria=${product.category}`} className="hover:text-[#C9A55C]">
               {categoryLabel}
             </Link>
           </li>
           <li aria-hidden>/</li>
-          <li aria-current="page" className="text-zinc-600">
+          <li aria-current="page" className="text-zinc-400">
             {product.name}
           </li>
         </ol>

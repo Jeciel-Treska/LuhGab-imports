@@ -21,7 +21,7 @@ export default function BestSellers() {
     <section id="destaques" aria-labelledby="best-title" className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6">
       <div className="flex flex-col justify-between gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-end">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs font-bold text-gold">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-amber-500/10 px-3 py-1 text-xs font-bold text-[#C9A55C]">
             <Sparkles className="h-3.5 w-3.5" /> Catálogo LuhGab Imports
           </div>
           <h2 id="best-title" className="mt-2 text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
@@ -34,7 +34,7 @@ export default function BestSellers() {
 
         <Link
           href="/produtos"
-          className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gold transition hover:text-white"
+          className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#C9A55C] transition hover:text-white"
         >
           Ver todos os {products.length} produtos
           <ArrowRight className="h-4 w-4" />

@@ -76,10 +76,10 @@ export default function Navbar() {
                 width={200}
                 height={160}
                 priority
-                className="h-11 w-auto rounded-md ring-1 ring-gold/40 sm:h-12"
+                className="h-11 w-auto rounded-md ring-1 ring-white/10 sm:h-12"
               />
               <span className="hidden font-display text-2xl font-black uppercase tracking-tight text-white sm:inline-block">
-                LuhGab <span className="text-gold font-light">Imports</span>
+                LuhGab <span className="text-[#C9A55C] font-light">Imports</span>
               </span>
             </Link>
 
@@ -89,7 +89,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="whitespace-nowrap rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition hover:bg-white/5 hover:text-gold"
+                  className="whitespace-nowrap rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition hover:bg-white/5 hover:text-[#C9A55C]"
                 >
                   {link.label}
                 </Link>
@@ -100,9 +100,9 @@ export default function Navbar() {
             <form
               role="search"
               onSubmit={submit}
-              className="hidden min-w-[180px] max-w-xs flex-1 items-center rounded-full border border-white/10 bg-[#121216] px-3 py-1.5 transition focus-within:border-gold/70 focus-within:ring-2 focus-within:ring-gold/20 xl:flex"
+              className="hidden min-w-[180px] max-w-xs flex-1 items-center rounded-full border border-white/10 bg-[#121216] px-3 py-1.5 transition focus-within:border-zinc-500 focus-within:ring-1 focus-within:ring-white/10 xl:flex"
             >
-              <Search className="h-4 w-4 text-gold" />
+              <Search className="h-4 w-4 text-[#C9A55C]" />
               <input
                 ref={inputRef}
                 type="search"
@@ -123,7 +123,7 @@ export default function Navbar() {
               >
                 <Heart className="h-5 w-5" />
                 {favorites.length > 0 && (
-                  <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-energy-red-600 px-1 text-xs font-bold text-white">
+                  <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold text-white">
                     {favorites.length}
                   </span>
                 )}
@@ -133,7 +133,7 @@ export default function Navbar() {
                 href={buildWhatsAppUrl("Olá! Gostaria de tirar uma dúvida sobre suplementos importados.")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden items-center gap-1.5 rounded-full border border-white/15 px-3.5 py-2 text-xs font-semibold text-zinc-200 transition hover:border-gold/60 sm:flex lg:hidden"
+                className="hidden items-center gap-1.5 rounded-full border border-white/15 px-3.5 py-2 text-xs font-semibold text-zinc-200 transition hover:border-zinc-600 sm:flex lg:hidden"
               >
                 <WhatsAppIcon className="h-4 w-4 text-emerald-500" />
                 <span>WhatsApp VIP</span>
@@ -148,7 +148,7 @@ export default function Navbar() {
                 <ShoppingBag className="h-4 w-4" />
                 <span className="hidden sm:inline">{formatBRL(total)}</span>
                 {itemCount > 0 && (
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-xs font-black text-black">
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-xs font-black text-black">
                     {itemCount}
                   </span>
                 )}
@@ -164,7 +164,7 @@ export default function Navbar() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="O que você procura hoje? Ex: Whey, Creatina..."
-              className="h-11 w-full rounded-l-xl border border-white/10 bg-[#121216] px-4 text-sm text-white placeholder:text-zinc-400 focus:border-gold/70 focus:outline-none"
+              className="h-11 w-full rounded-l-xl border border-white/10 bg-[#121216] px-4 text-sm text-white placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
             />
             <button
               type="submit"
@@ -175,7 +175,6 @@ export default function Navbar() {
             </button>
           </form>
         </nav>
-        <div aria-hidden className="rule-brand opacity-70" />
       </header>
 
       {/* Drawer mobile */}
@@ -189,7 +188,7 @@ export default function Navbar() {
             role="dialog"
             aria-modal="true"
             aria-label="Menu de Navegação"
-            className="absolute inset-y-0 left-0 flex w-80 max-w-[85vw] flex-col border-r border-gold/30 bg-[#0B0B0E] p-6 shadow-2xl transition-transform"
+            className="absolute inset-y-0 left-0 flex w-80 max-w-[85vw] flex-col border-r border-white/10 bg-[#0B0B0E] p-6 shadow-2xl transition-transform"
           >
             <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-4">
               <span className="font-display text-2xl font-black uppercase text-white">
@@ -211,7 +210,7 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setDrawerOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-zinc-200 transition hover:bg-white/5 hover:text-gold"
+                    className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-zinc-200 transition hover:bg-white/5 hover:text-[#C9A55C]"
                   >
                     {link.label}
                   </Link>

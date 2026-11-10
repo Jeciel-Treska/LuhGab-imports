@@ -4,7 +4,6 @@ import { loadStoreConfig } from "@/lib/storeConfig";
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 import "./globals.css";
-import "./store-dark.css";
 import CartDrawer from "@/components/CartDrawer";
 import CompareModal from "@/components/CompareModal";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -81,13 +80,13 @@ export default async function RootLayout({
   applyStoreOverrides(storeConfig.products);
   return (
     <html lang="pt-BR" className={`${display.variable} ${body.variable}`}>
-      <body className="store-dark min-h-screen font-sans text-white antialiased">
+      <body className="min-h-screen font-sans text-white antialiased">
         <JsonLd data={organizationSchema()} />
         <StoreConfigProvider config={storeConfig}>
         <Providers>
           <a
             href="#conteudo"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-gold focus:px-4 focus:py-2 focus:text-dark"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-amber-500 focus:px-4 focus:py-2 focus:text-dark"
           >
             Pular para o conteúdo
           </a>

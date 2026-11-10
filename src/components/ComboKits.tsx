@@ -79,17 +79,17 @@ function KitCard({ kit }: { kit: Kit }) {
   };
 
   return (
-    <article className="flex h-full flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-400 hover:shadow-xl">
+    <article className="flex h-full flex-col justify-between rounded-2xl border border-white/[0.07] bg-[#131317] p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-600 hover:shadow-xl">
       <div>
         <div className="flex items-start justify-between gap-3">
           <div>
-            <span className="rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-bold text-rose-700">
+            <span className="rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs font-bold text-red-400">
               Economize {kit.discount}%
             </span>
-            <h3 className="mt-2 font-display text-2xl font-black uppercase tracking-tight text-zinc-950">
+            <h3 className="mt-2 font-display text-2xl font-black uppercase tracking-tight text-white">
               {kit.title}
             </h3>
-            <p className="text-xs text-zinc-500 font-medium">{kit.text}</p>
+            <p className="text-xs text-zinc-400 font-medium">{kit.text}</p>
           </div>
         </div>
 
@@ -100,7 +100,7 @@ function KitCard({ kit }: { kit: Kit }) {
               <Link
                 href={`/produto/${product.slug}`}
                 aria-label={product.name}
-                className="flex h-20 w-20 items-center justify-center rounded-xl bg-zinc-50 border border-zinc-200/80 p-2 transition hover:scale-105"
+                className="flex h-20 w-20 items-center justify-center rounded-xl bg-[#0F0F13] border border-white/[0.07] p-2 transition hover:scale-105"
               >
                 <ProductThumb
                   type={product.model3DConfig.type}
@@ -117,15 +117,15 @@ function KitCard({ kit }: { kit: Kit }) {
         </ul>
       </div>
 
-      <div className="mt-auto border-t border-zinc-100 pt-4">
-        <p className="text-xs text-zinc-500 line-through">
+      <div className="mt-auto border-t border-white/[0.06] pt-4">
+        <p className="text-xs text-zinc-400 line-through">
           De: {formatBRL(original)}
         </p>
         <div className="flex items-baseline gap-2">
-          <span className="font-display text-3xl font-extrabold text-zinc-950">
+          <span className="font-display text-3xl font-extrabold text-white">
             {formatBRL(final)}
           </span>
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+          <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
             Economia de {formatBRL(round2(original - final))}
           </span>
         </div>
@@ -133,7 +133,7 @@ function KitCard({ kit }: { kit: Kit }) {
         <button
           type="button"
           onClick={buy}
-          className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-zinc-950 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-zinc-800 shadow-sm"
+          className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-red-600 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-red-700 shadow-sm"
         >
           <span>Garantir Combo com {kit.discount}% OFF</span>
           <ArrowRight className="h-4 w-4" />

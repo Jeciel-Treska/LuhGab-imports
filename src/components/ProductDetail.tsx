@@ -93,18 +93,16 @@ export default function ProductDetail({ product }: { product: Product }) {
       {/* Coluna Visual (Esquerda - 6 cols) */}
       <div className="lg:col-span-6 flex flex-col gap-4">
         {/* Card Principal da Imagem */}
-        <div className="card-dark relative aspect-square w-full overflow-hidden rounded-3xl border-gold/30 bg-[radial-gradient(circle_at_50%_38%,#26262d,#121216_72%)] p-6 hover:translate-y-0">
-          <span aria-hidden className="pointer-events-none absolute inset-2 rounded-[1.25rem] border border-gold/20" />
-          <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 h-3/4 w-3/4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-energy-red-600/20 blur-[80px]" />
+        <div className="card-dark relative aspect-square w-full overflow-hidden rounded-3xl border-white/10 bg-[#18181d] p-6 hover:translate-y-0">
           {/* Badge de Destaque / Desconto */}
           <div className="absolute left-5 top-5 z-10 flex flex-col items-start gap-1.5">
             {product.discountPercentage > 0 && (
-              <span className="rounded-lg bg-gradient-to-b from-energy-red-500 to-energy-red-700 px-3 py-1 text-xs font-black uppercase tracking-wider text-white shadow-[0_8px_18px_-8px_rgba(220,38,38,0.9)]">
+              <span className="rounded-lg bg-red-700 px-3 py-1 text-xs font-black uppercase tracking-wider text-white">
                 -{product.discountPercentage}% OFF
               </span>
             )}
             {product.price >= FREE_SHIPPING_THRESHOLD && (
-              <span className="rounded-lg border border-gold/50 bg-black/60 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-gold">
+              <span className="rounded-lg border border-white/10 bg-black/60 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C9A55C]">
                 Frete Grátis
               </span>
             )}
@@ -150,8 +148,8 @@ export default function ProductDetail({ product }: { product: Product }) {
                   aria-current={i === photoIndex}
                   className={`relative block h-16 w-16 overflow-hidden rounded-xl border bg-[#121216] p-1 transition active:scale-95 sm:h-20 sm:w-20 ${
                     i === photoIndex
-                      ? "border-gold shadow-[0_0_14px_-4px_rgba(212,175,55,0.7)]"
-                      : "border-white/10 hover:border-gold/60"
+                      ? "border-amber-500/60"
+                      : "border-white/10 hover:border-zinc-600"
                   }`}
                 >
                   <Image src={src} alt="" width={160} height={160} className="h-full w-full object-contain" />
@@ -173,8 +171,8 @@ export default function ProductDetail({ product }: { product: Product }) {
           className="card-dark mt-2 grid grid-cols-1 divide-y divide-white/10 rounded-2xl hover:translate-y-0 sm:grid-cols-3 sm:divide-x sm:divide-y-0"
         >
           {[
-            { icon: ShieldCheck, title: "100% Original", text: "Lacrado, com nota fiscal", tone: "text-gold bg-gold/10 ring-1 ring-gold/30" },
-            { icon: BadgeCheck, title: "Laudo Certificado", text: "Autenticidade comprovada", tone: "text-gold bg-gold/10 ring-1 ring-gold/30" },
+            { icon: ShieldCheck, title: "100% Original", text: "Lacrado, com nota fiscal", tone: "text-[#C9A55C] bg-amber-500/10 ring-1 ring-white/10" },
+            { icon: BadgeCheck, title: "Laudo Certificado", text: "Autenticidade comprovada", tone: "text-[#C9A55C] bg-amber-500/10 ring-1 ring-white/10" },
             { icon: Zap, title: `Pix ${PIX_DISCOUNT_PERCENT}% OFF`, text: "Aprovação instantânea", tone: "text-emerald-400 bg-emerald-500/10 ring-1 ring-emerald-500/30" },
           ].map(({ icon: Icon, title, text, tone }) => (
             <li key={title} className="flex items-center gap-3 px-4 py-3.5 sm:flex-col sm:gap-2 sm:py-4 sm:text-center">
@@ -197,7 +195,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Cabeçalho do Produto */}
         <div>
           <div className="flex items-center gap-2">
-            <span className="rounded border border-gold/40 bg-gold/10 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-gold">
+            <span className="rounded border border-white/10 bg-amber-500/10 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C9A55C]">
               {product.brandName}
             </span>
             <span className="flex items-center gap-1 text-xs font-semibold text-emerald-400">
@@ -211,13 +209,13 @@ export default function ProductDetail({ product }: { product: Product }) {
 
           {SHOW_RATINGS && (
             <div className="mt-2 flex items-center gap-2 text-xs text-zinc-400">
-              <div className="flex items-center text-gold">
+              <div className="flex items-center text-[#C9A55C]">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
                     className={`h-4 w-4 ${
                       i < Math.round(product.rating)
-                        ? "fill-gold text-gold"
+                        ? "fill-[#C9A55C] text-[#C9A55C]"
                         : "fill-white/10 text-white/10"
                     }`}
                   />
@@ -235,7 +233,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         </div>
 
         {/* Box de Preço Principal */}
-        <div className="card-dark rounded-2xl border-gold/30 p-5 hover:translate-y-0">
+        <div className="card-dark rounded-2xl border-white/10 p-5 hover:translate-y-0">
           {product.discountPercentage > 0 && (
             <p className="text-xs text-zinc-400 line-through">
               De {formatBRL(originalTotal)} por
@@ -266,7 +264,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Seleção de Sabor */}
         <fieldset>
           <legend className="mb-2.5 text-xs font-bold uppercase tracking-wider text-zinc-300">
-            Sabor selecionado: <span className="font-extrabold text-gold">{flavor.name}</span>
+            Sabor selecionado: <span className="font-extrabold text-[#C9A55C]">{flavor.name}</span>
           </legend>
           <div className="flex flex-wrap gap-2">
             {product.flavors.map((f) => {
@@ -281,8 +279,8 @@ export default function ProductDetail({ product }: { product: Product }) {
                     !f.inStock
                       ? "cursor-not-allowed border-white/5 bg-white/[0.02] text-zinc-500 line-through"
                       : active
-                        ? "border-gold bg-gold/10 text-white shadow-[0_0_16px_-6px_rgba(212,175,55,0.8)]"
-                        : "border-white/10 bg-[#121216] text-zinc-200 hover:border-gold/60"
+                        ? "border-amber-500/60 bg-amber-500/10 text-white"
+                        : "border-white/10 bg-[#121216] text-zinc-200 hover:border-zinc-600"
                   }`}
                 >
                   <span
@@ -299,7 +297,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Seleção de Tamanho */}
         <fieldset>
           <legend className="mb-2.5 text-xs font-bold uppercase tracking-wider text-zinc-300">
-            Opção de Tamanho: <span className="font-extrabold text-gold">{size.label}</span>
+            Opção de Tamanho: <span className="font-extrabold text-[#C9A55C]">{size.label}</span>
           </legend>
           <div className="flex flex-wrap gap-2">
             {product.sizes.map((s) => {
@@ -314,8 +312,8 @@ export default function ProductDetail({ product }: { product: Product }) {
                     !s.inStock
                       ? "cursor-not-allowed border-white/5 bg-white/[0.02] text-zinc-500 line-through"
                       : active
-                        ? "border-gold bg-gold/10 text-white shadow-[0_0_16px_-6px_rgba(212,175,55,0.8)]"
-                        : "border-white/10 bg-[#121216] text-zinc-200 hover:border-gold/60"
+                        ? "border-amber-500/60 bg-amber-500/10 text-white"
+                        : "border-white/10 bg-[#121216] text-zinc-200 hover:border-zinc-600"
                   }`}
                 >
                   {s.label}
@@ -333,7 +331,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               <button
                 type="button"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="flex h-11 w-11 items-center justify-center text-zinc-300 hover:text-gold active:scale-90"
+                className="flex h-11 w-11 items-center justify-center text-zinc-300 hover:text-[#C9A55C] active:scale-90"
                 aria-label="Diminuir quantidade"
               >
                 <Minus className="h-4 w-4" />
@@ -344,7 +342,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               <button
                 type="button"
                 onClick={() => setQuantity((q) => Math.min(99, q + 1))}
-                className="flex h-11 w-11 items-center justify-center text-zinc-300 hover:text-gold active:scale-90"
+                className="flex h-11 w-11 items-center justify-center text-zinc-300 hover:text-[#C9A55C] active:scale-90"
                 aria-label="Aumentar quantidade"
               >
                 <Plus className="h-4 w-4" />
@@ -384,7 +382,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white shadow-[0_10px_24px_-10px_rgba(16,185,129,0.8)] transition hover:bg-emerald-500 active:scale-95"
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500 active:scale-95"
             >
               <WhatsAppIcon className="h-4 w-4" aria-hidden />
               Pedir pelo WhatsApp VIP
@@ -396,7 +394,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             onClick={() => toggleCompare(product.id)}
             aria-pressed={comparing}
             className={`flex min-h-[44px] w-fit items-center gap-2 text-xs font-semibold transition ${
-              comparing ? "text-emerald-400" : "text-zinc-400 hover:text-gold"
+              comparing ? "text-emerald-400" : "text-zinc-400 hover:text-[#C9A55C]"
             }`}
           >
             <GitCompareArrows className="h-4 w-4" aria-hidden />
@@ -407,7 +405,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Simulador de Frete */}
         <div className="rounded-2xl border border-white/10 bg-[#0E0E12] p-4">
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white">
-            <Truck className="h-4 w-4 text-gold" /> Consultar Prazo e Frete
+            <Truck className="h-4 w-4 text-[#C9A55C]" /> Consultar Prazo e Frete
           </p>
           <p className="mt-1.5 text-xs text-zinc-400">
             {total >= FREE_SHIPPING_THRESHOLD
@@ -423,7 +421,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               value={cep}
               onChange={(e) => setCep(maskCep(e.target.value))}
               placeholder="Digite seu CEP (00000-000)"
-              className="h-11 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#121216] px-3 text-xs font-medium text-white placeholder-zinc-500 outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+              className="h-11 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#121216] px-3 text-xs font-medium text-white placeholder-zinc-500 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-white/20"
             />
             <a
               href={cepComplete ? freightUrl : undefined}
@@ -447,12 +445,12 @@ export default function ProductDetail({ product }: { product: Product }) {
             <details open className="card-dark group rounded-2xl p-4 hover:translate-y-0">
               <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-bold uppercase tracking-wider text-white">
                 <span>Principais Benefícios</span>
-                <ChevronDown className="h-4 w-4 text-gold transition-transform group-open:rotate-180" />
+                <ChevronDown className="h-4 w-4 text-[#C9A55C] transition-transform group-open:rotate-180" />
               </summary>
               <ul className="mt-3 grid gap-2 text-xs text-zinc-300 sm:grid-cols-2">
                 {product.benefits.map((b) => (
                   <li key={b} className="flex items-start gap-2">
-                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-bold text-gold">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-xs font-bold text-[#C9A55C]">
                       ✓
                     </span>
                     <span>{b}</span>
@@ -467,7 +465,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             <details className="card-dark group rounded-2xl p-4 hover:translate-y-0">
               <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-bold uppercase tracking-wider text-white">
                 <span>Como Tomar / Sugestão de Uso</span>
-                <ChevronDown className="h-4 w-4 text-gold transition-transform group-open:rotate-180" />
+                <ChevronDown className="h-4 w-4 text-[#C9A55C] transition-transform group-open:rotate-180" />
               </summary>
               <p className="mt-3 text-xs leading-relaxed text-zinc-300">
                 {product.suggestedUse}
@@ -480,7 +478,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             <details className="card-dark group rounded-2xl p-4 hover:translate-y-0">
               <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-bold uppercase tracking-wider text-white">
                 <span>Tabela Nutricional</span>
-                <ChevronDown className="h-4 w-4 text-gold transition-transform group-open:rotate-180" />
+                <ChevronDown className="h-4 w-4 text-[#C9A55C] transition-transform group-open:rotate-180" />
               </summary>
               <div className="mt-3 overflow-x-auto">
                 <p className="mb-2 text-xs text-zinc-400">
@@ -488,7 +486,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </p>
                 <table className="w-full text-xs">
                   <thead>
-                    <tr className="border-b border-gold/30 text-left text-gold">
+                    <tr className="border-b border-white/10 text-left text-[#C9A55C]">
                       <th className="py-1.5 font-bold">Nutriente</th>
                       <th className="py-1.5 font-bold">Qtd. por porção</th>
                       <th className="py-1.5 text-right font-bold">%VD*</th>

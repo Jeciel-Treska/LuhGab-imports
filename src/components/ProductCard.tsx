@@ -47,7 +47,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
   return (
     <article className="card-dark group flex h-full flex-col overflow-hidden rounded-2xl p-4 sm:p-5">
       {/* Imagem do Produto */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[radial-gradient(circle_at_50%_40%,#26262d,#15151a_70%)] p-2 ring-1 ring-white/5">
+      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#18181d] p-2 ring-1 ring-white/5">
         <Link
           href={`/produto/${product.slug}`}
           aria-label={`Ver detalhes de ${product.name}`}
@@ -67,12 +67,12 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
         {/* Badges de Desconto e Frete */}
         <div className="pointer-events-none absolute left-2.5 top-2.5 flex flex-col items-start gap-1">
           {hasDiscount && (
-            <span className="rounded-md bg-gradient-to-b from-energy-red-500 to-energy-red-700 px-2 py-0.5 text-xs font-black text-white shadow-[0_6px_14px_-6px_rgba(220,38,38,0.9)]">
+            <span className="rounded-md bg-red-700 px-2 py-0.5 text-xs font-black text-white">
               -{product.discountPercentage}% OFF
             </span>
           )}
           {product.price >= FREE_SHIPPING_THRESHOLD && (
-            <span className="rounded-md border border-gold/50 bg-black/60 px-2 py-0.5 text-xs font-semibold text-gold">
+            <span className="rounded-md border border-white/10 bg-black/60 px-2 py-0.5 text-xs font-semibold text-[#C9A55C]">
               Frete Grátis
             </span>
           )}
@@ -81,7 +81,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
         {rank !== undefined && (
           <span
             aria-label={`${rank}º mais vendido`}
-            className="absolute bottom-2.5 left-2.5 rounded-full bg-gradient-gold px-2.5 py-0.5 text-xs font-black text-black"
+            className="absolute bottom-2.5 left-2.5 rounded-full bg-amber-500 px-2.5 py-0.5 text-xs font-black text-black"
           >
             {rank}º Mais Vendido
           </span>
@@ -104,12 +104,12 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
 
       {/* Detalhes & Preço */}
       <div className="mt-4 flex flex-1 flex-col">
-        <p className="text-xs font-bold uppercase tracking-wider text-gold">
+        <p className="text-xs font-bold uppercase tracking-wider text-[#C9A55C]">
           {product.brandName}
         </p>
 
         <h3 className="mt-1 line-clamp-2 min-h-[2.75rem] text-sm font-bold leading-snug text-white">
-          <Link href={`/produto/${product.slug}`} className="transition hover:text-gold">
+          <Link href={`/produto/${product.slug}`} className="transition hover:text-[#C9A55C]">
             {product.name}
           </Link>
         </h3>

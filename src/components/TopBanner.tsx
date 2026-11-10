@@ -4,25 +4,23 @@ import { formatBRL } from "@/lib/format";
 const MESSAGES = [
   `Frete grátis Brasil acima de ${formatBRL(FREE_SHIPPING_THRESHOLD).replace(",00", "")}`,
   `${PIX_DISCOUNT_PERCENT}% OFF no Pix à vista`,
-  "Suplementos 100% Originais com Laudo Certificado",
+  "Suplementos 100% originais com laudo",
   "Parcelamento em até 10x sem juros",
-  "Envio expresso em até 24h",
+  "Envio em até 24h",
 ];
 
 export default function TopBanner() {
   const track = [...MESSAGES, ...MESSAGES];
   return (
-    <div className="overflow-hidden border-b border-gold/30 bg-gradient-to-r from-[#7f1111] via-energy-red-600 to-[#7f1111] text-white">
+    <div className="overflow-hidden border-b border-white/[0.07] bg-[#101014] text-zinc-300">
       <ul
         aria-label="Vantagens da loja"
-        className="animate-marquee flex w-max items-center py-2 text-xs font-bold uppercase tracking-[0.16em] motion-reduce:animate-none"
+        className="animate-marquee flex w-max items-center py-2 text-xs font-medium uppercase tracking-[0.14em] motion-reduce:animate-none"
       >
         {track.map((text, i) => (
           <li key={i} aria-hidden={i >= MESSAGES.length} className="flex items-center whitespace-nowrap">
-            <span className="px-6">{text}</span>
-            <span aria-hidden className="text-gold">
-              ◆
-            </span>
+            <span className="px-8">{text}</span>
+            <span aria-hidden className="h-3 w-px bg-white/15" />
           </li>
         ))}
       </ul>

@@ -11,12 +11,12 @@ export default function BrandsSection() {
           <li key={brand.id}>
             <Link
               href={`/produtos?marca=${brand.id}`}
-              className="flex h-24 flex-col items-center justify-center gap-1 rounded-xl border border-white/10 bg-dark-card px-3 text-center transition hover:border-gold/50"
+              className="flex h-24 flex-col items-center justify-center gap-1 rounded-xl border border-white/10 bg-dark-card px-3 text-center transition hover:border-zinc-600"
             >
               <span className="text-sm font-black uppercase leading-tight tracking-wide text-zinc-100">
                 {brand.name}
               </span>
-              <span className="text-xs text-zinc-500">{brand.originCountry}</span>
+              <span className="text-xs text-zinc-400">{brand.originCountry}</span>
             </Link>
           </li>
         ))}
