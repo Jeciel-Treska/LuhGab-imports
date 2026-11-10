@@ -74,10 +74,10 @@ export default function PromoHeroBanner() {
 
   return (
     <section className="stage-hero relative overflow-hidden py-12 lg:py-20">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:grid-rows-[1fr_auto_auto_1fr] lg:gap-x-16 lg:gap-y-0">
         {/* Coluna Texto & Compra */}
-        <div className="rise flex flex-col items-start gap-6">
-          <div>
+        <div className="contents">
+          <div className="rise order-1 lg:order-none lg:col-start-1 lg:row-start-2">
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D4AF37]">{product.brandName}</p>
             <h1 className="mt-3 font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-6xl xl:text-7xl">
               {product.name}
@@ -87,6 +87,7 @@ export default function PromoHeroBanner() {
             </p>
           </div>
 
+          <div className="rise order-3 flex flex-col items-start gap-6 lg:order-none lg:col-start-1 lg:row-start-3 lg:mt-6">
           {/* Preço de Conversão */}
           <div className="card-dark w-full max-w-md rounded-2xl p-5 hover:!translate-y-0 hover:!filter-none">
             <div className="flex items-center justify-between">
@@ -161,10 +162,11 @@ export default function PromoHeroBanner() {
               </div>
             ))}
           </div>
+          </div>
         </div>
 
         {/* Coluna Fotografia do Produto */}
-        <div className="rise rise-2 relative mx-auto flex w-full max-w-md items-center justify-center lg:max-w-none">
+        <div className="rise rise-2 relative order-2 mx-auto flex w-full max-w-md items-center justify-center lg:order-none lg:col-start-2 lg:row-span-4 lg:row-start-1 lg:max-w-none lg:self-center">
           <div className="card-dark relative aspect-[4/5] w-full max-w-lg rounded-2xl p-2 hover:!translate-y-0 hover:!filter-none">
             <div className="studio relative flex h-full w-full items-center justify-center overflow-hidden rounded-xl p-8">
               {/* feixe de luz de estúdio, vindo do alto */}
