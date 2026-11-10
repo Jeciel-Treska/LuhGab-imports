@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Zap } from "lucide-react";
-import ProductCard from "@/components/ProductCard";
+import ProductCarousel from "@/components/ProductCarousel";
 import SectionHeader from "@/components/SectionHeader";
 import { getProductById, products } from "@/data/products";
 import { useFlashDealsConfig, useStoreOverrides } from "@/components/StoreConfigProvider";
@@ -89,13 +89,7 @@ export default function FlashDeals() {
       >
         <Countdown />
       </SectionHeader>
-      <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {deals.map((product) => (
-          <li key={product.id}>
-            <ProductCard product={product} cta="Comprar agora" />
-          </li>
-        ))}
-      </ul>
+      <ProductCarousel products={deals} label="Ofertas Relâmpago" cta="Comprar agora" />
       </div>
     </section>
   );

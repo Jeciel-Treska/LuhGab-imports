@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import ProductCard from "@/components/ProductCard";
+import ProductCarousel from "@/components/ProductCarousel";
 import SectionHeader from "@/components/SectionHeader";
 import { products } from "@/data/products";
 import { useStoreOverrides } from "@/components/StoreConfigProvider";
@@ -45,13 +45,9 @@ export default function BestSellers() {
         </p>
       )}
 
-      <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {list.map((product) => (
-          <li key={product.id}>
-            <ProductCard product={product} />
-          </li>
-        ))}
-      </ul>
+      <div className="mt-8">
+        <ProductCarousel products={list} label="Destaques da Loja" />
+      </div>
       </div>
     </section>
   );
