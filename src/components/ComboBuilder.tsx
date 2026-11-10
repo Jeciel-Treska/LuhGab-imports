@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import {
+  ArrowLeft,
   ArrowRight,
   Check,
   ChevronUp,
@@ -62,7 +63,7 @@ function Stepper({
   onChange: (n: number) => void;
 }) {
   return (
-    <div className="inline-flex h-10 items-center rounded-xl border border-white/15 bg-[#0B0B0E]">
+    <div className="inline-flex h-10 items-center rounded-xl border border-white/15 bg-[#0E0E12]">
       <button
         type="button"
         onClick={() => onChange(value - 1)}
@@ -88,7 +89,7 @@ function Stepper({
 }
 
 const selectCls =
-  "h-9 min-w-0 flex-1 rounded-lg border border-white/10 bg-[#0B0B0E] px-2 text-xs font-medium text-zinc-200 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-white/10";
+  "h-9 min-w-0 flex-1 rounded-lg border border-white/10 bg-[#0E0E12] px-2 text-xs font-medium text-zinc-200 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-white/10";
 
 export default function ComboBuilder() {
   const { addCombo } = useCart();
@@ -189,14 +190,14 @@ export default function ComboBuilder() {
 
   // ---------------------------------------------------------------- Barra de patamares
   const tierBar = (
-    <div className="rounded-2xl border border-white/10 bg-[#121216] p-4 sm:p-5">
+    <div className="rounded-2xl border border-white/10 bg-[#131318] p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-bold text-white" aria-live="polite">
           {nudge}
         </p>
         <span
           className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
-            discountPct > 0 ? "bg-amber-500 text-black" : "bg-white/5 text-zinc-400"
+            discountPct > 0 ? "bg-[#C9A55C] text-black" : "bg-white/5 text-zinc-400"
           }`}
         >
           {discountPct > 0 ? `${discountPct}% OFF ativo` : "Sem desconto ainda"}
@@ -210,7 +211,7 @@ export default function ComboBuilder() {
         aria-valuenow={progress}
         className="mt-3 h-2 overflow-hidden rounded-full bg-white/10"
       >
-        <div className="h-full rounded-full bg-red-600 transition-all duration-500" style={{ width: `${progress}%` }} />
+        <div className="h-full rounded-full bg-red-600 transition-[width] duration-500" style={{ width: `${progress}%` }} />
       </div>
       <ul className="mt-3 grid grid-cols-3 gap-2">
         {TIERS.map((t) => {
@@ -219,7 +220,7 @@ export default function ComboBuilder() {
             <li
               key={t.min}
               className={`flex flex-col items-center rounded-xl border px-1 py-2 text-center transition ${
-                on ? "border-amber-500/60 bg-amber-500/10" : "border-white/10 bg-white/[0.03]"
+                on ? "border-[#C9A55C]/50 bg-[#C9A55C]/10" : "border-white/10 bg-white/[0.03]"
               }`}
             >
               <span className={`flex items-center gap-1 text-base font-black ${on ? "text-[#C9A55C]" : "text-zinc-400"}`}>
@@ -279,7 +280,7 @@ export default function ComboBuilder() {
 
       <div className="mt-5 space-y-2 border-t border-white/10 pt-4">
         {savings > 0 && (
-          <p className="flex items-center justify-between rounded-xl bg-red-700 px-3 py-2.5 text-sm font-bold text-white">
+          <p className="flex items-center justify-between rounded-xl bg-red-600 px-3 py-2.5 text-sm font-bold text-white">
             <span className="flex items-center gap-2">
               <PiggyBank className="h-4 w-4" aria-hidden /> Você economiza
             </span>
@@ -303,7 +304,7 @@ export default function ComboBuilder() {
         type="button"
         onClick={addToCart}
         disabled={count === 0}
-        className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl btn-red text-sm font-bold uppercase tracking-wider active:scale-[0.98] disabled:cursor-not-allowed disabled:!bg-none disabled:!bg-white/10 disabled:!text-zinc-400 disabled:!shadow-none"
+        className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl btn-red text-sm font-bold uppercase tracking-wider disabled:cursor-not-allowed disabled:!bg-none disabled:!bg-white/10 disabled:!text-zinc-400 disabled:!shadow-none"
       >
         <ShoppingBag className="h-4 w-4" aria-hidden />
         Adicionar ao carrinho
@@ -313,7 +314,7 @@ export default function ComboBuilder() {
         target="_blank"
         rel="noopener noreferrer"
         aria-disabled={count === 0}
-        className={`mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500 active:scale-[0.98] ${
+        className={`mt-2 flex h-11 w-full items-center justify-center gap-2 press rounded-xl bg-emerald-600 text-sm font-bold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-emerald-500 ${
           count === 0 ? "pointer-events-none opacity-40" : ""
         }`}
       >
@@ -334,8 +335,7 @@ export default function ComboBuilder() {
       className="mx-auto w-full max-w-7xl scroll-mt-20 px-4 py-10 pb-36 sm:px-6 lg:pb-10"
     >
       <header className="mb-6">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C9A55C]">Compre junto e economize</p>
-        <h1 id="combo-title" className="mt-2 font-display text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
+        <h1 id="combo-title" className="font-display text-3xl font-black uppercase tracking-tight text-white sm:text-5xl">
           Monte seu combo
         </h1>
         <p className="mt-3 max-w-2xl text-sm text-zinc-400">
@@ -352,7 +352,7 @@ export default function ComboBuilder() {
             ref={tabsRef}
             role="tablist"
             aria-label="Etapas do combo"
-            className="sticky top-0 z-20 -mx-4 grid scroll-mt-16 grid-cols-3 gap-1 border-b border-white/10 bg-[#0B0B0E]/95 p-2 backdrop-blur sm:mx-0 sm:border-white/10 sm:rounded-2xl sm:border"
+            className="sticky top-0 z-20 -mx-4 grid scroll-mt-16 grid-cols-3 gap-1 border-b border-white/10 bg-[#0E0E12]/95 p-2 backdrop-blur sm:mx-0 sm:border-white/10 sm:rounded-2xl sm:border"
           >
             {STEPS.map((s, i) => {
               const active = tab === i;
@@ -369,7 +369,7 @@ export default function ComboBuilder() {
                   onClick={() => setTab(i)}
                   onKeyDown={onTabKey}
                   className={`relative flex min-h-14 flex-col items-center justify-center rounded-xl px-2 py-2 text-center transition ${
-                    active ? "bg-red-700 text-white" : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                    active ? "bg-red-600 text-white" : "text-zinc-400 hover:bg-white/5 hover:text-white"
                   }`}
                 >
                   <span className="flex items-center gap-1.5 text-sm font-bold leading-tight">
@@ -378,9 +378,7 @@ export default function ComboBuilder() {
                     <span className="hidden sm:inline">{s.title}</span>
                     {n > 0 && (
                       <span
-                        className={`flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[0.6875rem] font-bold ${
-                          active ? "bg-amber-500 text-black" : "bg-amber-500 text-black"
-                        }`}
+                        className="flex items-center gap-0.5 rounded-full bg-white px-1.5 py-0.5 text-[0.6875rem] font-bold text-black"
                       >
                         <Check className="h-3 w-3" strokeWidth={3} aria-hidden /> {n}
                       </span>
@@ -411,14 +409,14 @@ export default function ComboBuilder() {
                 return (
                   <li key={product.id} className="flex">
                     <article
-                      className={`relative flex w-full flex-col rounded-3xl border bg-[#131317] p-4 transition ${
+                      className={`relative flex w-full flex-col rounded-2xl border bg-[#131318] p-4 transition ${
                         selected
-                          ? "border-amber-500/60"
-                          : "border-white/10 hover:border-zinc-600"
+                          ? "border-[#C9A55C]/50"
+                          : "border-white/10 hover:border-[#E8D8B5]/25"
                       }`}
                     >
                       {selected && (
-                        <span className="absolute left-4 top-4 z-10 flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 text-xs font-black text-black shadow-sm">
+                        <span className="absolute left-4 top-4 z-10 flex items-center gap-1 rounded-full bg-[#C9A55C] px-2.5 py-1 text-xs font-bold text-black shadow-sm">
                           <Check className="h-3 w-3" strokeWidth={3} aria-hidden /> No Combo
                         </span>
                       )}
@@ -429,10 +427,10 @@ export default function ComboBuilder() {
                         imageUrl={product.imageUrl}
                         alt={product.name}
                         sizes="(min-width: 1280px) 260px, (min-width: 640px) 33vw, 90vw"
-                        className="aspect-square w-full rounded-2xl bg-[#18181d] ring-1 ring-white/5 [&_img]:drop-shadow-[0_14px_16px_rgba(0,0,0,0.45)]"
+                        className="aspect-square w-full rounded-2xl bg-[#1A1A1F] ring-1 ring-white/5 [&_img]:drop-shadow-[0_14px_16px_rgba(0,0,0,0.45)]"
                       />
                       <div className="mt-4 flex-1">
-                        <span className="inline-block rounded-full border border-white/10 bg-amber-500/10 px-2.5 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-[#C9A55C]">
+                        <span className="inline-block rounded border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-zinc-300">
                           {product.brandName}
                         </span>
                         <h3 className="mt-2 line-clamp-2 text-[0.9375rem] font-semibold leading-snug text-white">
@@ -487,7 +485,7 @@ export default function ComboBuilder() {
                             type="button"
                             onClick={() => v && setQuantity(product.id, 1)}
                             disabled={!v}
-                            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-amber-500/60 text-sm font-bold text-[#C9A55C] transition hover:bg-amber-500 hover:text-black active:scale-[0.98] disabled:cursor-not-allowed disabled:border-white/10 disabled:text-zinc-400 disabled:hover:bg-transparent"
+                            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/20 text-sm font-bold text-white transition-colors duration-200 hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:border-white/10 disabled:text-zinc-400 disabled:hover:bg-transparent"
                           >
                             <Plus className="h-4 w-4" aria-hidden />
                             {v ? "Adicionar ao Combo" : "Indisponível"}
@@ -507,7 +505,7 @@ export default function ComboBuilder() {
                   onClick={() => goToTab(tab - 1)}
                   className="h-12 rounded-xl px-4 text-sm font-semibold text-zinc-400 transition hover:bg-white/5 hover:text-white"
                 >
-                  ← Voltar
+                  <ArrowLeft className="h-4 w-4" aria-hidden /> Voltar
                 </button>
               ) : (
                 <span />
@@ -515,7 +513,7 @@ export default function ComboBuilder() {
               <button
                 type="button"
                 onClick={isLast ? showSummary : () => goToTab(tab + 1)}
-                className="flex h-12 items-center gap-2 btn-red rounded-xl px-6 text-sm font-bold active:scale-[0.98]"
+                className="flex h-12 items-center gap-2 btn-red rounded-xl px-6 text-sm font-bold"
               >
                 {isLast ? "Ver Resumo do Combo" : `Avançar para ${STEPS[tab + 1].title}`}
                 <ArrowRight className="h-4 w-4" aria-hidden />
@@ -527,7 +525,7 @@ export default function ComboBuilder() {
         <aside
           ref={asideRef}
           aria-label="Resumo do combo"
-          className="hidden h-fit rounded-3xl border border-white/10 bg-[#121216] p-5 lg:sticky lg:top-24 lg:block"
+          className="hidden h-fit rounded-2xl border border-white/10 bg-[#131318] p-5 lg:sticky lg:top-24 lg:block"
         >
           {summary(false)}
         </aside>
@@ -537,7 +535,7 @@ export default function ComboBuilder() {
       <div className="lg:hidden">
         <div
           aria-hidden={!sheetOpen}
-          className={`fixed inset-0 z-50 flex flex-col justify-end transition-all duration-300 ${
+          className={`fixed inset-0 z-50 flex flex-col justify-end transition-[opacity,visibility] duration-300 ${
             sheetOpen ? "visible opacity-100" : "invisible opacity-0"
           }`}
         >
@@ -570,7 +568,7 @@ export default function ComboBuilder() {
         </div>
 
         <div
-          className={`fixed inset-x-3 bottom-3 z-40 transition-all duration-300 [margin-bottom:env(safe-area-inset-bottom)] ${
+          className={`fixed inset-x-3 bottom-3 z-40 transition-[transform,opacity] duration-300 ease-out [margin-bottom:env(safe-area-inset-bottom)] ${
             count > 0 && !sheetOpen ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
           }`}
         >
@@ -596,7 +594,7 @@ export default function ComboBuilder() {
                   />
                 ))}
                 {chosen.length > 3 && (
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#0E0E12] bg-amber-500 text-xs font-bold text-black">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#0E0E12] bg-[#C9A55C] text-xs font-bold text-black">
                     +{chosen.length - 3}
                   </span>
                 )}
@@ -619,7 +617,7 @@ export default function ComboBuilder() {
               type="button"
               onClick={addToCart}
               tabIndex={count > 0 && !sheetOpen ? 0 : -1}
-              className="flex h-12 shrink-0 items-center gap-2 btn-red rounded-xl px-4 text-sm font-bold active:scale-95"
+              className="flex h-12 shrink-0 items-center gap-2 btn-red rounded-xl px-4 text-sm font-bold"
             >
               <ShoppingBag className="h-4 w-4" aria-hidden />
               Adicionar

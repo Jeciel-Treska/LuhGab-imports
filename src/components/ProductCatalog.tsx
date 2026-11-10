@@ -43,7 +43,7 @@ const normalize = (text: string) =>
   text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
 const selectClass =
-  "h-11 rounded-lg border border-white/[0.07] bg-[#131317] px-3 text-sm text-zinc-100 focus:border-zinc-500 focus:outline-none";
+  "h-11 rounded-lg border border-white/[0.07] bg-[#131318] px-3 text-sm text-zinc-100 focus:border-zinc-500 focus:outline-none";
 
 const isCategory = (value: string | undefined): value is ProductCategory =>
   value !== undefined && Object.hasOwn(categoryLabels, value);
@@ -178,7 +178,7 @@ export default function ProductCatalog({ initial = {} }: { initial?: CatalogInit
       </div>
 
       {visible.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 rounded-xl border border-white/[0.07] bg-[#131317] px-6 py-16 text-center">
+        <div className="flex flex-col items-center gap-4 rounded-xl border border-white/[0.07] bg-[#131318] px-6 py-16 text-center">
           <SearchX className="h-10 w-10 text-amber-400" aria-hidden />
           <p className="text-lg font-semibold">Nenhum produto encontrado</p>
           <p className="max-w-sm text-sm text-zinc-400">

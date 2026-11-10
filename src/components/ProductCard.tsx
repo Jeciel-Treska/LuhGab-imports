@@ -8,6 +8,7 @@ import { useCart } from "@/context/CartContext";
 import { useCompare } from "@/context/CompareContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { FREE_SHIPPING_THRESHOLD, PIX_DISCOUNT_PERCENT, SHOW_RATINGS } from "@/data/site";
+import { brands } from "@/data/brands";
 import { formatBRL } from "@/lib/format";
 import type { Product } from "@/types/product";
 
@@ -43,11 +44,12 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
   const pixPrice = product.price * (1 - PIX_DISCOUNT_PERCENT / 100);
   const installment = product.price / product.installments;
   const hasDiscount = product.discountPercentage > 0;
+  const imported = (brands.find((b) => b.id === product.brandId)?.originCountry ?? "Brasil") !== "Brasil";
 
   return (
     <article className="card-dark group flex h-full flex-col overflow-hidden rounded-2xl p-4 sm:p-5">
       {/* Imagem do Produto */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#18181d] p-2 ring-1 ring-white/5">
+      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#1A1A1F] p-2 ring-1 ring-white/5">
         <Link
           href={`/produto/${product.slug}`}
           aria-label={`Ver detalhes de ${product.name}`}
@@ -67,12 +69,12 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
         {/* Badges de Desconto e Frete */}
         <div className="pointer-events-none absolute left-2.5 top-2.5 flex flex-col items-start gap-1">
           {hasDiscount && (
-            <span className="rounded-md bg-red-700 px-2 py-0.5 text-xs font-black text-white">
+            <span className="rounded bg-red-600 px-2 py-0.5 text-xs font-black text-white">
               -{product.discountPercentage}% OFF
             </span>
           )}
           {product.price >= FREE_SHIPPING_THRESHOLD && (
-            <span className="rounded-md border border-white/10 bg-black/60 px-2 py-0.5 text-xs font-semibold text-[#C9A55C]">
+            <span className="rounded border border-white/10 bg-black/60 px-2 py-0.5 text-xs font-medium text-zinc-200">
               Frete Grátis
             </span>
           )}
@@ -81,7 +83,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
         {rank !== undefined && (
           <span
             aria-label={`${rank}º mais vendido`}
-            className="absolute bottom-2.5 left-2.5 rounded-full bg-amber-500 px-2.5 py-0.5 text-xs font-black text-black"
+            className="absolute bottom-2.5 left-2.5 rounded-full bg-[#C9A55C] px-2.5 py-0.5 text-xs font-bold text-black"
           >
             {rank}º Mais Vendido
           </span>
@@ -92,11 +94,11 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           onClick={() => toggleFavorite(product.id)}
           aria-pressed={favorite}
           aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-          className="absolute right-1.5 top-1.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/50 backdrop-blur transition hover:scale-110 active:scale-90"
+          className="absolute right-1.5 top-1.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/50 backdrop-blur transition hover:scale-110"
         >
           <Heart
             className={`h-5 w-5 transition-colors ${
-              favorite ? "fill-energy-red-500 text-energy-red-500" : "text-zinc-300 hover:text-white"
+              favorite ? "fill-red-500 text-red-500" : "text-zinc-300 hover:text-white"
             }`}
           />
         </button>
@@ -104,19 +106,24 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
 
       {/* Detalhes & Preço */}
       <div className="mt-4 flex flex-1 flex-col">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#C9A55C]">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
           {product.brandName}
+          {imported && (
+            <span className="rounded-sm border border-[#C9A55C]/40 px-1.5 py-px text-[0.625rem] font-semibold tracking-wide text-[#C9A55C]">
+              Importado
+            </span>
+          )}
         </p>
 
         <h3 className="mt-1 line-clamp-2 min-h-[2.75rem] text-sm font-bold leading-snug text-white">
-          <Link href={`/produto/${product.slug}`} className="transition hover:text-[#C9A55C]">
+          <Link href={`/produto/${product.slug}`} className="transition-colors duration-200 hover:text-white">
             {product.name}
           </Link>
         </h3>
 
         {SHOW_RATINGS && (
           <div className="mt-2 flex items-center gap-1.5 text-xs text-zinc-400">
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            <Star className="h-4 w-4 fill-[#C9A55C] text-[#C9A55C]" />
             <span className="font-bold text-white">{product.rating.toFixed(1)}</span>
             <span>({product.reviewCount})</span>
           </div>
@@ -142,7 +149,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           )}
 
           <div className="flex items-baseline gap-1.5">
-            <span className="font-display text-3xl font-extrabold text-white">
+            <span className="font-display text-3xl font-extrabold tabular-nums text-white">
               {formatBRL(pixPrice)}
             </span>
             <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-xs font-bold uppercase text-emerald-400">
@@ -159,7 +166,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           type="button"
           onClick={handleAdd}
           disabled={!available}
-          className={`mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 ${
+          className={`mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl text-xs font-bold uppercase tracking-wider transition ${
             !available
               ? "cursor-not-allowed bg-white/5 text-zinc-500"
               : added

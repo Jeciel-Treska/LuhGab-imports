@@ -41,8 +41,8 @@ function Countdown() {
       <span className="font-medium text-zinc-400">Termina em:</span>
       {parts.map((part, i) => (
         <span key={i} className="flex items-center gap-1">
-          <span className="rounded border border-white/10 bg-black px-2 py-1 font-mono text-xs font-bold text-[#C9A55C]">{part}</span>
-          {i < 2 && <span className="font-bold text-energy-red-500">:</span>}
+          <span className="rounded bg-white/[0.07] px-2 py-1 text-xs font-semibold tabular-nums text-white">{part}</span>
+          {i < 2 && <span className="font-semibold text-zinc-400">:</span>}
         </span>
       ))}
     </div>

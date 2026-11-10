@@ -51,13 +51,10 @@ export default function Footer() {
   return (
     <footer className="relative border-t border-white/10 bg-[#060608] text-zinc-400">
       {/* Ofertas pelo WhatsApp */}
-      <section aria-labelledby="newsletter-title" className="border-b border-white/10 bg-[#0F0F13] py-12">
+      <section aria-labelledby="newsletter-title" className="border-b border-white/10 bg-[#0E0E12] py-12">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 sm:px-6 lg:flex-row">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-[#C9A55C]">
-              Clube LuhGab VIP
-            </span>
-            <h2 id="newsletter-title" className="mt-1 font-display text-2xl font-black uppercase text-white sm:text-3xl">
+            <h2 id="newsletter-title" className="font-display text-2xl font-black uppercase text-white sm:text-3xl">
               Receba ofertas e novidades pelo WhatsApp
             </h2>
           </div>
@@ -95,7 +92,7 @@ export default function Footer() {
 
         {COLUMNS.map((column) => (
           <nav key={column.title} aria-label={column.title}>
-            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-[#C9A55C]">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-zinc-200">
               {column.title}
             </h3>
             <ul className="space-y-2.5 text-sm">
@@ -106,12 +103,12 @@ export default function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="transition hover:text-[#C9A55C]"
+                      className="transition-colors duration-200 hover:text-white"
                     >
                       {link.label}
                     </a>
                   ) : (
-                    <Link href={link.href} className="transition hover:text-[#C9A55C]">
+                    <Link href={link.href} className="transition-colors duration-200 hover:text-white">
                       {link.label}
                     </Link>
                   )}
@@ -137,7 +134,7 @@ export default function Footer() {
             <Link
               href="/admin"
               title="Painel do Lojista"
-              className="inline-flex min-h-[44px] items-center gap-1.5 text-zinc-400 transition hover:text-[#C9A55C] md:min-h-0"
+              className="inline-flex min-h-[44px] items-center gap-1.5 text-zinc-400 transition-colors duration-200 hover:text-white md:min-h-0"
             >
               <Lock className="h-3.5 w-3.5" aria-hidden /> Área do Lojista
             </Link>

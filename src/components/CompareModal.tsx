@@ -185,7 +185,7 @@ export default function CompareModal() {
                 type="button"
                 onClick={close}
                 aria-label="Fechar comparador"
-                className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-300 hover:bg-[#131317]/10"
+                className="flex h-9 w-9 items-center justify-center rounded-full text-zinc-300 hover:bg-[#131318]/10"
               >
                 <X className="h-5 w-5" />
               </button>

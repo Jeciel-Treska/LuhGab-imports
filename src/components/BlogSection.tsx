@@ -59,7 +59,7 @@ export default function BlogSection() {
       <ul className="grid gap-6 md:grid-cols-3">
         {blogPosts.map((post) => (
           <li key={post.id} className="min-w-0">
-            <article className="flex h-full flex-col gap-4 rounded-2xl border border-white/10 bg-dark-card p-6 transition-colors duration-300 hover:border-zinc-600">
+            <article className="flex h-full flex-col gap-4 rounded-2xl border border-white/10 bg-dark-card p-6 transition-colors duration-300 hover:border-[#E8D8B5]/25">
               <PostMeta post={post} />
               <h3 className="break-words text-lg font-semibold leading-snug text-zinc-100">
                 {post.title}
@@ -95,7 +95,7 @@ export default function BlogSection() {
                 type="button"
                 onClick={closePost}
                 aria-label="Fechar guia"
-                className="shrink-0 rounded-full border border-white/10 p-2 text-zinc-400 transition-colors hover:border-zinc-600 hover:text-[#C9A55C]"
+                className="shrink-0 rounded-full border border-white/10 p-2 text-zinc-400 transition-colors hover:border-[#E8D8B5]/25 hover:text-[#C9A55C]"
               >
                 <X size={18} aria-hidden />
               </button>

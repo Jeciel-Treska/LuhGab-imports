@@ -79,7 +79,7 @@ function KitCard({ kit }: { kit: Kit }) {
   };
 
   return (
-    <article className="flex h-full flex-col justify-between rounded-2xl border border-white/[0.07] bg-[#131317] p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-600 hover:shadow-xl">
+    <article className="flex h-full flex-col justify-between rounded-2xl border border-white/[0.07] bg-[#131318] p-6 shadow-sm transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-[#E8D8B5]/25 hover:shadow-xl">
       <div>
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -100,7 +100,7 @@ function KitCard({ kit }: { kit: Kit }) {
               <Link
                 href={`/produto/${product.slug}`}
                 aria-label={product.name}
-                className="flex h-20 w-20 items-center justify-center rounded-xl bg-[#0F0F13] border border-white/[0.07] p-2 transition hover:scale-105"
+                className="flex h-20 w-20 items-center justify-center rounded-xl bg-[#0E0E12] border border-white/[0.07] p-2 transition hover:scale-105"
               >
                 <ProductThumb
                   type={product.model3DConfig.type}

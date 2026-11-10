@@ -41,16 +41,13 @@ export default function CategoryGrid() {
     <section aria-labelledby="cat-title" className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-[#C9A55C]">
-            Categorias Oficiais
-          </span>
-          <h2 id="cat-title" className="mt-1 font-display text-3xl font-extrabold uppercase tracking-tight text-white sm:text-4xl">
+          <h2 id="cat-title" className="font-display text-3xl font-extrabold uppercase tracking-tight text-white sm:text-4xl">
             Navegue por Objetivo
           </h2>
         </div>
         <Link
           href="/produtos"
-          className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-[#C9A55C] transition hover:text-white"
+          className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition-colors duration-200 hover:text-white"
         >
           Ver todo o estoque <ArrowUpRight className="h-4 w-4" />
         </Link>
@@ -76,7 +73,7 @@ export default function CategoryGrid() {
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="font-display text-2xl font-black uppercase tracking-tight text-white transition group-hover:text-[#C9A55C]">
+                  <h3 className="font-display text-2xl font-black uppercase tracking-tight text-white transition-colors duration-200">
                     {cat.title}
                   </h3>
                   <p className="mt-1 text-xs leading-relaxed text-zinc-400">
@@ -85,7 +82,7 @@ export default function CategoryGrid() {
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-[#C9A55C] transition group-hover:text-white">
+              <div className="mt-6 flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition-colors duration-200 group-hover:text-white">
                 <span>Ver produtos</span>
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </div>

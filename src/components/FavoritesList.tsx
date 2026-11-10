@@ -14,7 +14,7 @@ export default function FavoritesList() {
     <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
       <h1 className="text-2xl font-bold sm:text-3xl">Meus Favoritos</h1>
       {items.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center gap-4 rounded-xl border border-white/[0.07] bg-[#131317] px-6 py-16 text-center">
+        <div className="mt-8 flex flex-col items-center gap-4 rounded-xl border border-white/[0.07] bg-[#131318] px-6 py-16 text-center">
           <Heart className="h-10 w-10 text-amber-400" aria-hidden />
           <p className="text-lg font-semibold">Você ainda não favoritou nenhum produto</p>
           <Link

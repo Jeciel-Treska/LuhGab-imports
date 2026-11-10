@@ -5,6 +5,7 @@
 :root {
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Barlow Condensed", -apple-system, sans-serif;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   color-scheme: dark;
 }
 
@@ -13,23 +14,39 @@ html {
   background-color: #0a0a0c;
   scrollbar-width: thin;
   scrollbar-color: #52525b #18181b;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background-color: #0a0a0c;
   color: #ffffff;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  caret-color: #dc2626;
+  accent-color: #dc2626;
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1,
 h2,
 h3 {
   letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {
   background-color: #dc2626;
   color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid #c9a55c;
+  outline-offset: 2px;
 }
 
 ::-webkit-scrollbar {
@@ -51,36 +68,99 @@ h3 {
   background: #71717a;
 }
 
+/* Toque tátil: todo botão e link-botão responde ao clique. Zero de especificidade
+   na transição para não brigar com as utilitárias do Tailwind. */
+:where(button, a[class*="bg-"], .press) {
+  transition-property: color, background-color, border-color, opacity, transform;
+  transition-duration: 160ms;
+  transition-timing-function: var(--ease-out);
+}
+
+:where(button:not(:disabled):not([class*="translate"]), a[class*="bg-"]:not([aria-disabled="true"]):not([class*="translate"]), .press):active {
+  transform: scale(0.97);
+}
+
 @layer utilities {
-  /* Superfície preta fosca com borda fina; no hover só clareia a borda */
+  /* Superfície tátil: borda de 1px, camada de profundidade discreta e elevação no hover */
   .card-dark {
-    background-color: #131317;
+    background-color: #131318;
     border: 1px solid rgba(255, 255, 255, 0.07);
-    transition: border-color 0.2s ease;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      0 1px 2px rgba(0, 0, 0, 0.4),
+      0 12px 28px -14px rgba(0, 0, 0, 0.6);
+    transition:
+      transform 200ms var(--ease-out),
+      border-color 200ms var(--ease-out),
+      box-shadow 200ms var(--ease-out);
   }
 
-  .card-dark:hover {
-    border-color: #52525b;
+  @media (hover: hover) and (pointer: fine) {
+    .card-dark:hover {
+      transform: translateY(-4px);
+      border-color: rgba(232, 216, 181, 0.22);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 2px 4px rgba(0, 0, 0, 0.4),
+        0 28px 48px -16px rgba(0, 0, 0, 0.75);
+    }
   }
 
   .btn-red {
     background-color: #dc2626;
     color: #fff;
-    transition: background-color 0.2s ease;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
   }
 
-  .btn-red:hover {
-    background-color: #b91c1c;
+  @media (hover: hover) and (pointer: fine) {
+    .btn-red:hover {
+      background-color: #ef4444;
+    }
   }
 
   .btn-gold {
     background-color: #c9a55c;
     color: #0a0a0c;
-    transition: background-color 0.2s ease;
   }
 
-  .btn-gold:hover {
-    background-color: #d8b872;
+  @media (hover: hover) and (pointer: fine) {
+    .btn-gold:hover {
+      background-color: #d8b872;
+    }
+  }
+
+  /* Entrada única do Hero: opacidade + 8px, curva exponencial, escalonada */
+  .rise {
+    animation: rise 520ms var(--ease-out) both;
+  }
+
+  .rise-2 {
+    animation-delay: 90ms;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+
+  .card-dark:hover {
+    transform: none;
+  }
+
+  :where(button, a[class*="bg-"], .press):active {
+    transform: none;
   }
 }
 

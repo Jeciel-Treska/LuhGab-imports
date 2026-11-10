@@ -12,7 +12,7 @@ const MESSAGES = [
 export default function TopBanner() {
   const track = [...MESSAGES, ...MESSAGES];
   return (
-    <div className="overflow-hidden border-b border-white/[0.07] bg-[#101014] text-zinc-300">
+    <div className="overflow-hidden border-b border-[#C9A55C]/20 bg-[#0E0E12] text-zinc-300">
       <ul
         aria-label="Vantagens da loja"
         className="animate-marquee flex w-max items-center py-2 text-xs font-medium uppercase tracking-[0.14em] motion-reduce:animate-none"

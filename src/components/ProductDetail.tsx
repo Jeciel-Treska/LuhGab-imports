@@ -26,6 +26,7 @@ import {
   PIX_DISCOUNT_PERCENT,
   SHOW_RATINGS,
 } from "@/data/site";
+import { brands } from "@/data/brands";
 import { formatBRL } from "@/lib/format";
 import { getAminogram, getDoses } from "@/lib/nutrition";
 import type { Product } from "@/types/product";
@@ -70,6 +71,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const aminogram = useMemo(() => getAminogram(product), [product]);
   const available = product.inStock && flavor.inStock && size.inStock;
   const favorite = isFavorite(product.id);
+  const imported = (brands.find((b) => b.id === product.brandId)?.originCountry ?? "Brasil") !== "Brasil";
 
   const whatsappUrl = buildWhatsAppUrl(
     `Olá! Tenho interesse no ${product.name} (${product.brandName}) - Sabor: ${flavor.name}, Tamanho: ${size.label}. Poderia me atender?`,
@@ -93,16 +95,16 @@ export default function ProductDetail({ product }: { product: Product }) {
       {/* Coluna Visual (Esquerda - 6 cols) */}
       <div className="lg:col-span-6 flex flex-col gap-4">
         {/* Card Principal da Imagem */}
-        <div className="card-dark relative aspect-square w-full overflow-hidden rounded-3xl border-white/10 bg-[#18181d] p-6 hover:translate-y-0">
+        <div className="card-dark relative aspect-square w-full overflow-hidden rounded-2xl border-white/10 bg-[#1A1A1F] p-6 hover:translate-y-0">
           {/* Badge de Destaque / Desconto */}
           <div className="absolute left-5 top-5 z-10 flex flex-col items-start gap-1.5">
             {product.discountPercentage > 0 && (
-              <span className="rounded-lg bg-red-700 px-3 py-1 text-xs font-black uppercase tracking-wider text-white">
+              <span className="rounded bg-red-600 px-3 py-1 text-xs font-black uppercase tracking-wider text-white">
                 -{product.discountPercentage}% OFF
               </span>
             )}
             {product.price >= FREE_SHIPPING_THRESHOLD && (
-              <span className="rounded-lg border border-white/10 bg-black/60 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C9A55C]">
+              <span className="rounded border border-white/10 bg-black/60 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-zinc-200">
                 Frete Grátis
               </span>
             )}
@@ -114,11 +116,11 @@ export default function ProductDetail({ product }: { product: Product }) {
             onClick={() => toggleFavorite(product.id)}
             aria-pressed={favorite}
             aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/50 backdrop-blur transition hover:scale-110 active:scale-95"
+            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/50 backdrop-blur transition hover:scale-110"
           >
             <Heart
               className={`h-5 w-5 transition-colors ${
-                favorite ? "fill-energy-red-500 text-energy-red-500" : "text-zinc-300 hover:text-white"
+                favorite ? "fill-red-500 text-red-500" : "text-zinc-300 hover:text-white"
               }`}
             />
           </button>
@@ -146,10 +148,10 @@ export default function ProductDetail({ product }: { product: Product }) {
                   onClick={() => setPhotoIndex(i)}
                   aria-label={`Ver foto ${i + 1} de ${gallery.length}`}
                   aria-current={i === photoIndex}
-                  className={`relative block h-16 w-16 overflow-hidden rounded-xl border bg-[#121216] p-1 transition active:scale-95 sm:h-20 sm:w-20 ${
+                  className={`relative block h-16 w-16 overflow-hidden rounded-xl border bg-[#131318] p-1 transition sm:h-20 sm:w-20 ${
                     i === photoIndex
-                      ? "border-amber-500/60"
-                      : "border-white/10 hover:border-zinc-600"
+                      ? "border-[#C9A55C]/50"
+                      : "border-white/10 hover:border-[#E8D8B5]/25"
                   }`}
                 >
                   <Image src={src} alt="" width={160} height={160} className="h-full w-full object-contain" />
@@ -171,8 +173,8 @@ export default function ProductDetail({ product }: { product: Product }) {
           className="card-dark mt-2 grid grid-cols-1 divide-y divide-white/10 rounded-2xl hover:translate-y-0 sm:grid-cols-3 sm:divide-x sm:divide-y-0"
         >
           {[
-            { icon: ShieldCheck, title: "100% Original", text: "Lacrado, com nota fiscal", tone: "text-[#C9A55C] bg-amber-500/10 ring-1 ring-white/10" },
-            { icon: BadgeCheck, title: "Laudo Certificado", text: "Autenticidade comprovada", tone: "text-[#C9A55C] bg-amber-500/10 ring-1 ring-white/10" },
+            { icon: ShieldCheck, title: "100% Original", text: "Lacrado, com nota fiscal", tone: "text-[#C9A55C] bg-[#C9A55C]/10 ring-1 ring-white/10" },
+            { icon: BadgeCheck, title: "Laudo Certificado", text: "Autenticidade comprovada", tone: "text-[#C9A55C] bg-[#C9A55C]/10 ring-1 ring-white/10" },
             { icon: Zap, title: `Pix ${PIX_DISCOUNT_PERCENT}% OFF`, text: "Aprovação instantânea", tone: "text-emerald-400 bg-emerald-500/10 ring-1 ring-emerald-500/30" },
           ].map(({ icon: Icon, title, text, tone }) => (
             <li key={title} className="flex items-center gap-3 px-4 py-3.5 sm:flex-col sm:gap-2 sm:py-4 sm:text-center">
@@ -195,15 +197,20 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Cabeçalho do Produto */}
         <div>
           <div className="flex items-center gap-2">
-            <span className="rounded border border-white/10 bg-amber-500/10 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C9A55C]">
+            <span className="rounded border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-zinc-300">
               {product.brandName}
             </span>
+            {imported && (
+              <span className="rounded border border-[#C9A55C]/40 px-2 py-1 text-xs font-semibold text-[#C9A55C]">
+                Importado
+              </span>
+            )}
             <span className="flex items-center gap-1 text-xs font-semibold text-emerald-400">
               <BadgeCheck className="h-4 w-4" /> Produto Verificado
             </span>
           </div>
 
-          <h1 className="mt-2 font-display text-3xl font-black uppercase leading-tight tracking-tight text-white sm:text-4xl">
+          <h1 className="mt-3 font-display text-3xl font-black uppercase leading-[1.02] tracking-tight text-white sm:text-5xl">
             {product.name}
           </h1>
 
@@ -241,7 +248,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           )}
 
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="font-display text-4xl font-black text-white sm:text-5xl">
+            <span className="font-display text-4xl font-black tabular-nums text-white sm:text-5xl">
               {formatBRL(pixTotal)}
             </span>
             <span className="rounded border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-xs font-extrabold uppercase text-emerald-400">
@@ -264,7 +271,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Seleção de Sabor */}
         <fieldset>
           <legend className="mb-2.5 text-xs font-bold uppercase tracking-wider text-zinc-300">
-            Sabor selecionado: <span className="font-extrabold text-[#C9A55C]">{flavor.name}</span>
+            Sabor selecionado: <span className="font-extrabold text-white">{flavor.name}</span>
           </legend>
           <div className="flex flex-wrap gap-2">
             {product.flavors.map((f) => {
@@ -275,12 +282,12 @@ export default function ProductDetail({ product }: { product: Product }) {
                   type="button"
                   disabled={!f.inStock}
                   onClick={() => setFlavorId(f.id)}
-                  className={`flex min-h-[44px] items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
+                  className={`flex min-h-[44px] items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-semibold transition ${
                     !f.inStock
                       ? "cursor-not-allowed border-white/5 bg-white/[0.02] text-zinc-500 line-through"
                       : active
-                        ? "border-amber-500/60 bg-amber-500/10 text-white"
-                        : "border-white/10 bg-[#121216] text-zinc-200 hover:border-zinc-600"
+                        ? "border-[#C9A55C]/50 bg-[#C9A55C]/10 text-white"
+                        : "border-white/10 bg-[#131318] text-zinc-200 hover:border-[#E8D8B5]/25"
                   }`}
                 >
                   <span
@@ -297,7 +304,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Seleção de Tamanho */}
         <fieldset>
           <legend className="mb-2.5 text-xs font-bold uppercase tracking-wider text-zinc-300">
-            Opção de Tamanho: <span className="font-extrabold text-[#C9A55C]">{size.label}</span>
+            Opção de Tamanho: <span className="font-extrabold text-white">{size.label}</span>
           </legend>
           <div className="flex flex-wrap gap-2">
             {product.sizes.map((s) => {
@@ -308,12 +315,12 @@ export default function ProductDetail({ product }: { product: Product }) {
                   type="button"
                   disabled={!s.inStock}
                   onClick={() => setSizeId(s.id)}
-                  className={`min-h-[44px] rounded-xl border px-4 py-2 text-xs font-semibold transition active:scale-95 ${
+                  className={`min-h-[44px] rounded-xl border px-4 py-2 text-xs font-semibold transition ${
                     !s.inStock
                       ? "cursor-not-allowed border-white/5 bg-white/[0.02] text-zinc-500 line-through"
                       : active
-                        ? "border-amber-500/60 bg-amber-500/10 text-white"
-                        : "border-white/10 bg-[#121216] text-zinc-200 hover:border-zinc-600"
+                        ? "border-[#C9A55C]/50 bg-[#C9A55C]/10 text-white"
+                        : "border-white/10 bg-[#131318] text-zinc-200 hover:border-[#E8D8B5]/25"
                   }`}
                 >
                   {s.label}
@@ -327,11 +334,11 @@ export default function ProductDetail({ product }: { product: Product }) {
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">Quantidade:</span>
-            <div className="flex items-center rounded-xl border border-white/15 bg-[#121216]">
+            <div className="flex items-center rounded-xl border border-white/15 bg-[#131318]">
               <button
                 type="button"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="flex h-11 w-11 items-center justify-center text-zinc-300 hover:text-[#C9A55C] active:scale-90"
+                className="flex h-11 w-11 items-center justify-center text-zinc-300 hover:text-white"
                 aria-label="Diminuir quantidade"
               >
                 <Minus className="h-4 w-4" />
@@ -342,7 +349,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               <button
                 type="button"
                 onClick={() => setQuantity((q) => Math.min(99, q + 1))}
-                className="flex h-11 w-11 items-center justify-center text-zinc-300 hover:text-[#C9A55C] active:scale-90"
+                className="flex h-11 w-11 items-center justify-center text-zinc-300 hover:text-white"
                 aria-label="Aumentar quantidade"
               >
                 <Plus className="h-4 w-4" />
@@ -359,7 +366,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               type="button"
               disabled={!available}
               onClick={handleAddToCart}
-              className={`flex h-12 w-full items-center justify-center gap-2 rounded-xl text-xs font-black uppercase tracking-wider transition active:scale-95 ${
+              className={`flex h-12 w-full items-center justify-center gap-2 rounded-xl text-xs font-black uppercase tracking-wider transition ${
                 !available
                   ? "cursor-not-allowed bg-white/5 text-zinc-500"
                   : added
@@ -382,7 +389,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500 active:scale-95"
+              className="press flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500"
             >
               <WhatsAppIcon className="h-4 w-4" aria-hidden />
               Pedir pelo WhatsApp VIP
@@ -394,7 +401,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             onClick={() => toggleCompare(product.id)}
             aria-pressed={comparing}
             className={`flex min-h-[44px] w-fit items-center gap-2 text-xs font-semibold transition ${
-              comparing ? "text-emerald-400" : "text-zinc-400 hover:text-[#C9A55C]"
+              comparing ? "text-emerald-400" : "text-zinc-400 hover:text-white"
             }`}
           >
             <GitCompareArrows className="h-4 w-4" aria-hidden />
@@ -405,7 +412,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Simulador de Frete */}
         <div className="rounded-2xl border border-white/10 bg-[#0E0E12] p-4">
           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white">
-            <Truck className="h-4 w-4 text-[#C9A55C]" /> Consultar Prazo e Frete
+            <Truck className="h-4 w-4 text-zinc-300" /> Consultar Prazo e Frete
           </p>
           <p className="mt-1.5 text-xs text-zinc-400">
             {total >= FREE_SHIPPING_THRESHOLD
@@ -421,14 +428,14 @@ export default function ProductDetail({ product }: { product: Product }) {
               value={cep}
               onChange={(e) => setCep(maskCep(e.target.value))}
               placeholder="Digite seu CEP (00000-000)"
-              className="h-11 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#121216] px-3 text-xs font-medium text-white placeholder-zinc-500 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-white/20"
+              className="h-11 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#131318] px-3 text-xs font-medium text-white placeholder-zinc-500 outline-none focus:border-zinc-500 focus:ring-1 focus:ring-white/20"
             />
             <a
               href={cepComplete ? freightUrl : undefined}
               target="_blank"
               rel="noopener noreferrer"
               aria-disabled={!cepComplete}
-              className={`flex h-11 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-xs font-bold text-white transition hover:bg-emerald-500 active:scale-95 ${
+              className={`flex h-11 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-xs font-bold text-white transition hover:bg-emerald-500 ${
                 cepComplete ? "" : "pointer-events-none opacity-40"
               }`}
             >
@@ -445,13 +452,13 @@ export default function ProductDetail({ product }: { product: Product }) {
             <details open className="card-dark group rounded-2xl p-4 hover:translate-y-0">
               <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-bold uppercase tracking-wider text-white">
                 <span>Principais Benefícios</span>
-                <ChevronDown className="h-4 w-4 text-[#C9A55C] transition-transform group-open:rotate-180" />
+                <ChevronDown className="h-4 w-4 text-zinc-400 transition-transform group-open:rotate-180" />
               </summary>
               <ul className="mt-3 grid gap-2 text-xs text-zinc-300 sm:grid-cols-2">
                 {product.benefits.map((b) => (
                   <li key={b} className="flex items-start gap-2">
-                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-xs font-bold text-[#C9A55C]">
-                      ✓
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#C9A55C]/15 text-[#C9A55C]">
+                      <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
                     </span>
                     <span>{b}</span>
                   </li>
@@ -465,7 +472,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             <details className="card-dark group rounded-2xl p-4 hover:translate-y-0">
               <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-bold uppercase tracking-wider text-white">
                 <span>Como Tomar / Sugestão de Uso</span>
-                <ChevronDown className="h-4 w-4 text-[#C9A55C] transition-transform group-open:rotate-180" />
+                <ChevronDown className="h-4 w-4 text-zinc-400 transition-transform group-open:rotate-180" />
               </summary>
               <p className="mt-3 text-xs leading-relaxed text-zinc-300">
                 {product.suggestedUse}
@@ -478,7 +485,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             <details className="card-dark group rounded-2xl p-4 hover:translate-y-0">
               <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-bold uppercase tracking-wider text-white">
                 <span>Tabela Nutricional</span>
-                <ChevronDown className="h-4 w-4 text-[#C9A55C] transition-transform group-open:rotate-180" />
+                <ChevronDown className="h-4 w-4 text-zinc-400 transition-transform group-open:rotate-180" />
               </summary>
               <div className="mt-3 overflow-x-auto">
                 <p className="mb-2 text-xs text-zinc-400">
@@ -486,7 +493,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </p>
                 <table className="w-full text-xs">
                   <thead>
-                    <tr className="border-b border-white/10 text-left text-[#C9A55C]">
+                    <tr className="border-b border-white/10 text-left text-zinc-400">
                       <th className="py-1.5 font-bold">Nutriente</th>
                       <th className="py-1.5 font-bold">Qtd. por porção</th>
                       <th className="py-1.5 text-right font-bold">%VD*</th>

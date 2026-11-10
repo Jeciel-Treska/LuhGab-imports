@@ -19,7 +19,7 @@ export default function BrandsPage() {
           <li key={brand.id}>
             <Link
               href={`/produtos?marca=${brand.id}`}
-              className="flex h-full flex-col gap-2 rounded-xl border border-white/[0.07] bg-[#131317] p-5 transition hover:border-zinc-600"
+              className="flex h-full flex-col gap-2 rounded-xl border border-white/[0.07] bg-[#131318] p-5 transition hover:border-[#E8D8B5]/25"
             >
               <span className="text-xs font-semibold uppercase tracking-wide text-amber-400">
                 {brand.badgeText} • {brand.originCountry}

@@ -71,33 +71,28 @@ export default function PromoHeroBanner() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-white/10 bg-[#0D0D11] py-12 lg:py-20">
+    <section className="relative overflow-hidden border-b border-white/10 bg-[#0A0A0C] py-12 lg:py-20">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16">
         {/* Coluna Texto & Compra */}
-        <div className="flex flex-col items-start gap-6">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-zinc-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-            Destaque da loja • Laudo e lacre
-          </span>
-
+        <div className="rise flex flex-col items-start gap-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#C9A55C]">{product.brandName}</p>
-            <h1 className="mt-2 font-display text-5xl font-black uppercase tracking-tight text-white sm:text-6xl xl:text-7xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">{product.brandName}</p>
+            <h1 className="mt-3 font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-6xl xl:text-7xl">
               {product.name}
             </h1>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-zinc-300 sm:text-lg">
+            <p className="mt-5 max-w-[52ch] text-base leading-relaxed text-zinc-300 sm:text-lg">
               {product.shortDescription}
             </p>
           </div>
 
           {/* Preço de Conversão */}
-          <div className="card-dark w-full max-w-md rounded-2xl p-5 hover:border-white/[0.07]">
+          <div className="card-dark w-full max-w-md rounded-2xl p-5 hover:!translate-y-0">
             <div className="flex items-center justify-between">
               <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-zinc-300">
                 Condição Especial
               </span>
               {product.discountPercentage > 0 && (
-                <span className="rounded bg-red-700 px-2.5 py-0.5 text-xs font-bold text-white">
+                <span className="rounded bg-red-600 px-2.5 py-0.5 text-xs font-bold text-white">
                   -{product.discountPercentage}% OFF
                 </span>
               )}
@@ -107,7 +102,7 @@ export default function PromoHeroBanner() {
               {product.discountPercentage > 0 && (
                 <span className="text-sm text-zinc-400 line-through">{formatBRL(product.originalPrice)}</span>
               )}
-              <span className="font-display text-4xl font-extrabold text-white sm:text-5xl">
+              <span className="font-display text-4xl font-extrabold tabular-nums text-white sm:text-5xl">
                 {formatBRL(product.price)}
               </span>
             </div>
@@ -127,7 +122,7 @@ export default function PromoHeroBanner() {
             <button
               type="button"
               onClick={buy}
-              className="btn-red flex h-14 items-center justify-center gap-2 rounded-xl px-8 text-sm font-bold uppercase tracking-wider active:scale-95"
+              className="btn-red flex h-14 items-center justify-center gap-2 rounded-xl px-8 text-sm font-bold uppercase tracking-wider"
             >
               {added ? (
                 <>
@@ -144,7 +139,7 @@ export default function PromoHeroBanner() {
               href={buildWhatsAppUrl(`Olá! Quero pedir o ${product.name} por ${formatBRL(product.price)}.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-14 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500 active:scale-95"
+              className="press flex h-14 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500"
             >
               <WhatsAppIcon className="h-5 w-5" />
               Pedir pelo WhatsApp
@@ -167,8 +162,8 @@ export default function PromoHeroBanner() {
         </div>
 
         {/* Coluna Fotografia do Produto */}
-        <div className="relative mx-auto flex w-full max-w-md items-center justify-center lg:max-w-none">
-          <div className="card-dark relative flex aspect-[4/5] w-full max-w-lg items-center justify-center rounded-3xl bg-[#121216] p-8 hover:border-white/[0.07]">
+        <div className="rise rise-2 relative mx-auto flex w-full max-w-md items-center justify-center lg:max-w-none">
+          <div className="card-dark relative flex aspect-[4/5] w-full max-w-lg items-center justify-center rounded-2xl p-8 hover:!translate-y-0">
             <div className="relative flex h-full w-full items-center justify-center">
               {/* sombra de contato de estúdio */}
               <span aria-hidden className="absolute bottom-[6%] left-1/2 h-5 w-1/2 -translate-x-1/2 rounded-[50%] bg-black/70 blur-xl" />

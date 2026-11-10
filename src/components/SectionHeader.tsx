@@ -28,7 +28,7 @@ export default function SectionHeader({
         {href && (
           <Link
             href={href}
-            className="ml-auto inline-flex min-h-11 items-center gap-1 text-xs font-bold uppercase tracking-wider text-[#C9A55C] transition hover:text-white"
+            className="ml-auto inline-flex min-h-11 items-center gap-1 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition-colors duration-200 hover:text-white"
           >
             {linkLabel} <ArrowRight className="h-4 w-4" />
           </Link>

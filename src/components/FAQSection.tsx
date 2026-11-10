@@ -18,7 +18,7 @@ function FAQAccordionItem({ item, isOpen, onToggle }: FAQItemProps) {
   return (
     <li
       className={`overflow-hidden rounded-2xl border bg-dark-card transition-colors duration-300 ${
-        isOpen ? "border-gold-subtle" : "border-white/10 hover:border-zinc-600"
+        isOpen ? "border-gold-subtle" : "border-white/10 hover:border-[#E8D8B5]/25"
       }`}
     >
       <h3>

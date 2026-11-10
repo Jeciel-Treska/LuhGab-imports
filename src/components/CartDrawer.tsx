@@ -86,11 +86,11 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Carrinho de compras"
-        className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-[#0B0B0E] transition-transform duration-300 ease-out"
+        className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-[#0E0E12] transition-transform duration-300 ease-out"
       >
         <header className="flex items-center justify-between relative border-b border-white/10 px-6 py-4">
           <h2 className="flex items-center gap-2 font-display text-xl font-black uppercase tracking-tight text-white">
-            <ShoppingBag className="h-5 w-5 text-[#C9A55C]" aria-hidden />
+            <ShoppingBag className="h-5 w-5 text-zinc-300" aria-hidden />
             Seu Carrinho ({items.reduce((acc, i) => acc + i.quantity, 0)})
           </h2>
           <button
@@ -106,7 +106,7 @@ export default function CartDrawer() {
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-amber-500/10 text-[#C9A55C]">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-400">
               <ShoppingBag className="h-8 w-8" />
             </div>
             <div>
@@ -133,7 +133,7 @@ export default function CartDrawer() {
                 ) : (
                   <>
                     Faltam apenas{" "}
-                    <strong className="font-bold text-[#C9A55C]">{formatBRL(remaining)}</strong> para
+                    <strong className="font-bold text-white">{formatBRL(remaining)}</strong> para
                     Frete Grátis!
                   </>
                 )}
@@ -147,7 +147,7 @@ export default function CartDrawer() {
                 className="h-2 overflow-hidden rounded-full bg-white/10"
               >
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${
+                  className={`h-full rounded-full transition-[width] duration-500 ${
                     freeShipping ? "bg-emerald-500" : "bg-red-600"
                   }`}
                   style={{ width: `${progress}%` }}
@@ -161,7 +161,7 @@ export default function CartDrawer() {
                 const prod = getProductById(item.productId);
                 return (
                   <li key={item.id} className="flex gap-4 py-4">
-                    <div className="h-16 w-16 shrink-0 flex items-center justify-center rounded-xl border border-white/10 bg-[#18181d] p-1">
+                    <div className="h-16 w-16 shrink-0 flex items-center justify-center rounded-xl border border-white/10 bg-[#1A1A1F] p-1">
                       <ProductThumb
                         type={prod?.model3DConfig.type ?? "whey-tub"}
                         color={prod?.model3DConfig.color ?? "#000000"}
@@ -177,7 +177,7 @@ export default function CartDrawer() {
                       <p className="text-xs text-zinc-400">
                         {item.flavor.name} · {item.size.label}
                         {item.comboDiscount > 0 && (
-                          <span className="ml-2 rounded border border-white/10 bg-amber-500/10 px-1.5 py-0.5 text-xs font-bold text-[#C9A55C]">
+                          <span className="ml-2 rounded bg-red-600/15 px-1.5 py-0.5 text-xs font-bold text-red-400">
                             Combo -{item.comboDiscount}%
                           </span>
                         )}
@@ -186,12 +186,12 @@ export default function CartDrawer() {
                         {formatBRL(item.unitPrice)} un.
                       </p>
                       <div className="mt-2 flex items-center justify-between">
-                        <div className="flex items-center rounded-lg border border-white/15 bg-[#121216]">
+                        <div className="flex items-center rounded-lg border border-white/15 bg-[#131318]">
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             aria-label={`Diminuir quantidade de ${item.name}`}
-                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-[#C9A55C]"
+                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-white"
                           >
                             <Minus className="h-3 w-3" />
                           </button>
@@ -202,7 +202,7 @@ export default function CartDrawer() {
                             type="button"
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             aria-label={`Aumentar quantidade de ${item.name}`}
-                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-[#C9A55C]"
+                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-white"
                           >
                             <Plus className="h-3 w-3" />
                           </button>
@@ -216,7 +216,7 @@ export default function CartDrawer() {
                       type="button"
                       onClick={() => removeItem(item.id)}
                       aria-label={`Remover ${item.name}`}
-                      className="h-11 w-11 shrink-0 self-start text-zinc-400 transition hover:text-energy-red-500"
+                      className="h-11 w-11 shrink-0 self-start text-zinc-400 transition hover:text-red-500"
                     >
                       <Trash2 className="mx-auto h-4 w-4" />
                     </button>
@@ -233,7 +233,7 @@ export default function CartDrawer() {
                     <Tag className="h-3.5 w-3.5" aria-hidden />
                     {activeCoupon.code}: -{formatBRL(couponValue)}
                   </span>
-                  <button type="button" onClick={removeCoupon} className="text-xs text-energy-red-400 underline">
+                  <button type="button" onClick={removeCoupon} className="text-xs text-red-400 underline">
                     Remover
                   </button>
                 </p>
@@ -246,11 +246,11 @@ export default function CartDrawer() {
                     aria-label="Cupom de desconto"
                     placeholder="Cupom de desconto"
                     autoCapitalize="characters"
-                    className="h-9 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#121216] px-3 text-xs uppercase text-white outline-none placeholder:normal-case placeholder:text-zinc-500 focus:border-zinc-500"
+                    className="h-9 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#131318] px-3 text-xs uppercase text-white outline-none placeholder:normal-case placeholder:text-zinc-500 focus:border-zinc-500"
                   />
                   <button
                     type="submit"
-                    className="h-9 rounded-xl border border-white/10 px-3.5 text-xs font-bold text-[#C9A55C] transition hover:bg-amber-500 hover:text-black"
+                    className="h-9 rounded-xl border border-white/20 px-3.5 text-xs font-bold text-white transition-colors duration-200 hover:bg-white hover:text-black"
                   >
                     Aplicar
                   </button>
@@ -288,7 +288,7 @@ export default function CartDrawer() {
                 href={orderUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500 active:scale-95"
+                className="press flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500"
               >
                 <WhatsAppIcon className="h-5 w-5" />
                 Finalizar Pedido pelo WhatsApp

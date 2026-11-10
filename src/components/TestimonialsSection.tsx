@@ -25,7 +25,7 @@ function formatDate(iso: string) {
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <article className="flex h-full min-w-0 flex-col gap-4 rounded-2xl border border-white/[0.07] bg-[#131317] p-6 shadow-sm transition-all hover:border-zinc-600 hover:shadow-md sm:p-8">
+    <article className="flex h-full min-w-0 flex-col gap-4 rounded-2xl border border-white/[0.07] bg-[#131318] p-6 shadow-sm transition-[border-color,transform] hover:border-[#E8D8B5]/25 hover:shadow-md sm:p-8">
       <div className="flex items-center justify-between gap-3">
         <div className="flex gap-1 text-amber-400" aria-label={`Avaliação ${testimonial.rating} de 5`}>
           {Array.from({ length: 5 }, (_, index) => (
@@ -79,7 +79,7 @@ export default function TestimonialsSection() {
   const next = () => setIndex((i) => (i + 1) % total);
 
   return (
-    <section aria-labelledby="depoimentos-titulo" className="border-t border-white/[0.07] bg-[#0F0F13] py-16 sm:py-24">
+    <section aria-labelledby="depoimentos-titulo" className="border-t border-white/[0.07] bg-[#0E0E12] py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <header className="mb-12 text-center">
           <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
@@ -112,7 +112,7 @@ export default function TestimonialsSection() {
                 type="button"
                 onClick={prev}
                 aria-label="Depoimento anterior"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#131317] shadow-sm transition hover:bg-white/[0.06]"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#131318] shadow-sm transition hover:bg-white/[0.06]"
               >
                 <ChevronLeft size={18} />
               </button>
@@ -120,7 +120,7 @@ export default function TestimonialsSection() {
                 type="button"
                 onClick={next}
                 aria-label="Próximo depoimento"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#131317] shadow-sm transition hover:bg-white/[0.06]"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#131318] shadow-sm transition hover:bg-white/[0.06]"
               >
                 <ChevronRight size={18} />
               </button>
