@@ -79,7 +79,7 @@ export default function PromoHeroBanner() {
         <div className="rise flex flex-col items-start gap-6">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D4AF37]">{product.brandName}</p>
-            <h1 className="mt-3 font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-7xl xl:text-[5.5rem]">
+            <h1 className="mt-3 font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-6xl xl:text-7xl">
               {product.name}
             </h1>
             <p className="mt-5 max-w-[52ch] text-base leading-relaxed text-zinc-300 sm:text-lg">
@@ -102,9 +102,9 @@ export default function PromoHeroBanner() {
 
             <div className="mt-4 flex items-baseline gap-3">
               {product.discountPercentage > 0 && (
-                <span className="text-sm text-zinc-400 line-through">{formatBRL(product.originalPrice)}</span>
+                <span className="font-display text-base tabular-nums text-zinc-400 line-through">{formatBRL(product.originalPrice)}</span>
               )}
-              <span className="font-display text-4xl font-extrabold tabular-nums text-white sm:text-5xl">
+              <span className="font-display text-5xl font-semibold tabular-nums text-white sm:text-6xl">
                 {formatBRL(product.price)}
               </span>
             </div>
@@ -115,7 +115,7 @@ export default function PromoHeroBanner() {
 
             <div className="mt-3 flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2.5 text-xs font-bold text-emerald-300">
               <span>Pix à vista ({PIX_DISCOUNT_PERCENT}% OFF)</span>
-              <span className="text-sm font-black text-emerald-400">{formatBRL(pixPrice)}</span>
+              <span className="font-display text-xl font-semibold tabular-nums text-emerald-400">{formatBRL(pixPrice)}</span>
             </div>
           </div>
 

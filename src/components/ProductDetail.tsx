@@ -242,13 +242,13 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Box de Preço Principal */}
         <div className="card-dark rounded-2xl p-5 hover:translate-y-0 hover:filter-none">
           {product.discountPercentage > 0 && (
-            <p className="text-xs text-zinc-400 line-through">
+            <p className="font-display text-sm tabular-nums text-zinc-400 line-through">
               De {formatBRL(originalTotal)} por
             </p>
           )}
 
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="font-display text-4xl font-black tabular-nums text-white sm:text-5xl">
+            <span className="font-display text-4xl font-semibold tabular-nums text-white sm:text-5xl">
               {formatBRL(pixTotal)}
             </span>
             <span className="rounded border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-xs font-extrabold uppercase text-emerald-400">
@@ -257,8 +257,8 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
 
           <p className="mt-2 text-xs text-zinc-400">
-            Ou <strong>{formatBRL(total)}</strong> em até <strong>{product.installments}x</strong> de{" "}
-            <strong>{formatBRL(installment)}</strong> sem juros no cartão
+            Ou <strong className="font-display font-semibold tabular-nums">{formatBRL(total)}</strong> em até <strong>{product.installments}x</strong> de{" "}
+            <strong className="font-display font-semibold tabular-nums">{formatBRL(installment)}</strong> sem juros no cartão
           </p>
 
           {doses && (
@@ -357,7 +357,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             </div>
             <div className="ml-auto text-right">
               <span className="text-xs text-zinc-400">Subtotal no Pix:</span>
-              <p className="text-base font-extrabold text-emerald-400">{formatBRL(pixTotal)}</p>
+              <p className="font-display text-xl font-semibold tabular-nums text-emerald-400">{formatBRL(pixTotal)}</p>
             </div>
           </div>
 

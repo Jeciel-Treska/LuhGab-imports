@@ -143,12 +143,12 @@ export default function Navbar() {
                 type="button"
                 onClick={toggleCart}
                 aria-label={`Carrinho com ${itemCount} itens`}
-                className="relative flex h-11 items-center gap-2 btn-red rounded-full px-4 text-xs font-bold uppercase tracking-wider"
+                className="relative flex h-11 items-center gap-2 btn-gold rounded-full px-4 text-xs font-bold uppercase tracking-wider"
               >
                 <ShoppingBag className="h-4 w-4" />
                 <span className="hidden sm:inline">{formatBRL(total)}</span>
                 {itemCount > 0 && (
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold tabular-nums text-white">
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#08080A] px-1 text-xs font-bold tabular-nums text-[#E8D8B5]">
                     {itemCount}
                   </span>
                 )}

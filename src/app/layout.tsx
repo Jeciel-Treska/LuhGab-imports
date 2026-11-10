@@ -2,7 +2,7 @@ import StoreConfigProvider from "@/components/StoreConfigProvider";
 import { applyStoreOverrides } from "@/data/products";
 import { loadStoreConfig } from "@/lib/storeConfig";
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Inter } from "next/font/google";
+import { Inter, Oswald } from "next/font/google";
 import "./globals.css";
 import CartDrawer from "@/components/CartDrawer";
 import CompareModal from "@/components/CompareModal";
@@ -13,10 +13,9 @@ import Navbar from "@/components/Navbar";
 import { Providers } from "@/components/Providers";
 import { SITE_NAME, SITE_URL } from "@/data/site";
 
-const display = Barlow_Condensed({
+const display = Oswald({
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  style: ["normal", "italic"],
+  weight: ["500", "600", "700"],
   variable: "--font-display",
   display: "swap",
 });

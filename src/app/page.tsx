@@ -19,9 +19,9 @@ export default function Home() {
       <PromoHeroBanner />
       <div aria-hidden className="divider-gold" />
       <CategoryGrid />
+      <FlashDeals />
       <div aria-hidden className="divider-gold" />
       <BestSellers />
-      <FlashDeals />
       <div aria-hidden className="divider-gold" />
       <ComboKits />
     </div>

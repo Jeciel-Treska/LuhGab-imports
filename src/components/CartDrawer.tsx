@@ -182,7 +182,7 @@ export default function CartDrawer() {
                           </span>
                         )}
                       </p>
-                      <p className="mt-1 text-xs font-semibold text-zinc-300">
+                      <p className="mt-1 text-xs font-semibold tabular-nums text-zinc-300">
                         {formatBRL(item.unitPrice)} un.
                       </p>
                       <div className="mt-2 flex items-center justify-between">
@@ -207,7 +207,7 @@ export default function CartDrawer() {
                             <Plus className="h-3 w-3" />
                           </button>
                         </div>
-                        <span className="text-sm font-black text-white">
+                        <span className="font-display text-base font-semibold tabular-nums text-white">
                           {formatBRL(lineTotal(item))}
                         </span>
                       </div>
@@ -260,7 +260,7 @@ export default function CartDrawer() {
               <dl className="space-y-1 text-xs text-zinc-400">
                 <div className="flex justify-between">
                   <dt>Subtotal</dt>
-                  <dd className="font-semibold text-white">{formatBRL(subtotal)}</dd>
+                  <dd className="font-display text-sm font-medium tabular-nums text-white">{formatBRL(subtotal)}</dd>
                 </div>
                 {otherDiscounts > 0 && (
                   <div className="flex justify-between font-semibold text-emerald-400">
@@ -276,11 +276,11 @@ export default function CartDrawer() {
                 )}
                 <div className="flex justify-between border-t border-white/10 pt-2">
                   <dt>Total no cartão</dt>
-                  <dd className="font-semibold text-white">{formatBRL(total)}</dd>
+                  <dd className="font-display text-sm font-medium tabular-nums text-white">{formatBRL(total)}</dd>
                 </div>
                 <div className="flex items-center justify-between rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-base font-black text-emerald-300">
                   <dt>Total no Pix ({PIX_DISCOUNT_PERCENT}% OFF)</dt>
-                  <dd className="text-emerald-400">{formatBRL(pixTotal)}</dd>
+                  <dd className="font-display text-xl font-semibold tabular-nums text-emerald-400">{formatBRL(pixTotal)}</dd>
                 </div>
               </dl>
 

@@ -149,7 +149,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           )}
 
           <div className="flex items-baseline gap-1.5">
-            <span className="font-display text-[2.6rem] font-extrabold leading-none tabular-nums text-white">
+            <span className="font-display text-4xl font-semibold leading-none tabular-nums text-white">
               {formatBRL(pixPrice)}
             </span>
             <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-xs font-bold uppercase text-emerald-300 ring-1 ring-emerald-400/30 backdrop-blur">
@@ -158,7 +158,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           </div>
 
           <p className="mt-2 inline-block rounded border border-[#D4AF37]/30 bg-[#D4AF37]/5 px-2 py-1 text-xs text-[#E8D8B5]">
-            {product.installments}x de <strong className="font-bold">{formatBRL(installment)}</strong> sem juros
+            {product.installments}x de <strong className="font-display font-semibold tabular-nums">{formatBRL(installment)}</strong> sem juros
           </p>
         </div>
 

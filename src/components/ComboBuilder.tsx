@@ -277,7 +277,7 @@ export default function ComboBuilder() {
                 </p>
                 <div className="mt-2 flex items-center justify-between">
                   <Stepper value={c.quantity} label={c.product.name} onChange={(n) => setQuantity(c.product.id, n)} />
-                  <span className="text-sm font-semibold tabular-nums text-zinc-200">
+                  <span className="font-display text-base font-semibold tabular-nums text-zinc-200">
                     {formatBRL(round2(unit(c) * c.quantity))}
                   </span>
                 </div>
@@ -296,15 +296,15 @@ export default function ComboBuilder() {
             <span className="tabular-nums">{formatBRL(savings)}</span>
           </p>
         )}
-        {discountPct > 0 && <p className="text-sm text-zinc-400 line-through">{formatBRL(original)}</p>}
+        {discountPct > 0 && <p className="font-display text-sm tabular-nums text-zinc-400 line-through">{formatBRL(original)}</p>}
         <p className="flex items-baseline justify-between">
           <span className="text-sm text-zinc-400">No cartão{discountPct > 0 ? ` (${discountPct}% OFF)` : ""}</span>
-          <span className="text-2xl font-black tabular-nums text-white">{formatBRL(final)}</span>
+          <span className="font-display text-3xl font-semibold tabular-nums text-white">{formatBRL(final)}</span>
         </p>
         {count > 0 && (
           <p className="flex items-baseline justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm font-bold text-emerald-300">
             <span>No Pix ({PIX_DISCOUNT_PERCENT}% OFF)</span>
-            <span className="text-base tabular-nums text-emerald-400">{formatBRL(pixFinal)}</span>
+            <span className="font-display text-xl font-semibold tabular-nums text-emerald-400">{formatBRL(pixFinal)}</span>
           </p>
         )}
       </div>
@@ -450,7 +450,7 @@ export default function ComboBuilder() {
                         <h3 className="mt-2 line-clamp-2 text-[0.9375rem] font-semibold leading-snug text-white">
                           {product.name}
                         </h3>
-                        <p className="mt-1 text-xl font-black tabular-nums text-white">{formatBRL(product.price)}</p>
+                        <p className="mt-1 font-display text-2xl font-semibold tabular-nums text-white">{formatBRL(product.price)}</p>
                       </div>
 
                       {v && (
@@ -619,7 +619,7 @@ export default function ComboBuilder() {
                   {discountPct > 0 && <span className="text-[#D4AF37]">· {discountPct}% OFF</span>}
                   <ChevronUp className="h-3.5 w-3.5" aria-hidden />
                 </span>
-                <span className="block truncate text-base font-black tabular-nums text-white">
+                <span className="block truncate font-display text-lg font-semibold tabular-nums text-white">
                   {formatBRL(final)}
                   {savings > 0 && (
                     <span className="ml-1.5 text-xs font-bold text-emerald-400">−{formatBRL(savings)}</span>

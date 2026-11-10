@@ -122,7 +122,7 @@ function KitCard({ kit }: { kit: Kit }) {
           De: {formatBRL(original)}
         </p>
         <div className="flex items-baseline gap-2">
-          <span className="font-display text-3xl font-extrabold text-white">
+          <span className="font-display text-3xl font-semibold tabular-nums text-white">
             {formatBRL(final)}
           </span>
           <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">

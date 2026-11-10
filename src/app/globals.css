@@ -4,7 +4,7 @@
 
 :root {
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Barlow Condensed", -apple-system, sans-serif;
+  --font-display: Oswald, var(--font-sans), sans-serif;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --gold: #d4af37;
   --gold-soft: #e8d8b5;
