@@ -11,7 +11,6 @@ import Footer from "@/components/Footer";
 import JsonLd, { organizationSchema } from "@/components/JsonLd";
 import Navbar from "@/components/Navbar";
 import { Providers } from "@/components/Providers";
-import TopBanner from "@/components/TopBanner";
 import { SITE_NAME, SITE_URL } from "@/data/site";
 
 const display = Barlow_Condensed({
@@ -90,7 +89,6 @@ export default async function RootLayout({
           >
             Pular para o conteúdo
           </a>
-          <TopBanner />
           <Navbar />
           <main id="conteudo">{children}</main>
           <Footer />
