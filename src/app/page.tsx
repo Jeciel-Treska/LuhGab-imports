@@ -17,6 +17,7 @@ export default function Home() {
   return (
     <div className="min-h-screen text-white">
       <PromoHeroBanner />
+      <div aria-hidden className="strip" />
       <CategoryGrid />
       <BestSellers />
       <FlashDeals />

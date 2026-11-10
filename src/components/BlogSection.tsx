@@ -17,7 +17,7 @@ function formatDate(iso: string) {
 function PostMeta({ post }: { post: BlogPost }) {
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-400">
-      <span className="font-medium uppercase tracking-wider text-[#C9A55C]/80">{post.category}</span>
+      <span className="font-medium uppercase tracking-wider text-[#D4AF37]/80">{post.category}</span>
       <span aria-hidden>·</span>
       <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
       <span aria-hidden>·</span>
@@ -50,7 +50,7 @@ export default function BlogSection() {
         <span className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-500 text-dark shadow-gold">
           <BookOpen size={22} strokeWidth={2.4} aria-hidden />
         </span>
-        <p className="font-mono text-xs uppercase tracking-widest text-[#C9A55C]">Guias e educação</p>
+        <p className="font-mono text-xs uppercase tracking-widest text-[#D4AF37]">Guias e educação</p>
         <h2 id="blog-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Suplementação com embasamento
         </h2>
@@ -68,7 +68,7 @@ export default function BlogSection() {
               <button
                 type="button"
                 onClick={() => openPost(post)}
-                className="mt-auto inline-flex items-center gap-2 self-start text-sm font-medium text-[#C9A55C] transition-colors duration-300 hover:text-amber-300"
+                className="mt-auto inline-flex items-center gap-2 self-start text-sm font-medium text-[#D4AF37] transition-colors duration-300 hover:text-amber-300"
               >
                 Ler Guia Completo
                 <ArrowRight size={16} aria-hidden />
@@ -95,7 +95,7 @@ export default function BlogSection() {
                 type="button"
                 onClick={closePost}
                 aria-label="Fechar guia"
-                className="shrink-0 rounded-full border border-white/10 p-2 text-zinc-400 transition-colors hover:border-[#E8D8B5]/25 hover:text-[#C9A55C]"
+                className="shrink-0 rounded-full border border-white/10 p-2 text-zinc-400 transition-colors hover:border-[#E8D8B5]/25 hover:text-[#D4AF37]"
               >
                 <X size={18} aria-hidden />
               </button>

@@ -93,13 +93,13 @@ export default async function ProductPage({ params }: PageProps) {
       <nav aria-label="Breadcrumb" className="mb-6 text-sm text-zinc-400">
         <ol className="flex flex-wrap items-center gap-2">
           <li>
-            <Link href="/" className="hover:text-[#C9A55C]">
+            <Link href="/" className="hover:text-[#D4AF37]">
               Home
             </Link>
           </li>
           <li aria-hidden>/</li>
           <li>
-            <Link href={`/produtos?categoria=${product.category}`} className="hover:text-[#C9A55C]">
+            <Link href={`/produtos?categoria=${product.category}`} className="hover:text-[#D4AF37]">
               {categoryLabel}
             </Link>
           </li>

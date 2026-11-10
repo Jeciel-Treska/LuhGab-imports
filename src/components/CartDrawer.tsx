@@ -86,11 +86,11 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Carrinho de compras"
-        className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-[#0E0E12] transition-transform duration-300 ease-out"
+        className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-[#D4AF37]/40 bg-[#0B0B0E] shadow-2xl transition-transform duration-300 ease-out"
       >
-        <header className="flex items-center justify-between relative border-b border-white/10 px-6 py-4">
+        <header className="flex items-center justify-between relative border-b border-[#D4AF37]/25 px-6 py-4">
           <h2 className="flex items-center gap-2 font-display text-xl font-black uppercase tracking-tight text-white">
-            <ShoppingBag className="h-5 w-5 text-zinc-300" aria-hidden />
+            <ShoppingBag className="h-5 w-5 text-[#D4AF37]" aria-hidden />
             Seu Carrinho ({items.reduce((acc, i) => acc + i.quantity, 0)})
           </h2>
           <button
@@ -106,7 +106,7 @@ export default function CartDrawer() {
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-400">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/10 text-[#D4AF37]">
               <ShoppingBag className="h-8 w-8" />
             </div>
             <div>
@@ -133,7 +133,7 @@ export default function CartDrawer() {
                 ) : (
                   <>
                     Faltam apenas{" "}
-                    <strong className="font-bold text-white">{formatBRL(remaining)}</strong> para
+                    <strong className="font-bold text-[#E8D8B5]">{formatBRL(remaining)}</strong> para
                     Frete Grátis!
                   </>
                 )}
@@ -148,7 +148,7 @@ export default function CartDrawer() {
               >
                 <div
                   className={`h-full rounded-full transition-[width] duration-500 ${
-                    freeShipping ? "bg-emerald-500" : "bg-red-600"
+                    freeShipping ? "bg-emerald-500" : "bg-[#D4AF37]"
                   }`}
                   style={{ width: `${progress}%` }}
                 />
@@ -161,7 +161,7 @@ export default function CartDrawer() {
                 const prod = getProductById(item.productId);
                 return (
                   <li key={item.id} className="flex gap-4 py-4">
-                    <div className="h-16 w-16 shrink-0 flex items-center justify-center rounded-xl border border-white/10 bg-[#1A1A1F] p-1">
+                    <div className="h-16 w-16 shrink-0 flex items-center justify-center rounded-xl border border-[#D4AF37]/30 bg-[#1A1A1F] p-1">
                       <ProductThumb
                         type={prod?.model3DConfig.type ?? "whey-tub"}
                         color={prod?.model3DConfig.color ?? "#000000"}
@@ -226,7 +226,7 @@ export default function CartDrawer() {
             </ul>
 
             {/* Footer do Carrinho */}
-            <div className="space-y-3 border-t border-white/10 bg-[#0E0E12] p-6">
+            <div className="space-y-3 border-t border-[#D4AF37]/30 bg-[#0E0E12] p-6">
               {activeCoupon ? (
                 <p className="flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-300">
                   <span className="flex items-center gap-1.5">
@@ -250,7 +250,7 @@ export default function CartDrawer() {
                   />
                   <button
                     type="submit"
-                    className="h-9 rounded-xl border border-white/20 px-3.5 text-xs font-bold text-white transition-colors duration-200 hover:bg-white hover:text-black"
+                    className="h-9 rounded-xl border border-[#D4AF37]/60 px-3.5 text-xs font-bold text-[#D4AF37] transition-colors duration-200 hover:bg-[#D4AF37] hover:text-black"
                   >
                     Aplicar
                   </button>

@@ -20,7 +20,7 @@ export default function StorePerks() {
       <ul className="mx-auto grid max-w-7xl grid-cols-2 gap-x-4 gap-y-3 px-4 py-4 sm:px-6 lg:grid-cols-4">
         {PERKS.map(({ icon: Icon, title, text }) => (
           <li key={title} className="flex items-center gap-3">
-            <Icon className="h-7 w-7 shrink-0 text-[#C9A55C]" aria-hidden />
+            <Icon className="h-7 w-7 shrink-0 text-[#D4AF37]" aria-hidden />
             <p className="min-w-0 leading-tight">
               <span className="block text-sm font-bold text-zinc-100">{title}</span>
               <span className="block text-xs text-zinc-400">{text}</span>

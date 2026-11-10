@@ -6,19 +6,22 @@
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Barlow Condensed", -apple-system, sans-serif;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --gold: #d4af37;
+  --gold-soft: #e8d8b5;
+  --red: #dc2626;
   color-scheme: dark;
 }
 
 html {
   scroll-behavior: smooth;
-  background-color: #0a0a0c;
+  background-color: #08080a;
   scrollbar-width: thin;
   scrollbar-color: #52525b #18181b;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background-color: #0a0a0c;
+  background-color: #08080a;
   color: #ffffff;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
@@ -45,7 +48,7 @@ p {
 }
 
 :focus-visible {
-  outline: 2px solid #c9a55c;
+  outline: 2px solid #d4af37;
   outline-offset: 2px;
 }
 
@@ -55,23 +58,22 @@ p {
 }
 
 ::-webkit-scrollbar-track {
-  background: #18181b;
+  background: #131318;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #52525b;
+  background: #3f3f46;
   border-radius: 9999px;
-  border: 2px solid #18181b;
+  border: 2px solid #131318;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #71717a;
 }
 
-/* Toque tátil: todo botão e link-botão responde ao clique. Zero de especificidade
-   na transição para não brigar com as utilitárias do Tailwind. */
+/* Toque tátil: botões e link-botões respondem ao clique (zero de especificidade na transição) */
 :where(button, a[class*="bg-"], .press) {
-  transition-property: color, background-color, border-color, opacity, transform;
+  transition-property: color, background-color, border-color, opacity, transform, box-shadow;
   transition-duration: 160ms;
   transition-timing-function: var(--ease-out);
 }
@@ -81,55 +83,139 @@ p {
 }
 
 @layer utilities {
-  /* Superfície tátil: borda de 1px, camada de profundidade discreta e elevação no hover */
+  /* Cartão com borda desenhada: filete metálico dourado→grafite em 1px, fundo onyx */
   .card-dark {
-    background-color: #131318;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    border: 1px solid transparent;
+    background:
+      linear-gradient(#121216, #121216) padding-box,
+      linear-gradient(
+          150deg,
+          rgba(212, 175, 55, 0.7) 0%,
+          rgba(255, 255, 255, 0.1) 28%,
+          rgba(255, 255, 255, 0.04) 62%,
+          rgba(212, 175, 55, 0.4) 100%
+        )
+        border-box;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.03),
-      0 1px 2px rgba(0, 0, 0, 0.4),
-      0 12px 28px -14px rgba(0, 0, 0, 0.6);
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 1px 2px rgba(0, 0, 0, 0.5),
+      0 16px 32px -16px rgba(0, 0, 0, 0.8);
     transition:
       transform 200ms var(--ease-out),
-      border-color 200ms var(--ease-out),
-      box-shadow 200ms var(--ease-out);
+      box-shadow 200ms var(--ease-out),
+      filter 200ms var(--ease-out);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .card-dark:hover {
       transform: translateY(-4px);
-      border-color: rgba(232, 216, 181, 0.22);
+      filter: brightness(1.06);
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.04),
-        0 2px 4px rgba(0, 0, 0, 0.4),
-        0 28px 48px -16px rgba(0, 0, 0, 0.75);
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 28px 48px -16px rgba(0, 0, 0, 0.85),
+        0 0 0 1px rgba(212, 175, 55, 0.25);
     }
   }
 
+  /* Palco de estúdio para a foto do produto */
+  .studio {
+    background:
+      radial-gradient(ellipse 80% 55% at 50% 0%, rgba(232, 216, 181, 0.16), transparent 70%),
+      linear-gradient(180deg, #1c1c22 0%, #121216 55%, #0c0c0f 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
   .btn-red {
-    background-color: #dc2626;
+    background: linear-gradient(180deg, #ea3b3b 0%, #dc2626 55%, #c01f1f 100%);
     color: #fff;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      0 10px 22px -8px rgba(185, 28, 28, 0.6);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .btn-red:hover {
-      background-color: #ef4444;
+      filter: brightness(1.1);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.26),
+        0 14px 28px -8px rgba(185, 28, 28, 0.7);
     }
   }
 
   .btn-gold {
-    background-color: #c9a55c;
+    background: linear-gradient(180deg, #e6c768 0%, #d4af37 55%, #b8942c 100%);
     color: #0a0a0c;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.35),
+      0 8px 18px -8px rgba(212, 175, 55, 0.5);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .btn-gold:hover {
-      background-color: #d8b872;
+      filter: brightness(1.08);
     }
   }
 
-  /* Entrada única do Hero: opacidade + 8px, curva exponencial, escalonada */
+  /* Filete horizontal metálico entre seções */
+  .divider-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.7) 50%, transparent);
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.2);
+  }
+
+  .divider-red {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.8) 50%, transparent);
+  }
+
+  /* Faixa transversal que separa o Hero do restante: barra vermelha + filete dourado em corte diagonal */
+  .strip {
+    position: relative;
+    height: 22px;
+    overflow: hidden;
+    background: #08080a;
+  }
+
+  .strip::before,
+  .strip::after {
+    content: "";
+    position: absolute;
+    left: -2%;
+    width: 104%;
+  }
+
+  .strip::before {
+    top: 2px;
+    height: 12px;
+    background: #b91c1c;
+    clip-path: polygon(0 0, 100% 45%, 100% 100%, 0 55%);
+  }
+
+  .strip::after {
+    top: 14px;
+    height: 4px;
+    background: #d4af37;
+    clip-path: polygon(0 0, 100% 45%, 100% 100%, 0 55%);
+  }
+
+  /* Palcos de seção */
+  .stage-hero {
+    background:
+      linear-gradient(112deg, transparent 38%, rgba(212, 175, 55, 0.09) 50%, transparent 62%),
+      radial-gradient(ellipse 60% 70% at 78% 40%, rgba(232, 216, 181, 0.07), transparent 70%),
+      linear-gradient(180deg, #0c0c0f 0%, #08080a 100%);
+  }
+
+  .stage-raised {
+    background: linear-gradient(180deg, #0f0f13 0%, #0b0b0e 100%);
+  }
+
+  .stage-urgency {
+    background: linear-gradient(180deg, #170a0b 0%, #0d0809 55%, #08080a 100%);
+  }
+
+  /* Entrada única do Hero: opacidade + 8px, curva exponencial */
   .rise {
     animation: rise 520ms var(--ease-out) both;
   }

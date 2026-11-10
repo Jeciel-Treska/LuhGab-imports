@@ -197,7 +197,7 @@ export default function ComboBuilder() {
         </p>
         <span
           className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
-            discountPct > 0 ? "bg-[#C9A55C] text-black" : "bg-white/5 text-zinc-400"
+            discountPct > 0 ? "bg-[#D4AF37] text-black" : "bg-white/5 text-zinc-400"
           }`}
         >
           {discountPct > 0 ? `${discountPct}% OFF ativo` : "Sem desconto ainda"}
@@ -211,7 +211,7 @@ export default function ComboBuilder() {
         aria-valuenow={progress}
         className="mt-3 h-2 overflow-hidden rounded-full bg-white/10"
       >
-        <div className="h-full rounded-full bg-red-600 transition-[width] duration-500" style={{ width: `${progress}%` }} />
+        <div className="h-full rounded-full bg-gradient-to-r from-[#B8942C] to-[#E6C768] transition-[width] duration-500" style={{ width: `${progress}%` }} />
       </div>
       <ul className="mt-3 grid grid-cols-3 gap-2">
         {TIERS.map((t) => {
@@ -220,17 +220,17 @@ export default function ComboBuilder() {
             <li
               key={t.min}
               className={`flex flex-col items-center rounded-xl border px-1 py-2 text-center transition ${
-                on ? "border-[#C9A55C]/50 bg-[#C9A55C]/10" : "border-white/10 bg-white/[0.03]"
+                on ? "border-[#D4AF37]/70 bg-[#D4AF37]/10" : "border-white/10 bg-white/[0.03]"
               }`}
             >
-              <span className={`flex items-center gap-1 text-base font-black ${on ? "text-[#C9A55C]" : "text-zinc-400"}`}>
+              <span className={`flex items-center gap-1 text-base font-black ${on ? "text-[#D4AF37]" : "text-zinc-400"}`}>
                 {on ? <Check className="h-4 w-4" strokeWidth={3} aria-hidden /> : <Lock className="h-3.5 w-3.5" aria-hidden />}
                 {t.pct}%
               </span>
               <span className={`text-[0.6875rem] font-semibold ${on ? "text-white" : "text-zinc-400"}`}>
                 {t.label}
               </span>
-              <span className={`text-[0.625rem] font-bold uppercase tracking-wide ${on ? "text-[#C9A55C]" : "text-zinc-400"}`}>
+              <span className={`text-[0.625rem] font-bold uppercase tracking-wide ${on ? "text-[#D4AF37]" : "text-zinc-400"}`}>
                 {on ? "Desbloqueado" : "Bloqueado"}
               </span>
             </li>
@@ -411,12 +411,12 @@ export default function ComboBuilder() {
                     <article
                       className={`relative flex w-full flex-col rounded-2xl border bg-[#131318] p-4 transition ${
                         selected
-                          ? "border-[#C9A55C]/50"
-                          : "border-white/10 hover:border-[#E8D8B5]/25"
+                          ? "border-[#D4AF37]/50"
+                          : "border-white/10 hover:border-[#D4AF37]/60"
                       }`}
                     >
                       {selected && (
-                        <span className="absolute left-4 top-4 z-10 flex items-center gap-1 rounded-full bg-[#C9A55C] px-2.5 py-1 text-xs font-bold text-black shadow-sm">
+                        <span className="absolute left-4 top-4 z-10 flex items-center gap-1 rounded-full bg-[#D4AF37] px-2.5 py-1 text-xs font-bold text-black shadow-sm">
                           <Check className="h-3 w-3" strokeWidth={3} aria-hidden /> No Combo
                         </span>
                       )}
@@ -427,10 +427,10 @@ export default function ComboBuilder() {
                         imageUrl={product.imageUrl}
                         alt={product.name}
                         sizes="(min-width: 1280px) 260px, (min-width: 640px) 33vw, 90vw"
-                        className="aspect-square w-full rounded-2xl bg-[#1A1A1F] ring-1 ring-white/5 [&_img]:drop-shadow-[0_14px_16px_rgba(0,0,0,0.45)]"
+                        className="aspect-square w-full rounded-2xl studio [&_img]:drop-shadow-[0_14px_16px_rgba(0,0,0,0.45)]"
                       />
                       <div className="mt-4 flex-1">
-                        <span className="inline-block rounded border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-zinc-300">
+                        <span className="inline-block rounded border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-2 py-0.5 text-[0.6875rem] font-bold uppercase tracking-wide text-[#E8D8B5]">
                           {product.brandName}
                         </span>
                         <h3 className="mt-2 line-clamp-2 text-[0.9375rem] font-semibold leading-snug text-white">
@@ -594,7 +594,7 @@ export default function ComboBuilder() {
                   />
                 ))}
                 {chosen.length > 3 && (
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#0E0E12] bg-[#C9A55C] text-xs font-bold text-black">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#0E0E12] bg-[#D4AF37] text-xs font-bold text-black">
                     +{chosen.length - 3}
                   </span>
                 )}
@@ -602,7 +602,7 @@ export default function ComboBuilder() {
               <span className="min-w-0">
                 <span className="flex items-center gap-1 text-xs font-semibold text-zinc-400">
                   {count} {count === 1 ? "item" : "itens"}
-                  {discountPct > 0 && <span className="text-[#C9A55C]">· {discountPct}% OFF</span>}
+                  {discountPct > 0 && <span className="text-[#D4AF37]">· {discountPct}% OFF</span>}
                   <ChevronUp className="h-3.5 w-3.5" aria-hidden />
                 </span>
                 <span className="block truncate text-base font-black tabular-nums text-white">

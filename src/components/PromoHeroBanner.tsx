@@ -71,12 +71,12 @@ export default function PromoHeroBanner() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-white/10 bg-[#0A0A0C] py-12 lg:py-20">
+    <section className="stage-hero relative overflow-hidden py-12 lg:py-20">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16">
         {/* Coluna Texto & Compra */}
         <div className="rise flex flex-col items-start gap-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">{product.brandName}</p>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D4AF37]">{product.brandName}</p>
             <h1 className="mt-3 font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-6xl xl:text-7xl">
               {product.name}
             </h1>
@@ -86,13 +86,13 @@ export default function PromoHeroBanner() {
           </div>
 
           {/* Preço de Conversão */}
-          <div className="card-dark w-full max-w-md rounded-2xl p-5 hover:!translate-y-0">
+          <div className="card-dark w-full max-w-md rounded-2xl p-5 hover:!translate-y-0 hover:!filter-none">
             <div className="flex items-center justify-between">
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-zinc-300">
+              <span className="rounded-full border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#E8D8B5]">
                 Condição Especial
               </span>
               {product.discountPercentage > 0 && (
-                <span className="rounded bg-red-600 px-2.5 py-0.5 text-xs font-bold text-white">
+                <span className="rounded bg-red-600 px-2.5 py-0.5 text-xs font-bold text-white shadow-lg shadow-red-900/40">
                   -{product.discountPercentage}% OFF
                 </span>
               )}
@@ -153,7 +153,7 @@ export default function PromoHeroBanner() {
           <div className="grid w-full max-w-xl grid-cols-2 gap-4 border-t border-white/10 pt-6 sm:grid-cols-4">
             {buildSeals(product.installments).map(({ icon: Icon, label, desc }) => (
               <div key={label} className="flex flex-col">
-                <Icon className="h-5 w-5 text-[#C9A55C]" />
+                <Icon className="h-5 w-5 text-[#D4AF37]" />
                 <span className="mt-1 text-xs font-bold text-white">{label}</span>
                 <span className="text-xs text-zinc-400">{desc}</span>
               </div>
@@ -163,29 +163,43 @@ export default function PromoHeroBanner() {
 
         {/* Coluna Fotografia do Produto */}
         <div className="rise rise-2 relative mx-auto flex w-full max-w-md items-center justify-center lg:max-w-none">
-          <div className="card-dark relative flex aspect-[4/5] w-full max-w-lg items-center justify-center rounded-2xl p-8 hover:!translate-y-0">
-            <div className="relative flex h-full w-full items-center justify-center">
-              {/* sombra de contato de estúdio */}
-              <span aria-hidden className="absolute bottom-[6%] left-1/2 h-5 w-1/2 -translate-x-1/2 rounded-[50%] bg-black/70 blur-xl" />
+          <div className="card-dark relative aspect-[4/5] w-full max-w-lg rounded-2xl p-2 hover:!translate-y-0 hover:!filter-none">
+            <div className="studio relative flex h-full w-full items-center justify-center overflow-hidden rounded-xl p-8">
+              {/* feixe de luz de estúdio, vindo do alto */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute left-1/2 top-0 h-[70%] w-[70%] -translate-x-1/2 bg-gradient-to-b from-[#E8D8B5]/20 to-transparent [clip-path:polygon(34%_0,66%_0,100%_100%,0_100%)]"
+              />
+              {/* piso do estúdio + sombra de contato */}
+              <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[22%] bg-gradient-to-t from-black/60 to-transparent" />
+              <span aria-hidden className="absolute bottom-[9%] left-1/2 h-5 w-1/2 -translate-x-1/2 rounded-[50%] bg-black/80 blur-xl" />
               <Image
                 src={product.imageUrl ?? "/products/under-labz-dimethylex.png"}
                 alt={product.name}
                 width={420}
                 height={560}
                 priority
-                className="h-full w-auto object-contain drop-shadow-[0_14px_14px_rgba(0,0,0,0.5)]"
+                className="relative h-full w-auto object-contain drop-shadow-[0_16px_16px_rgba(0,0,0,0.6)]"
               />
             </div>
 
-            {/* Badge de Avaliação */}
-            {SHOW_RATINGS && (
-              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-2xl border border-white/10 bg-black/50 px-3.5 py-2 backdrop-blur">
-                <Star className="h-5 w-5 fill-[#C9A55C] text-[#C9A55C]" />
-                <div className="text-xs leading-tight">
-                  <span className="font-extrabold text-white">{product.rating.toFixed(1)} / 5.0</span>
-                  <span className="block text-xs text-zinc-400">{product.reviewCount} avaliações</span>
-                </div>
-              </div>
+            {/* Selos legítimos sobre a foto */}
+            <div className="absolute left-5 top-5 flex flex-col items-start gap-1.5">
+              <span className="inline-flex items-center gap-1.5 rounded border border-[#D4AF37]/60 bg-black/70 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#E8D8B5] backdrop-blur">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#D4AF37]" aria-hidden /> 100% Original
+              </span>
+              {SHOW_RATINGS && (
+                <span className="inline-flex items-center gap-1.5 rounded bg-black/70 px-2.5 py-1 text-xs backdrop-blur">
+                  <Star className="h-3.5 w-3.5 fill-[#D4AF37] text-[#D4AF37]" aria-hidden />
+                  <span className="font-bold text-white">{product.rating.toFixed(1)}</span>
+                  <span className="text-zinc-400">({product.reviewCount})</span>
+                </span>
+              )}
+            </div>
+            {product.discountPercentage > 0 && (
+              <span className="absolute right-5 top-5 rounded bg-red-600 px-3 py-1.5 text-sm font-bold text-white shadow-lg shadow-red-900/50">
+                -{product.discountPercentage}%
+              </span>
             )}
           </div>
         </div>

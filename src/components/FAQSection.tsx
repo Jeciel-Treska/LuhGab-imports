@@ -40,7 +40,7 @@ function FAQAccordionItem({ item, isOpen, onToggle }: FAQItemProps) {
           <ChevronDown
             size={20}
             aria-hidden
-            className={`shrink-0 text-[#C9A55C] transition-transform duration-300 ease-out ${
+            className={`shrink-0 text-[#D4AF37] transition-transform duration-300 ease-out ${
               isOpen ? "rotate-180" : "rotate-0"
             }`}
           />
@@ -72,7 +72,7 @@ export default function FAQSection() {
         <span className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-500 text-dark shadow-gold">
           <HelpCircle size={22} strokeWidth={2.4} aria-hidden />
         </span>
-        <p className="font-mono text-xs uppercase tracking-widest text-[#C9A55C]">Dúvidas frequentes</p>
+        <p className="font-mono text-xs uppercase tracking-widest text-[#D4AF37]">Dúvidas frequentes</p>
         <h2 id="faq-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Tudo o que você precisa saber
         </h2>

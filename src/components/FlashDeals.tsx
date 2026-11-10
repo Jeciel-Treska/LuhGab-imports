@@ -41,7 +41,7 @@ function Countdown() {
       <span className="font-medium text-zinc-400">Termina em:</span>
       {parts.map((part, i) => (
         <span key={i} className="flex items-center gap-1">
-          <span className="rounded bg-white/[0.07] px-2 py-1 text-xs font-semibold tabular-nums text-white">{part}</span>
+          <span className="rounded bg-red-600 px-2 py-1 text-xs font-bold tabular-nums text-white shadow-md shadow-red-900/40">{part}</span>
           {i < 2 && <span className="font-semibold text-zinc-400">:</span>}
         </span>
       ))}
@@ -72,7 +72,9 @@ export default function FlashDeals() {
 
   if (deals.length === 0) return null;
   return (
-    <section aria-labelledby="flash-title" className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6">
+    <section aria-labelledby="flash-title" className="stage-urgency relative">
+      <div aria-hidden className="divider-red" />
+      <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6">
       <SectionHeader
         id="flash-title"
         title="Ofertas Relâmpago do Dia"
@@ -88,6 +90,7 @@ export default function FlashDeals() {
           </li>
         ))}
       </ul>
+      </div>
     </section>
   );
 }

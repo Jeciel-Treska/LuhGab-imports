@@ -19,7 +19,7 @@ export default function BestSellers() {
 
   return (
     <section id="destaques" aria-labelledby="best-title" className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6">
-      <div className="flex flex-col justify-between gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-end">
+      <div className="flex flex-col justify-between gap-4 border-b border-[#D4AF37]/25 pb-5 sm:flex-row sm:items-end">
         <div>
           <h2 id="best-title" className="text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
             Destaques da Loja
@@ -31,7 +31,7 @@ export default function BestSellers() {
 
         <Link
           href="/produtos"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition-colors duration-200 hover:text-white"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#D4AF37] transition-colors duration-200 hover:text-[#E8D8B5]"
         >
           Ver todos os {products.length} produtos
           <ArrowRight className="h-4 w-4" />

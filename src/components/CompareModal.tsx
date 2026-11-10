@@ -143,7 +143,7 @@ export default function CompareModal() {
           className="fixed bottom-4 left-4 right-24 z-40 mx-auto flex max-w-xl items-center justify-between gap-3 rounded-2xl border border-white/10 bg-dark-card/95 px-4 py-3 shadow-xl shadow-black/50 backdrop-blur"
         >
           <p className="text-sm text-zinc-200">
-            <strong className="text-[#C9A55C]">{ids.length}</strong> produtos para comparar
+            <strong className="text-[#D4AF37]">{ids.length}</strong> produtos para comparar
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -178,7 +178,7 @@ export default function CompareModal() {
           <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-dark-soft sm:rounded-2xl">
             <header className="flex items-center justify-between border-b border-white/10 px-5 py-4">
               <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-100">
-                <GitCompareArrows className="h-5 w-5 text-[#C9A55C]" aria-hidden />
+                <GitCompareArrows className="h-5 w-5 text-[#D4AF37]" aria-hidden />
                 Comparar produtos
               </h2>
               <button
@@ -207,7 +207,7 @@ export default function CompareModal() {
                         }`}
                       >
                         {c.product.id === winnerId && (
-                          <span className="mb-1 flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-[#C9A55C]">
+                          <span className="mb-1 flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-[#D4AF37]">
                             <Trophy className="h-3 w-3" aria-hidden /> Melhor custo-benefício
                           </span>
                         )}
@@ -255,7 +255,7 @@ export default function CompareModal() {
                           className={`flex h-10 w-full items-center justify-center gap-2 rounded-xl text-xs font-bold transition disabled:cursor-not-allowed disabled:opacity-40 ${
                             c.product.id === winnerId
                               ? "bg-amber-500 text-dark hover:shadow-gold"
-                              : "border border-white/15 text-zinc-200 hover:border-amber-500/60 hover:text-[#C9A55C]"
+                              : "border border-white/15 text-zinc-200 hover:border-amber-500/60 hover:text-[#D4AF37]"
                           }`}
                         >
                           <ShoppingBag className="h-4 w-4" aria-hidden />

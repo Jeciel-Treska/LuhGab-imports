@@ -51,7 +51,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08080A]/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 bg-[#08080A]/92 backdrop-blur-md">
         <nav aria-label="Principal" className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex h-20 items-center justify-between gap-4">
             {/* Mobile menu trigger */}
@@ -76,10 +76,10 @@ export default function Navbar() {
                 width={200}
                 height={160}
                 priority
-                className="h-11 w-auto rounded-md ring-1 ring-white/10 sm:h-12"
+                className="h-11 w-auto rounded-md ring-1 ring-[#D4AF37]/50 sm:h-12"
               />
               <span className="hidden font-display text-2xl font-black uppercase tracking-tight text-white sm:inline-block">
-                LuhGab <span className="font-light text-[#C9A55C]">Imports</span>
+                LuhGab <span className="font-light text-[#D4AF37]">Imports</span>
               </span>
             </Link>
 
@@ -89,7 +89,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="whitespace-nowrap rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition hover:bg-white/5 hover:text-white"
+                  className="whitespace-nowrap rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition hover:bg-white/5 hover:text-[#E8D8B5]"
                 >
                   {link.label}
                 </Link>
@@ -100,9 +100,9 @@ export default function Navbar() {
             <form
               role="search"
               onSubmit={submit}
-              className="hidden min-w-[180px] max-w-xs flex-1 items-center rounded-full border border-white/10 bg-[#131318] px-3 py-1.5 transition focus-within:border-zinc-500 focus-within:ring-1 focus-within:ring-white/10 xl:flex"
+              className="hidden min-w-[180px] max-w-xs flex-1 items-center rounded-full border border-white/10 bg-[#131318] px-3 py-1.5 transition focus-within:border-[#D4AF37]/70 focus-within:ring-1 focus-within:ring-[#D4AF37]/25 xl:flex"
             >
-              <Search className="h-4 w-4 text-zinc-400" />
+              <Search className="h-4 w-4 text-[#D4AF37]" />
               <input
                 ref={inputRef}
                 type="search"
@@ -148,7 +148,7 @@ export default function Navbar() {
                 <ShoppingBag className="h-4 w-4" />
                 <span className="hidden sm:inline">{formatBRL(total)}</span>
                 {itemCount > 0 && (
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1 text-xs font-bold text-black">
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#D4AF37] px-1 text-xs font-bold text-black">
                     {itemCount}
                   </span>
                 )}
@@ -169,12 +169,13 @@ export default function Navbar() {
             <button
               type="submit"
               aria-label="Buscar"
-              className="flex h-11 w-12 items-center justify-center btn-red rounded-r-xl"
+              className="flex h-11 w-12 items-center justify-center btn-gold rounded-r-xl"
             >
               <Search className="h-5 w-5" />
             </button>
           </form>
         </nav>
+        <div aria-hidden className="divider-gold opacity-80" />
       </header>
 
       {/* Drawer mobile */}
@@ -210,7 +211,7 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setDrawerOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-zinc-200 transition hover:bg-white/5 hover:text-white"
+                    className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-zinc-200 transition hover:bg-white/5 hover:text-[#E8D8B5]"
                   >
                     {link.label}
                   </Link>

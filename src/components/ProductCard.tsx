@@ -49,7 +49,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
   return (
     <article className="card-dark group flex h-full flex-col overflow-hidden rounded-2xl p-4 sm:p-5">
       {/* Imagem do Produto */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#1A1A1F] p-2 ring-1 ring-white/5">
+      <div className="studio relative aspect-square w-full overflow-hidden rounded-xl p-2">
         <Link
           href={`/produto/${product.slug}`}
           aria-label={`Ver detalhes de ${product.name}`}
@@ -69,12 +69,12 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
         {/* Badges de Desconto e Frete */}
         <div className="pointer-events-none absolute left-2.5 top-2.5 flex flex-col items-start gap-1">
           {hasDiscount && (
-            <span className="rounded bg-red-600 px-2 py-0.5 text-xs font-black text-white">
+            <span className="rounded bg-red-600 px-2 py-0.5 text-xs font-bold text-white shadow-lg shadow-red-900/50">
               -{product.discountPercentage}% OFF
             </span>
           )}
           {product.price >= FREE_SHIPPING_THRESHOLD && (
-            <span className="rounded border border-white/10 bg-black/60 px-2 py-0.5 text-xs font-medium text-zinc-200">
+            <span className="rounded border border-[#D4AF37]/50 bg-black/70 px-2 py-0.5 text-xs font-semibold text-[#E8D8B5]">
               Frete Grátis
             </span>
           )}
@@ -83,7 +83,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
         {rank !== undefined && (
           <span
             aria-label={`${rank}º mais vendido`}
-            className="absolute bottom-2.5 left-2.5 rounded-full bg-[#C9A55C] px-2.5 py-0.5 text-xs font-bold text-black"
+            className="absolute bottom-2.5 left-2.5 rounded-full bg-[#D4AF37] px-2.5 py-0.5 text-xs font-bold text-black"
           >
             {rank}º Mais Vendido
           </span>
@@ -106,24 +106,24 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
 
       {/* Detalhes & Preço */}
       <div className="mt-4 flex flex-1 flex-col">
-        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+        <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D4AF37]">
           {product.brandName}
           {imported && (
-            <span className="rounded-sm border border-[#C9A55C]/40 px-1.5 py-px text-[0.625rem] font-semibold tracking-wide text-[#C9A55C]">
+            <span className="rounded-sm bg-[#D4AF37] px-1.5 py-px text-[0.625rem] font-bold tracking-wide text-black">
               Importado
             </span>
           )}
         </p>
 
         <h3 className="mt-1 line-clamp-2 min-h-[2.75rem] text-sm font-bold leading-snug text-white">
-          <Link href={`/produto/${product.slug}`} className="transition-colors duration-200 hover:text-white">
+          <Link href={`/produto/${product.slug}`} className="transition-colors duration-200 hover:text-[#E8D8B5]">
             {product.name}
           </Link>
         </h3>
 
         {SHOW_RATINGS && (
           <div className="mt-2 flex items-center gap-1.5 text-xs text-zinc-400">
-            <Star className="h-4 w-4 fill-[#C9A55C] text-[#C9A55C]" />
+            <Star className="h-4 w-4 fill-[#D4AF37] text-[#D4AF37]" />
             <span className="font-bold text-white">{product.rating.toFixed(1)}</span>
             <span>({product.reviewCount})</span>
           </div>
@@ -141,7 +141,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           {comparing ? "Comparando" : "Comparar"}
         </button>
 
-        <div className="mt-auto border-t border-white/10 pt-4">
+        <div className="mt-auto border-t border-[#D4AF37]/15 pt-4">
           {hasDiscount && (
             <p className="text-xs text-zinc-400 line-through">
               {formatBRL(product.originalPrice)}
@@ -152,13 +152,13 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
             <span className="font-display text-3xl font-extrabold tabular-nums text-white">
               {formatBRL(pixPrice)}
             </span>
-            <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-xs font-bold uppercase text-emerald-400">
+            <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-xs font-bold uppercase text-emerald-400 ring-1 ring-emerald-500/30">
               no Pix
             </span>
           </div>
 
-          <p className="mt-1 text-xs text-zinc-400">
-            Ou {formatBRL(product.price)} em até {product.installments}x de {formatBRL(installment)} sem juros
+          <p className="mt-2 inline-block rounded border border-[#D4AF37]/30 bg-[#D4AF37]/5 px-2 py-1 text-xs text-[#E8D8B5]">
+            {product.installments}x de <strong className="font-bold">{formatBRL(installment)}</strong> sem juros
           </p>
         </div>
 
