@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Check, CreditCard, ShieldCheck, ShoppingBag, Star, Truck, Zap } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { getProductById, products } from "@/data/products";
+import { brands } from "@/data/brands";
 import { PIX_DISCOUNT_PERCENT, SHOW_RATINGS, buildWhatsAppUrl } from "@/data/site";
 import { formatBRL } from "@/lib/format";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
@@ -62,6 +63,7 @@ export default function PromoHeroBanner() {
   const flavor = product.flavors[0];
   const size = product.sizes[0];
   const pixPrice = product.price * (1 - PIX_DISCOUNT_PERCENT / 100);
+  const imported = (brands.find((b) => b.id === product.brandId)?.originCountry ?? "Brasil") !== "Brasil";
 
   const buy = () => {
     if (!flavor || !size) return;
@@ -77,7 +79,7 @@ export default function PromoHeroBanner() {
         <div className="rise flex flex-col items-start gap-6">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#D4AF37]">{product.brandName}</p>
-            <h1 className="mt-3 font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-6xl xl:text-7xl">
+            <h1 className="mt-3 font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-7xl xl:text-[5.5rem]">
               {product.name}
             </h1>
             <p className="mt-5 max-w-[52ch] text-base leading-relaxed text-zinc-300 sm:text-lg">
@@ -170,23 +172,34 @@ export default function PromoHeroBanner() {
                 aria-hidden
                 className="pointer-events-none absolute left-1/2 top-0 h-[70%] w-[70%] -translate-x-1/2 bg-gradient-to-b from-[#E8D8B5]/20 to-transparent [clip-path:polygon(34%_0,66%_0,100%_100%,0_100%)]"
               />
-              {/* piso do estúdio + sombra de contato */}
-              <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[22%] bg-gradient-to-t from-black/60 to-transparent" />
-              <span aria-hidden className="absolute bottom-[9%] left-1/2 h-5 w-1/2 -translate-x-1/2 rounded-[50%] bg-black/80 blur-xl" />
-              <Image
-                src={product.imageUrl ?? "/products/under-labz-dimethylex.png"}
-                alt={product.name}
-                width={420}
-                height={560}
-                priority
-                className="relative h-full w-auto object-contain drop-shadow-[0_16px_16px_rgba(0,0,0,0.6)]"
-              />
+              {/* pedestal escuro + sombra de contato */}
+              <span aria-hidden className="absolute bottom-[7%] left-1/2 h-[7%] w-[64%] -translate-x-1/2 rounded-[50%] bg-gradient-to-b from-[#2a2a31] to-[#0b0b0e] shadow-[0_18px_30px_-10px_rgba(0,0,0,0.9)] ring-1 ring-white/10" />
+              <span aria-hidden className="absolute bottom-[10%] left-1/2 h-4 w-2/5 -translate-x-1/2 rounded-[50%] bg-black/80 blur-lg" />
+              <div className="relative mb-[9%] h-[76%] w-full">
+                <Image
+                  src={product.imageUrl ?? "/products/under-labz-dimethylex.png"}
+                  alt={product.name}
+                  width={420}
+                  height={560}
+                  priority
+                  className="relative h-full w-full object-contain drop-shadow-[0_16px_16px_rgba(0,0,0,0.6)]"
+                />
+                {/* reflexo suave no pedestal */}
+                <Image
+                  src={product.imageUrl ?? "/products/under-labz-dimethylex.png"}
+                  alt=""
+                  aria-hidden
+                  width={420}
+                  height={560}
+                  className="pointer-events-none absolute left-0 top-full h-full w-full -scale-y-100 object-contain opacity-20 [mask-image:linear-gradient(to_top,rgba(0,0,0,0.6),transparent_38%)]"
+                />
+              </div>
             </div>
 
             {/* Selos legítimos sobre a foto */}
             <div className="absolute left-5 top-5 flex flex-col items-start gap-1.5">
-              <span className="inline-flex items-center gap-1.5 rounded border border-[#D4AF37]/60 bg-black/70 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#E8D8B5] backdrop-blur">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#D4AF37]" aria-hidden /> 100% Original
+              <span className="inline-flex items-center gap-1.5 rounded border border-[#D4AF37]/70 bg-gradient-to-b from-[#E6C768]/20 to-[#D4AF37]/5 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[#F1E2B8] shadow-lg shadow-black/50 backdrop-blur">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#D4AF37]" aria-hidden /> {imported ? "100% Original & Importado" : "100% Original"}
               </span>
               {SHOW_RATINGS && (
                 <span className="inline-flex items-center gap-1.5 rounded bg-black/70 px-2.5 py-1 text-xs backdrop-blur">

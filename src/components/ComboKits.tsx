@@ -79,7 +79,7 @@ function KitCard({ kit }: { kit: Kit }) {
   };
 
   return (
-    <article className="flex h-full flex-col justify-between rounded-2xl border border-white/[0.07] bg-[#131318] p-6 shadow-sm transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-[#E8D8B5]/25 hover:shadow-xl">
+    <article className="card-dark flex h-full flex-col justify-between rounded-2xl p-6">
       <div>
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -145,7 +145,8 @@ function KitCard({ kit }: { kit: Kit }) {
 
 export default function ComboKits() {
   return (
-    <section aria-labelledby="kits-title" className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
+    <section aria-labelledby="kits-title" className="stage-raised">
+      <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
       <SectionHeader
         id="kits-title"
         title="Combos Promocionais & Economia"
@@ -159,6 +160,7 @@ export default function ComboKits() {
           </li>
         ))}
       </ul>
+      </div>
     </section>
   );
 }

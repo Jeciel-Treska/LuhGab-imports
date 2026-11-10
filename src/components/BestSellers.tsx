@@ -18,7 +18,8 @@ export default function BestSellers() {
   const list = hasFeatured ? featured : products.slice(0, FALLBACK_COUNT);
 
   return (
-    <section id="destaques" aria-labelledby="best-title" className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6">
+    <section id="destaques" aria-labelledby="best-title" className="stage-black">
+      <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6">
       <div className="flex flex-col justify-between gap-4 border-b border-[#D4AF37]/25 pb-5 sm:flex-row sm:items-end">
         <div>
           <h2 id="best-title" className="text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
@@ -51,6 +52,7 @@ export default function BestSellers() {
           </li>
         ))}
       </ul>
+      </div>
     </section>
   );
 }

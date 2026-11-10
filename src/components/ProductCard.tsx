@@ -69,7 +69,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
         {/* Badges de Desconto e Frete */}
         <div className="pointer-events-none absolute left-2.5 top-2.5 flex flex-col items-start gap-1">
           {hasDiscount && (
-            <span className="rounded bg-red-600 px-2 py-0.5 text-xs font-bold text-white shadow-lg shadow-red-900/50">
+            <span className="bg-red-600 py-0.5 pl-2 pr-3.5 text-xs font-bold tabular-nums text-white [clip-path:polygon(0_0,100%_0,100%_calc(100%-7px),calc(100%-7px)_100%,0_100%)]">
               -{product.discountPercentage}% OFF
             </span>
           )}
@@ -149,10 +149,10 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           )}
 
           <div className="flex items-baseline gap-1.5">
-            <span className="font-display text-3xl font-extrabold tabular-nums text-white">
+            <span className="font-display text-[2.6rem] font-extrabold leading-none tabular-nums text-white">
               {formatBRL(pixPrice)}
             </span>
-            <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-xs font-bold uppercase text-emerald-400 ring-1 ring-emerald-500/30">
+            <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-xs font-bold uppercase text-emerald-300 ring-1 ring-emerald-400/30 backdrop-blur">
               no Pix
             </span>
           </div>

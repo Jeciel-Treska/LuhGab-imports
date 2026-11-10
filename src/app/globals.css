@@ -90,10 +90,10 @@ p {
       linear-gradient(#121216, #121216) padding-box,
       linear-gradient(
           150deg,
-          rgba(212, 175, 55, 0.7) 0%,
+          rgba(212, 175, 55, 0.5) 0%,
           rgba(255, 255, 255, 0.1) 28%,
           rgba(255, 255, 255, 0.04) 62%,
-          rgba(212, 175, 55, 0.4) 100%
+          rgba(212, 175, 55, 0.28) 100%
         )
         border-box;
     box-shadow:
@@ -121,16 +121,18 @@ p {
   /* Palco de estúdio para a foto do produto */
   .studio {
     background:
-      radial-gradient(ellipse 80% 55% at 50% 0%, rgba(232, 216, 181, 0.16), transparent 70%),
-      linear-gradient(180deg, #1c1c22 0%, #121216 55%, #0c0c0f 100%);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      radial-gradient(ellipse 75% 50% at 50% 0%, rgba(232, 216, 181, 0.14), transparent 72%),
+      linear-gradient(180deg, #1e1e26 0%, #18181e 50%, #0f0f13 100%);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 -28px 36px -20px rgba(0, 0, 0, 0.7);
   }
 
   .btn-red {
     background: linear-gradient(180deg, #ea3b3b 0%, #dc2626 55%, #c01f1f 100%);
     color: #fff;
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
       0 10px 22px -8px rgba(185, 28, 28, 0.6);
   }
 
@@ -160,8 +162,7 @@ p {
   /* Filete horizontal metálico entre seções */
   .divider-gold {
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.7) 50%, transparent);
-    box-shadow: 0 0 14px rgba(212, 175, 55, 0.2);
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.55) 50%, transparent);
   }
 
   .divider-red {
@@ -169,50 +170,24 @@ p {
     background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.8) 50%, transparent);
   }
 
-  /* Faixa transversal que separa o Hero do restante: barra vermelha + filete dourado em corte diagonal */
-  .strip {
-    position: relative;
-    height: 22px;
-    overflow: hidden;
-    background: #08080a;
-  }
-
-  .strip::before,
-  .strip::after {
-    content: "";
-    position: absolute;
-    left: -2%;
-    width: 104%;
-  }
-
-  .strip::before {
-    top: 2px;
-    height: 12px;
-    background: #b91c1c;
-    clip-path: polygon(0 0, 100% 45%, 100% 100%, 0 55%);
-  }
-
-  .strip::after {
-    top: 14px;
-    height: 4px;
-    background: #d4af37;
-    clip-path: polygon(0 0, 100% 45%, 100% 100%, 0 55%);
-  }
-
   /* Palcos de seção */
   .stage-hero {
     background:
-      linear-gradient(112deg, transparent 38%, rgba(212, 175, 55, 0.09) 50%, transparent 62%),
-      radial-gradient(ellipse 60% 70% at 78% 40%, rgba(232, 216, 181, 0.07), transparent 70%),
-      linear-gradient(180deg, #0c0c0f 0%, #08080a 100%);
+      radial-gradient(ellipse 70% 60% at 50% -10%, rgba(212, 175, 55, 0.12), transparent 75%),
+      radial-gradient(ellipse 50% 60% at 80% 55%, rgba(232, 216, 181, 0.05), transparent 70%),
+      #08080a;
   }
 
   .stage-raised {
-    background: linear-gradient(180deg, #0f0f13 0%, #0b0b0e 100%);
+    background: #0d0d12;
+  }
+
+  .stage-black {
+    background: #08080a;
   }
 
   .stage-urgency {
-    background: linear-gradient(180deg, #170a0b 0%, #0d0809 55%, #08080a 100%);
+    background: linear-gradient(180deg, #170a0b 0%, #0d0809 60%, #08080a 100%);
   }
 
   /* Entrada única do Hero: opacidade + 8px, curva exponencial */

@@ -17,10 +17,12 @@ export default function Home() {
   return (
     <div className="min-h-screen text-white">
       <PromoHeroBanner />
-      <div aria-hidden className="strip" />
+      <div aria-hidden className="divider-gold" />
       <CategoryGrid />
+      <div aria-hidden className="divider-gold" />
       <BestSellers />
       <FlashDeals />
+      <div aria-hidden className="divider-gold" />
       <ComboKits />
     </div>
   );

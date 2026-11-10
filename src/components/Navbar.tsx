@@ -51,7 +51,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-[#08080A]/92 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#08080A]/90 backdrop-blur-xl">
         <nav aria-label="Principal" className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex h-20 items-center justify-between gap-4">
             {/* Mobile menu trigger */}
@@ -76,7 +76,7 @@ export default function Navbar() {
                 width={200}
                 height={160}
                 priority
-                className="h-11 w-auto rounded-md ring-1 ring-[#D4AF37]/50 sm:h-12"
+                className="h-11 w-auto rounded-md ring-1 ring-[#D4AF37]/50 shadow-[0_0_22px_-4px_rgba(212,175,55,0.5)] sm:h-12"
               />
               <span className="hidden font-display text-2xl font-black uppercase tracking-tight text-white sm:inline-block">
                 LuhGab <span className="font-light text-[#D4AF37]">Imports</span>
@@ -89,7 +89,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="whitespace-nowrap rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition hover:bg-white/5 hover:text-[#E8D8B5]"
+                  className="relative whitespace-nowrap px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition-colors duration-200 after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-[#D4AF37] after:transition-transform after:duration-200 after:ease-out hover:text-white hover:after:scale-x-100"
                 >
                   {link.label}
                 </Link>
@@ -148,7 +148,7 @@ export default function Navbar() {
                 <ShoppingBag className="h-4 w-4" />
                 <span className="hidden sm:inline">{formatBRL(total)}</span>
                 {itemCount > 0 && (
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#D4AF37] px-1 text-xs font-bold text-black">
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold tabular-nums text-white">
                     {itemCount}
                   </span>
                 )}
@@ -175,7 +175,6 @@ export default function Navbar() {
             </button>
           </form>
         </nav>
-        <div aria-hidden className="divider-gold opacity-80" />
       </header>
 
       {/* Drawer mobile */}

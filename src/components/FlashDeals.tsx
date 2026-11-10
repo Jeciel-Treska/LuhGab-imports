@@ -32,19 +32,25 @@ function Countdown() {
       ? ["--", "--", "--"]
       : [Math.floor(remaining / 3600), Math.floor((remaining % 3600) / 60), remaining % 60].map(pad);
 
+  const dayPct = remaining === null ? 100 : Math.max(0, Math.min(100, (remaining / 86400) * 100));
+  const labels = ["h", "min", "s"];
+
   return (
-    <div
-      role="timer"
-      aria-label="Tempo restante das ofertas"
-      className="flex items-center gap-1.5 text-xs font-bold tabular-nums text-zinc-300"
-    >
-      <span className="font-medium text-zinc-400">Termina em:</span>
-      {parts.map((part, i) => (
-        <span key={i} className="flex items-center gap-1">
-          <span className="rounded bg-red-600 px-2 py-1 text-xs font-bold tabular-nums text-white shadow-md shadow-red-900/40">{part}</span>
-          {i < 2 && <span className="font-semibold text-zinc-400">:</span>}
-        </span>
-      ))}
+    <div role="timer" aria-label="Tempo restante das ofertas" className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-2 text-xs font-semibold text-zinc-300">
+        <span className="text-zinc-400">Termina em</span>
+        {parts.map((part, i) => (
+          <span key={i} className="flex items-baseline gap-0.5">
+            <span className="min-w-[2.25rem] rounded-md border border-red-600 bg-black px-2 py-1 text-center font-display text-xl font-bold leading-none tabular-nums text-white">
+              {part}
+            </span>
+            <span className="text-[0.625rem] uppercase text-zinc-400">{labels[i]}</span>
+          </span>
+        ))}
+      </div>
+      <div aria-hidden className="h-1 w-full overflow-hidden rounded-full bg-white/10">
+        <div className="h-full rounded-full bg-red-600" style={{ width: `${dayPct}%` }} />
+      </div>
     </div>
   );
 }

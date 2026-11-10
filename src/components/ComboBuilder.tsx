@@ -190,7 +190,7 @@ export default function ComboBuilder() {
 
   // ---------------------------------------------------------------- Barra de patamares
   const tierBar = (
-    <div className="rounded-2xl border border-white/10 bg-[#131318] p-4 sm:p-5">
+    <div className="card-dark rounded-2xl p-4 hover:!translate-y-0 hover:!filter-none sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-bold text-white" aria-live="polite">
           {nudge}
@@ -207,11 +207,20 @@ export default function ComboBuilder() {
         role="progressbar"
         aria-label="Progresso do desconto"
         aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={progress}
-        className="mt-3 h-2 overflow-hidden rounded-full bg-white/10"
+        aria-valuemax={4}
+        aria-valuenow={Math.min(count, 4)}
+        className="mt-3 grid grid-cols-4 gap-1.5"
       >
-        <div className="h-full rounded-full bg-gradient-to-r from-[#B8942C] to-[#E6C768] transition-[width] duration-500" style={{ width: `${progress}%` }} />
+        {[1, 2, 3, 4].map((n) => (
+          <span
+            key={n}
+            className={`h-2 rounded-sm transition-colors duration-300 ${
+              count >= n
+                ? "bg-gradient-to-r from-[#B8942C] to-[#E6C768] shadow-[0_0_10px_rgba(212,175,55,0.55)]"
+                : "bg-white/10"
+            }`}
+          />
+        ))}
       </div>
       <ul className="mt-3 grid grid-cols-3 gap-2">
         {TIERS.map((t) => {
@@ -220,7 +229,7 @@ export default function ComboBuilder() {
             <li
               key={t.min}
               className={`flex flex-col items-center rounded-xl border px-1 py-2 text-center transition ${
-                on ? "border-[#D4AF37]/70 bg-[#D4AF37]/10" : "border-white/10 bg-white/[0.03]"
+                on ? "border-[#D4AF37] bg-gradient-to-b from-[#D4AF37]/25 to-[#D4AF37]/5 shadow-[0_0_22px_-6px_rgba(212,175,55,0.7)]" : "border-white/10 bg-white/[0.03]"
               }`}
             >
               <span className={`flex items-center gap-1 text-base font-black ${on ? "text-[#D4AF37]" : "text-zinc-400"}`}>
@@ -354,6 +363,11 @@ export default function ComboBuilder() {
             aria-label="Etapas do combo"
             className="sticky top-0 z-20 -mx-4 grid scroll-mt-16 grid-cols-3 gap-1 border-b border-white/10 bg-[#0E0E12]/95 p-2 backdrop-blur sm:mx-0 sm:border-white/10 sm:rounded-2xl sm:border"
           >
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-y-2 left-2 w-[calc((100%-1.5rem)/3)] rounded-xl bg-red-600 shadow-lg shadow-red-900/40 transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]"
+              style={{ transform: `translateX(calc(${tab} * (100% + 0.25rem)))` }}
+            />
             {STEPS.map((s, i) => {
               const active = tab === i;
               const n = stepCount(s.role);
@@ -368,8 +382,8 @@ export default function ComboBuilder() {
                   tabIndex={active ? 0 : -1}
                   onClick={() => setTab(i)}
                   onKeyDown={onTabKey}
-                  className={`relative flex min-h-14 flex-col items-center justify-center rounded-xl px-2 py-2 text-center transition ${
-                    active ? "bg-red-600 text-white" : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                  className={`relative z-10 flex min-h-14 flex-col items-center justify-center rounded-xl px-2 py-2 text-center transition-colors duration-200 ${
+                    active ? "text-white" : "text-zinc-400 hover:text-white"
                   }`}
                 >
                   <span className="flex items-center gap-1.5 text-sm font-bold leading-tight">
