@@ -34,7 +34,7 @@ export default function AdminLogin({ configured }: { configured: boolean }) {
   };
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center bg-white px-4 py-16">
+    <div className="admin-light flex min-h-[70vh] items-center justify-center bg-white px-4 py-16">
       <form
         onSubmit={submit}
         className="w-full max-w-sm rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8"

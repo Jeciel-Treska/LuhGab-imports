@@ -45,9 +45,9 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
   const hasDiscount = product.discountPercentage > 0;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-400 hover:shadow-xl sm:p-5">
+    <article className="card-dark group flex h-full flex-col overflow-hidden rounded-2xl p-4 sm:p-5">
       {/* Imagem do Produto */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-zinc-50 p-2">
+      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[radial-gradient(circle_at_50%_40%,#26262d,#15151a_70%)] p-2 ring-1 ring-white/5">
         <Link
           href={`/produto/${product.slug}`}
           aria-label={`Ver detalhes de ${product.name}`}
@@ -67,12 +67,12 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
         {/* Badges de Desconto e Frete */}
         <div className="pointer-events-none absolute left-2.5 top-2.5 flex flex-col items-start gap-1">
           {hasDiscount && (
-            <span className="rounded-md bg-rose-600 px-2 py-0.5 text-xs font-bold text-white shadow-sm">
+            <span className="rounded-md bg-gradient-to-b from-energy-red-500 to-energy-red-700 px-2 py-0.5 text-xs font-black text-white shadow-[0_6px_14px_-6px_rgba(220,38,38,0.9)]">
               -{product.discountPercentage}% OFF
             </span>
           )}
           {product.price >= FREE_SHIPPING_THRESHOLD && (
-            <span className="rounded-md bg-zinc-900 px-2 py-0.5 text-xs font-semibold text-white">
+            <span className="rounded-md border border-gold/50 bg-black/60 px-2 py-0.5 text-xs font-semibold text-gold">
               Frete Grátis
             </span>
           )}
@@ -81,7 +81,7 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
         {rank !== undefined && (
           <span
             aria-label={`${rank}º mais vendido`}
-            className="absolute bottom-2.5 left-2.5 rounded-full bg-zinc-900 px-2.5 py-0.5 text-xs font-black text-white"
+            className="absolute bottom-2.5 left-2.5 rounded-full bg-gradient-gold px-2.5 py-0.5 text-xs font-black text-black"
           >
             {rank}º Mais Vendido
           </span>
@@ -92,11 +92,11 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           onClick={() => toggleFavorite(product.id)}
           aria-pressed={favorite}
           aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-          className="absolute right-1.5 top-1.5 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow-sm transition hover:scale-110 active:scale-90"
+          className="absolute right-1.5 top-1.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/50 backdrop-blur transition hover:scale-110 active:scale-90"
         >
           <Heart
             className={`h-5 w-5 transition-colors ${
-              favorite ? "fill-rose-500 text-rose-500" : "text-zinc-400 hover:text-zinc-600"
+              favorite ? "fill-energy-red-500 text-energy-red-500" : "text-zinc-300 hover:text-white"
             }`}
           />
         </button>
@@ -104,20 +104,20 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
 
       {/* Detalhes & Preço */}
       <div className="mt-4 flex flex-1 flex-col">
-        <p className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+        <p className="text-xs font-bold uppercase tracking-wider text-gold">
           {product.brandName}
         </p>
 
-        <h3 className="mt-1 line-clamp-2 min-h-[2.75rem] text-sm font-bold leading-snug text-zinc-900">
-          <Link href={`/produto/${product.slug}`} className="hover:text-zinc-600 transition">
+        <h3 className="mt-1 line-clamp-2 min-h-[2.75rem] text-sm font-bold leading-snug text-white">
+          <Link href={`/produto/${product.slug}`} className="transition hover:text-gold">
             {product.name}
           </Link>
         </h3>
 
         {SHOW_RATINGS && (
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-zinc-500">
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-zinc-400">
             <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-            <span className="font-bold text-zinc-800">{product.rating.toFixed(1)}</span>
+            <span className="font-bold text-white">{product.rating.toFixed(1)}</span>
             <span>({product.reviewCount})</span>
           </div>
         )}
@@ -127,30 +127,30 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           onClick={() => toggleCompare(product.id)}
           aria-pressed={comparing}
           className={`mb-3 mt-2 flex min-h-[32px] w-fit items-center gap-1.5 text-xs font-semibold transition ${
-            comparing ? "text-emerald-700" : "text-zinc-500 hover:text-zinc-900"
+            comparing ? "text-emerald-400" : "text-zinc-400 hover:text-white"
           }`}
         >
           <GitCompareArrows className="h-4 w-4" aria-hidden />
           {comparing ? "Comparando" : "Comparar"}
         </button>
 
-        <div className="mt-auto pt-4 border-t border-zinc-100">
+        <div className="mt-auto border-t border-white/10 pt-4">
           {hasDiscount && (
-            <p className="text-xs text-zinc-500 line-through">
+            <p className="text-xs text-zinc-400 line-through">
               {formatBRL(product.originalPrice)}
             </p>
           )}
 
           <div className="flex items-baseline gap-1.5">
-            <span className="font-display text-3xl font-extrabold text-zinc-950">
+            <span className="font-display text-3xl font-extrabold text-white">
               {formatBRL(pixPrice)}
             </span>
-            <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-xs font-bold uppercase text-emerald-800">
+            <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-xs font-bold uppercase text-emerald-400">
               no Pix
             </span>
           </div>
 
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-zinc-400">
             Ou {formatBRL(product.price)} em até {product.installments}x de {formatBRL(installment)} sem juros
           </p>
         </div>
@@ -161,10 +161,10 @@ export default function ProductCard({ product, cta = "Comprar", rank }: ProductC
           disabled={!available}
           className={`mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl text-xs font-bold uppercase tracking-wider transition active:scale-95 ${
             !available
-              ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
+              ? "cursor-not-allowed bg-white/5 text-zinc-500"
               : added
                 ? "bg-emerald-600 text-white"
-                : "bg-zinc-950 text-white hover:bg-zinc-800 shadow-sm"
+                : "btn-red"
           }`}
         >
           {!available ? (

@@ -12,20 +12,16 @@ const MESSAGES = [
 export default function TopBanner() {
   const track = [...MESSAGES, ...MESSAGES];
   return (
-    <div className="overflow-hidden border-b border-zinc-800 bg-zinc-950 text-zinc-300">
+    <div className="overflow-hidden border-b border-gold/30 bg-gradient-to-r from-[#7f1111] via-energy-red-600 to-[#7f1111] text-white">
       <ul
         aria-label="Vantagens da loja"
-        className="animate-marquee flex w-max items-center py-2 text-xs motion-reduce:animate-none font-medium uppercase tracking-[0.16em]"
+        className="animate-marquee flex w-max items-center py-2 text-xs font-bold uppercase tracking-[0.16em] motion-reduce:animate-none"
       >
         {track.map((text, i) => (
-          <li
-            key={i}
-            aria-hidden={i >= MESSAGES.length}
-            className="flex items-center whitespace-nowrap"
-          >
+          <li key={i} aria-hidden={i >= MESSAGES.length} className="flex items-center whitespace-nowrap">
             <span className="px-6">{text}</span>
-            <span aria-hidden className="text-zinc-400">
-              •
+            <span aria-hidden className="text-gold">
+              ◆
             </span>
           </li>
         ))}

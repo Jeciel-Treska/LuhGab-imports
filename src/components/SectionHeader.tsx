@@ -18,20 +18,22 @@ export default function SectionHeader({
   children,
 }: SectionHeaderProps) {
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-zinc-200/80 pb-4">
-      <span aria-hidden className="h-6 w-1.5 rounded-full bg-zinc-950" />
-      <h2 id={id} className="font-display text-2xl font-black uppercase tracking-tight text-zinc-950 sm:text-3xl">
-        {title}
-      </h2>
-      {children}
-      {href && (
-        <Link
-          href={href}
-          className="ml-auto inline-flex min-h-11 items-center gap-1 text-xs font-bold uppercase tracking-wider text-zinc-900 transition hover:text-zinc-600"
-        >
-          {linkLabel} <ArrowRight className="h-4 w-4" />
-        </Link>
-      )}
+    <div className="mb-6 border-b border-white/10 pb-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <span aria-hidden className="h-7 w-1.5 rounded-full bg-gradient-to-b from-gold to-energy-red-600" />
+        <h2 id={id} className="font-display text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
+          {title}
+        </h2>
+        {children}
+        {href && (
+          <Link
+            href={href}
+            className="ml-auto inline-flex min-h-11 items-center gap-1 text-xs font-bold uppercase tracking-wider text-gold transition hover:text-white"
+          >
+            {linkLabel} <ArrowRight className="h-4 w-4" />
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

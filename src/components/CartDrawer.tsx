@@ -76,7 +76,7 @@ export default function CartDrawer() {
     <div className="fixed inset-0 z-[100] flex justify-end">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300"
         onClick={toggleCart}
         aria-hidden="true"
       />
@@ -86,11 +86,12 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Carrinho de compras"
-        className="relative z-10 flex h-full w-full max-w-md flex-col bg-white border-l border-zinc-200 shadow-2xl transition-transform duration-300 ease-out"
+        className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-gold/40 bg-[#0B0B0E] shadow-[-24px_0_60px_-20px_rgba(220,38,38,0.35)] transition-transform duration-300 ease-out"
       >
-        <header className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
-          <h2 className="flex items-center gap-2 text-base font-bold text-zinc-950">
-            <ShoppingBag className="h-5 w-5 text-zinc-900" aria-hidden />
+        <header className="flex items-center justify-between relative border-b border-white/10 px-6 py-4">
+          <span aria-hidden className="rule-brand absolute inset-x-0 bottom-0 opacity-70" />
+          <h2 className="flex items-center gap-2 font-display text-xl font-black uppercase tracking-tight text-white">
+            <ShoppingBag className="h-5 w-5 text-gold" aria-hidden />
             Seu Carrinho ({items.reduce((acc, i) => acc + i.quantity, 0)})
           </h2>
           <button
@@ -98,7 +99,7 @@ export default function CartDrawer() {
             type="button"
             onClick={toggleCart}
             aria-label="Fechar carrinho"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-zinc-400 transition hover:bg-white/10 hover:text-white"
           >
             <X className="h-5 w-5" />
           </button>
@@ -106,17 +107,17 @@ export default function CartDrawer() {
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 text-zinc-400">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-gold">
               <ShoppingBag className="h-8 w-8" />
             </div>
             <div>
-              <p className="font-bold text-zinc-900">Seu carrinho está vazio</p>
-              <p className="mt-1 text-xs text-zinc-500">Explore nossa linha de suplementos importados e nacionais.</p>
+              <p className="font-bold text-white">Seu carrinho está vazio</p>
+              <p className="mt-1 text-xs text-zinc-400">Explore nossa linha de suplementos importados e nacionais.</p>
             </div>
             <button
               type="button"
               onClick={toggleCart}
-              className="mt-2 rounded-xl bg-zinc-950 px-6 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm hover:bg-zinc-800 transition"
+              className="btn-red mt-2 rounded-xl px-6 py-3 text-xs font-black uppercase tracking-wider"
             >
               Continuar Comprando
             </button>
@@ -124,16 +125,16 @@ export default function CartDrawer() {
         ) : (
           <>
             {/* Barra de Frete Grátis */}
-            <div className="border-b border-zinc-100 bg-zinc-50 px-6 py-3.5">
-              <p className="mb-2 text-xs font-semibold text-zinc-700">
+            <div className="border-b border-white/10 bg-[#0E0E12] px-6 py-3.5">
+              <p className="mb-2 text-xs font-semibold text-zinc-300">
                 {freeShipping ? (
-                  <span className="font-bold text-emerald-700">
-                    🎉 Parabéns! Você ganhou Frete Grátis!
+                  <span className="font-bold text-emerald-400">
+                    Parabéns! Você ganhou Frete Grátis!
                   </span>
                 ) : (
                   <>
                     Faltam apenas{" "}
-                    <strong className="text-zinc-950 font-bold">{formatBRL(remaining)}</strong> para
+                    <strong className="font-bold text-gold">{formatBRL(remaining)}</strong> para
                     Frete Grátis!
                   </>
                 )}
@@ -144,11 +145,11 @@ export default function CartDrawer() {
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={Math.round(progress)}
-                className="h-2 overflow-hidden rounded-full bg-zinc-200"
+                className="h-2 overflow-hidden rounded-full bg-white/10"
               >
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
-                    freeShipping ? "bg-emerald-600" : "bg-zinc-950"
+                    freeShipping ? "bg-emerald-500" : "bg-gradient-to-r from-gold to-energy-red-600"
                   }`}
                   style={{ width: `${progress}%` }}
                 />
@@ -156,12 +157,12 @@ export default function CartDrawer() {
             </div>
 
             {/* Lista de Itens */}
-            <ul className="flex-1 divide-y divide-zinc-100 overflow-y-auto px-6">
+            <ul className="flex-1 divide-y divide-white/10 overflow-y-auto px-6">
               {items.map((item) => {
                 const prod = getProductById(item.productId);
                 return (
                   <li key={item.id} className="flex gap-4 py-4">
-                    <div className="h-16 w-16 shrink-0 rounded-xl border border-zinc-100 bg-zinc-50 p-1 flex items-center justify-center">
+                    <div className="h-16 w-16 shrink-0 flex items-center justify-center rounded-xl border border-gold/20 bg-[radial-gradient(circle_at_50%_40%,#26262d,#15151a_70%)] p-1">
                       <ProductThumb
                         type={prod?.model3DConfig.type ?? "whey-tub"}
                         color={prod?.model3DConfig.color ?? "#000000"}
@@ -173,41 +174,41 @@ export default function CartDrawer() {
                       />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-bold text-zinc-900">{item.name}</p>
-                      <p className="text-xs text-zinc-500">
+                      <p className="truncate text-sm font-bold text-white">{item.name}</p>
+                      <p className="text-xs text-zinc-400">
                         {item.flavor.name} · {item.size.label}
                         {item.comboDiscount > 0 && (
-                          <span className="ml-2 rounded bg-rose-100 px-1.5 py-0.5 text-xs font-bold text-rose-700">
+                          <span className="ml-2 rounded border border-gold/40 bg-gold/10 px-1.5 py-0.5 text-xs font-bold text-gold">
                             Combo -{item.comboDiscount}%
                           </span>
                         )}
                       </p>
-                      <p className="mt-1 text-xs font-semibold text-zinc-700">
+                      <p className="mt-1 text-xs font-semibold text-zinc-300">
                         {formatBRL(item.unitPrice)} un.
                       </p>
                       <div className="mt-2 flex items-center justify-between">
-                        <div className="flex items-center rounded-lg border border-zinc-200 bg-white">
+                        <div className="flex items-center rounded-lg border border-white/15 bg-[#121216]">
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             aria-label={`Diminuir quantidade de ${item.name}`}
-                            className="flex h-7 w-7 items-center justify-center text-zinc-500 hover:text-zinc-950"
+                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-gold"
                           >
                             <Minus className="h-3 w-3" />
                           </button>
-                          <span className="w-6 text-center text-xs font-bold tabular-nums text-zinc-900">
+                          <span className="w-6 text-center text-xs font-bold tabular-nums text-white">
                             {item.quantity}
                           </span>
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             aria-label={`Aumentar quantidade de ${item.name}`}
-                            className="flex h-7 w-7 items-center justify-center text-zinc-500 hover:text-zinc-950"
+                            className="flex h-7 w-7 items-center justify-center text-zinc-400 hover:text-gold"
                           >
                             <Plus className="h-3 w-3" />
                           </button>
                         </div>
-                        <span className="text-sm font-black text-zinc-950">
+                        <span className="text-sm font-black text-white">
                           {formatBRL(lineTotal(item))}
                         </span>
                       </div>
@@ -216,7 +217,7 @@ export default function CartDrawer() {
                       type="button"
                       onClick={() => removeItem(item.id)}
                       aria-label={`Remover ${item.name}`}
-                      className="h-11 w-11 shrink-0 self-start text-zinc-500 transition hover:text-rose-600"
+                      className="h-11 w-11 shrink-0 self-start text-zinc-400 transition hover:text-energy-red-500"
                     >
                       <Trash2 className="mx-auto h-4 w-4" />
                     </button>
@@ -226,14 +227,14 @@ export default function CartDrawer() {
             </ul>
 
             {/* Footer do Carrinho */}
-            <div className="space-y-3 border-t border-zinc-100 bg-zinc-50/80 p-6">
+            <div className="space-y-3 border-t border-gold/30 bg-[#0E0E12] p-6">
               {activeCoupon ? (
-                <p className="flex items-center justify-between rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2 text-xs font-semibold text-emerald-800">
+                <p className="flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-300">
                   <span className="flex items-center gap-1.5">
                     <Tag className="h-3.5 w-3.5" aria-hidden />
                     {activeCoupon.code}: -{formatBRL(couponValue)}
                   </span>
-                  <button type="button" onClick={removeCoupon} className="text-xs text-rose-600 underline">
+                  <button type="button" onClick={removeCoupon} className="text-xs text-energy-red-400 underline">
                     Remover
                   </button>
                 </p>
@@ -246,41 +247,41 @@ export default function CartDrawer() {
                     aria-label="Cupom de desconto"
                     placeholder="Cupom de desconto"
                     autoCapitalize="characters"
-                    className="h-9 min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-3 text-xs uppercase placeholder:normal-case placeholder:text-zinc-400 outline-none focus:border-zinc-900"
+                    className="h-9 min-w-0 flex-1 rounded-xl border border-white/15 bg-[#121216] px-3 text-xs uppercase text-white outline-none placeholder:normal-case placeholder:text-zinc-500 focus:border-gold"
                   />
                   <button
                     type="submit"
-                    className="h-9 rounded-xl border border-zinc-300 bg-white px-3.5 text-xs font-bold text-zinc-800 hover:bg-zinc-100 transition"
+                    className="h-9 rounded-xl border border-gold/60 px-3.5 text-xs font-bold text-gold transition hover:bg-gold hover:text-black"
                   >
                     Aplicar
                   </button>
                 </form>
               )}
 
-              <dl className="space-y-1 text-xs text-zinc-600">
+              <dl className="space-y-1 text-xs text-zinc-400">
                 <div className="flex justify-between">
                   <dt>Subtotal</dt>
-                  <dd className="font-semibold text-zinc-900">{formatBRL(subtotal)}</dd>
+                  <dd className="font-semibold text-white">{formatBRL(subtotal)}</dd>
                 </div>
                 {otherDiscounts > 0 && (
-                  <div className="flex justify-between text-emerald-700 font-semibold">
+                  <div className="flex justify-between font-semibold text-emerald-400">
                     <dt>Descontos</dt>
                     <dd>-{formatBRL(otherDiscounts)}</dd>
                   </div>
                 )}
                 {couponValue > 0 && (
-                  <div className="flex justify-between text-emerald-700 font-semibold">
+                  <div className="flex justify-between font-semibold text-emerald-400">
                     <dt>Cupom de Desconto</dt>
                     <dd>-{formatBRL(couponValue)}</dd>
                   </div>
                 )}
-                <div className="flex justify-between border-t border-zinc-200 pt-2">
+                <div className="flex justify-between border-t border-white/10 pt-2">
                   <dt>Total no cartão</dt>
-                  <dd className="font-semibold text-zinc-900">{formatBRL(total)}</dd>
+                  <dd className="font-semibold text-white">{formatBRL(total)}</dd>
                 </div>
-                <div className="flex justify-between text-base font-black text-zinc-950">
+                <div className="flex items-center justify-between rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-base font-black text-emerald-300">
                   <dt>Total no Pix ({PIX_DISCOUNT_PERCENT}% OFF)</dt>
-                  <dd>{formatBRL(pixTotal)}</dd>
+                  <dd className="text-emerald-400">{formatBRL(pixTotal)}</dd>
                 </div>
               </dl>
 
@@ -288,7 +289,7 @@ export default function CartDrawer() {
                 href={orderUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:bg-emerald-500 active:scale-95"
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white shadow-[0_10px_24px_-10px_rgba(16,185,129,0.8)] transition hover:bg-emerald-500 active:scale-95"
               >
                 <WhatsAppIcon className="h-5 w-5" />
                 Finalizar Pedido pelo WhatsApp

@@ -2,16 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, Check, CreditCard, ShieldCheck, ShoppingBag, Star, Truck, Zap } from "lucide-react";
+import { Check, CreditCard, ShieldCheck, ShoppingBag, Star, Truck, Zap } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { applyStoreOverrides, getProductById, products } from "@/data/products";
+import { getProductById, products } from "@/data/products";
 import { PIX_DISCOUNT_PERCENT, SHOW_RATINGS, buildWhatsAppUrl } from "@/data/site";
 import { formatBRL } from "@/lib/format";
-import { fetchPublicStoreConfig } from "@/lib/storeConfigClient";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { useHeroConfig } from "@/components/StoreConfigProvider";
-import type { HeroConfig } from "@/types/store";
 
 const HERO_PICK_KEY = "lg-hero-pick";
 
@@ -23,41 +20,10 @@ const buildSeals = (installments: number) => [
 ];
 
 export default function PromoHeroBanner() {
-  const contextHero = useHeroConfig();
-  const [syncedHero, setSyncedHero] = useState<HeroConfig | null>(null);
+  const hero = useHeroConfig();
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const [randomPick, setRandomPick] = useState<string | null>(null);
-
-  // Se a CDN/router entregarem um HTML de segundos atrás, confirma Hero e preços
-  // direto na rota pública (mesma requisição deduplicada do StoreConfigProvider).
-  useEffect(() => {
-    let active = true;
-    const sync = async () => {
-      const data = await fetchPublicStoreConfig();
-      if (!active || !data) return;
-      applyStoreOverrides(data.products);
-      setSyncedHero(data.hero);
-    };
-    void sync();
-    const onVisible = () => {
-      if (document.visibilityState === "visible") void sync();
-    };
-    document.addEventListener("visibilitychange", onVisible);
-    const timer = window.setInterval(() => void sync(), 60_000);
-    return () => {
-      active = false;
-      document.removeEventListener("visibilitychange", onVisible);
-      window.clearInterval(timer);
-    };
-  }, []);
-
-  // Quando o provider recebe uma config mais nova, ele passa a ser a fonte.
-  useEffect(() => {
-    setSyncedHero(null);
-  }, [contextHero]);
-
-  const hero = syncedHero ?? contextHero;
   const lotteryKey = (hero.lotteryProductIds ?? []).join(",");
 
   // Sorteio do Hero: feito no navegador e mantido durante a sessão para não
@@ -105,38 +71,34 @@ export default function PromoHeroBanner() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-zinc-200 bg-gradient-to-b from-white via-zinc-50 to-white py-12 lg:py-20">
-      {/* Mobile: coluna única na ordem Texto → Foto → Preço/Botões/Selos (via `order`).
-          Desktop (lg): 2 colunas — textos/compra à esquerda, foto grande à direita. */}
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:content-center lg:gap-x-16 lg:gap-y-6">
-        <div className="order-1 flex flex-col items-start gap-6 lg:col-start-1 lg:row-start-1">
-          <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-100/80 px-3.5 py-1 text-xs font-semibold text-zinc-800">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+    <section className="stripe-band relative overflow-hidden border-b border-gold/20 py-12 lg:py-20">
+      <div aria-hidden className="rule-brand absolute inset-x-0 bottom-0" />
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16">
+        {/* Coluna Texto & Compra */}
+        <div className="flex flex-col items-start gap-6">
+          <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-black/40 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-gold">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-energy-red-500" />
             Destaque da loja • Laudo e lacre
           </span>
 
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-zinc-500">
-              {product.brandName}
-            </p>
-            <h1 className="mt-2 font-display text-5xl font-black uppercase tracking-tight text-zinc-950 sm:text-6xl xl:text-7xl">
+            <p className="text-xs font-black uppercase tracking-[0.25em] text-gold">{product.brandName}</p>
+            <h1 className="mt-2 font-display text-5xl font-black uppercase tracking-tight text-white sm:text-6xl xl:text-7xl">
               {product.name}
             </h1>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-zinc-600 sm:text-lg">
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-zinc-300 sm:text-lg">
               {product.shortDescription}
             </p>
           </div>
-        </div>
 
-        {/* Preço de Conversão */}
-        <div className="order-3 w-full max-w-md lg:col-start-1 lg:row-start-2">
-          <div className="w-full rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          {/* Preço de Conversão */}
+          <div className="card-dark w-full max-w-md rounded-2xl p-5">
             <div className="flex items-center justify-between">
-              <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-zinc-700">
+              <span className="rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-gold">
                 Condição Especial
               </span>
               {product.discountPercentage > 0 && (
-                <span className="rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-bold text-rose-700">
+                <span className="rounded-md bg-gradient-to-b from-energy-red-500 to-energy-red-700 px-2.5 py-0.5 text-xs font-black text-white">
                   -{product.discountPercentage}% OFF
                 </span>
               )}
@@ -144,33 +106,29 @@ export default function PromoHeroBanner() {
 
             <div className="mt-4 flex items-baseline gap-3">
               {product.discountPercentage > 0 && (
-                <span className="text-sm text-zinc-500 line-through">
-                  {formatBRL(product.originalPrice)}
-                </span>
+                <span className="text-sm text-zinc-400 line-through">{formatBRL(product.originalPrice)}</span>
               )}
-              <span className="font-display text-4xl font-extrabold text-zinc-950 sm:text-5xl">
+              <span className="font-display text-4xl font-extrabold text-white sm:text-5xl">
                 {formatBRL(product.price)}
               </span>
             </div>
 
-            <p className="mt-1 text-xs font-medium text-zinc-500">
+            <p className="mt-1 text-xs font-medium text-zinc-400">
               Ou {product.installments}x de {formatBRL(product.price / product.installments)} sem juros no cartão
             </p>
 
-            <div className="mt-3 flex items-center justify-between rounded-xl bg-emerald-50 px-3.5 py-2.5 text-xs font-bold text-emerald-800">
+            <div className="mt-3 flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2.5 text-xs font-bold text-emerald-300">
               <span>Pix à vista ({PIX_DISCOUNT_PERCENT}% OFF)</span>
-              <span className="text-sm font-black text-emerald-700">{formatBRL(pixPrice)}</span>
+              <span className="text-sm font-black text-emerald-400">{formatBRL(pixPrice)}</span>
             </div>
           </div>
-        </div>
 
-        {/* Botões de Ação */}
-        <div className="order-4 flex flex-col items-start gap-3 lg:col-start-1 lg:row-start-3">
+          {/* Botões de Ação */}
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <button
               type="button"
               onClick={buy}
-              className="flex h-14 items-center justify-center gap-2 rounded-xl bg-zinc-950 px-8 text-sm font-bold uppercase tracking-wider text-white shadow-lg transition hover:bg-zinc-800 active:scale-95"
+              className="btn-red flex h-14 items-center justify-center gap-2 rounded-xl px-8 text-sm font-black uppercase tracking-wider active:scale-95"
             >
               {added ? (
                 <>
@@ -187,31 +145,46 @@ export default function PromoHeroBanner() {
               href={buildWhatsAppUrl(`Olá! Quero pedir o ${product.name} por ${formatBRL(product.price)}.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-14 items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-7 text-sm font-bold uppercase tracking-wider text-zinc-800 transition hover:bg-zinc-50 hover:border-zinc-400 active:scale-95"
+              className="flex h-14 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-emerald-500 active:scale-95"
             >
-              <WhatsAppIcon className="h-5 w-5 text-emerald-600" />
+              <WhatsAppIcon className="h-5 w-5" />
               Pedir pelo WhatsApp
             </a>
           </div>
-          <p className="text-xs font-medium text-emerald-700">
+          <p className="text-xs font-medium text-emerald-400">
             Pague no Pix e economize {formatBRL(product.price - pixPrice)}
           </p>
+
+          {/* Selos de Confiança */}
+          <div className="grid w-full max-w-xl grid-cols-2 gap-4 border-t border-white/10 pt-6 sm:grid-cols-4">
+            {buildSeals(product.installments).map(({ icon: Icon, label, desc }) => (
+              <div key={label} className="flex flex-col">
+                <Icon className="h-5 w-5 text-gold" />
+                <span className="mt-1 text-xs font-bold text-white">{label}</span>
+                <span className="text-xs text-zinc-400">{desc}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Selos de Confiança */}
-        <div className="order-5 grid w-full max-w-xl grid-cols-2 gap-4 border-t border-zinc-200/80 pt-6 sm:grid-cols-4 lg:col-start-1 lg:row-start-4">
-          {buildSeals(product.installments).map(({ icon: Icon, label, desc }) => (
-            <div key={label} className="flex flex-col">
-              <Icon className="h-5 w-5 text-zinc-800" />
-              <span className="mt-1 text-xs font-bold text-zinc-900">{label}</span>
-              <span className="text-xs text-zinc-500">{desc}</span>
-            </div>
-          ))}
-        </div>
+        {/* Coluna Fotografia do Produto */}
+        <div className="relative mx-auto flex w-full max-w-md items-center justify-center lg:max-w-none">
+          {/* Halo + faixa esportiva atrás do produto */}
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-1/2 h-[85%] w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-energy-red-600/30 blur-[90px]"
+          />
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-1/2 h-[135%] w-[22%] -translate-x-1/2 -translate-y-1/2 rotate-[28deg] bg-gradient-to-b from-transparent via-gold/50 to-transparent opacity-70"
+          />
+          <div
+            aria-hidden
+            className="absolute left-[58%] top-1/2 h-[135%] w-[7%] -translate-x-1/2 -translate-y-1/2 rotate-[28deg] bg-gradient-to-b from-transparent via-energy-red-600/70 to-transparent"
+          />
 
-        {/* Fotografia do Produto: mobile logo abaixo do texto; desktop na coluna direita */}
-        <div className="relative order-2 mx-auto flex w-full max-w-sm items-center justify-center py-2 sm:max-w-md lg:col-start-2 lg:row-span-4 lg:row-start-1 lg:max-w-none lg:self-center lg:py-0">
-          <div className="relative flex aspect-square w-full max-w-lg items-center justify-center rounded-3xl border border-zinc-200/80 bg-white p-6 shadow-xl sm:p-8 lg:aspect-[4/5]">
+          <div className="card-dark relative flex aspect-[4/5] w-full max-w-lg items-center justify-center rounded-3xl border-gold/30 bg-[#0d0d11]/80 p-8 backdrop-blur-sm">
+            <span aria-hidden className="pointer-events-none absolute inset-2 rounded-[1.25rem] border border-gold/20" />
             <div className="relative flex h-full w-full items-center justify-center">
               <Image
                 src={product.imageUrl ?? "/products/under-labz-dimethylex.png"}
@@ -219,17 +192,17 @@ export default function PromoHeroBanner() {
                 width={420}
                 height={560}
                 priority
-                className="h-full w-auto object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.15)]"
+                className="h-full w-auto object-contain drop-shadow-[0_24px_40px_rgba(220,38,38,0.45)]"
               />
             </div>
 
             {/* Badge de Avaliação */}
             {SHOW_RATINGS && (
-              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-2xl border border-zinc-200 bg-white/95 px-3.5 py-2 shadow-sm backdrop-blur">
-                <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-2xl border border-gold/30 bg-black/60 px-3.5 py-2 backdrop-blur">
+                <Star className="h-5 w-5 fill-gold text-gold" />
                 <div className="text-xs leading-tight">
-                  <span className="font-extrabold text-zinc-900">{product.rating.toFixed(1)} / 5.0</span>
-                  <span className="block text-xs text-zinc-500">{product.reviewCount} avaliações</span>
+                  <span className="font-extrabold text-white">{product.rating.toFixed(1)} / 5.0</span>
+                  <span className="block text-xs text-zinc-400">{product.reviewCount} avaliações</span>
                 </div>
               </div>
             )}

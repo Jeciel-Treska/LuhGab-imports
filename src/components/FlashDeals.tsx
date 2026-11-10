@@ -36,13 +36,13 @@ function Countdown() {
     <div
       role="timer"
       aria-label="Tempo restante das ofertas"
-      className="flex items-center gap-1.5 text-xs font-bold tabular-nums text-zinc-600"
+      className="flex items-center gap-1.5 text-xs font-bold tabular-nums text-zinc-300"
     >
-      <span className="text-zinc-500 font-medium">Termina em:</span>
+      <span className="font-medium text-zinc-400">Termina em:</span>
       {parts.map((part, i) => (
         <span key={i} className="flex items-center gap-1">
-          <span className="rounded bg-zinc-950 px-2 py-1 font-mono text-xs font-bold text-white">{part}</span>
-          {i < 2 && <span className="text-zinc-400 font-bold">:</span>}
+          <span className="rounded border border-gold/40 bg-black px-2 py-1 font-mono text-xs font-bold text-gold">{part}</span>
+          {i < 2 && <span className="font-bold text-energy-red-500">:</span>}
         </span>
       ))}
     </div>

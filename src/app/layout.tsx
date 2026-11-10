@@ -4,6 +4,7 @@ import { loadStoreConfig } from "@/lib/storeConfig";
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 import "./globals.css";
+import "./store-dark.css";
 import CartDrawer from "@/components/CartDrawer";
 import CompareModal from "@/components/CompareModal";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -60,7 +61,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#08080A",
   width: "device-width",
   initialScale: 1,
 };
@@ -80,7 +81,7 @@ export default async function RootLayout({
   applyStoreOverrides(storeConfig.products);
   return (
     <html lang="pt-BR" className={`${display.variable} ${body.variable}`}>
-      <body className="min-h-screen bg-[#F8F9FA] font-sans text-zinc-900 antialiased">
+      <body className="store-dark min-h-screen font-sans text-white antialiased">
         <JsonLd data={organizationSchema()} />
         <StoreConfigProvider config={storeConfig}>
         <Providers>

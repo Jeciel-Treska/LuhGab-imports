@@ -8,7 +8,7 @@ const CATEGORIES = [
     tag: "Alta Procura",
     href: "/produtos?categoria=termogenicos",
     icon: Flame,
-    color: "bg-rose-50 text-rose-700",
+    color: "bg-energy-red-600/15 text-energy-red-400",
   },
   {
     title: "WHEY & PROTEÍNAS",
@@ -16,7 +16,7 @@ const CATEGORIES = [
     tag: "Mais Vendidos",
     href: "/produtos?categoria=proteina",
     icon: Dumbbell,
-    color: "bg-zinc-100 text-zinc-900",
+    color: "bg-gold/15 text-gold",
   },
   {
     title: "CREATINAS PURAS",
@@ -24,7 +24,7 @@ const CATEGORIES = [
     tag: "Força & Volume",
     href: "/produtos?categoria=creatina",
     icon: Zap,
-    color: "bg-blue-50 text-blue-600",
+    color: "bg-gold/15 text-gold",
   },
   {
     title: "PRÉ-TREINOS",
@@ -32,7 +32,7 @@ const CATEGORIES = [
     tag: "Performance",
     href: "/produtos?categoria=pre-treino",
     icon: Sparkles,
-    color: "bg-amber-50 text-amber-700",
+    color: "bg-energy-red-600/15 text-energy-red-400",
   },
 ];
 
@@ -41,16 +41,16 @@ export default function CategoryGrid() {
     <section aria-labelledby="cat-title" className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+          <span className="text-xs font-bold uppercase tracking-widest text-gold">
             Categorias Oficiais
           </span>
-          <h2 id="cat-title" className="mt-1 font-display text-3xl font-extrabold uppercase tracking-tight text-zinc-950 sm:text-4xl">
+          <h2 id="cat-title" className="mt-1 font-display text-3xl font-extrabold uppercase tracking-tight text-white sm:text-4xl">
             Navegue por Objetivo
           </h2>
         </div>
         <Link
           href="/produtos"
-          className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-zinc-900 transition hover:underline"
+          className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-gold transition hover:text-white"
         >
           Ver todo o estoque <ArrowUpRight className="h-4 w-4" />
         </Link>
@@ -63,11 +63,11 @@ export default function CategoryGrid() {
             <Link
               key={cat.href}
               href={cat.href}
-              className="group relative flex flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-400 hover:shadow-xl"
+              className="card-dark group relative flex flex-col justify-between rounded-2xl p-6"
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-bold text-zinc-700">
+                  <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs font-bold text-zinc-300">
                     {cat.tag}
                   </span>
                   <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${cat.color} transition group-hover:scale-110`}>
@@ -76,16 +76,16 @@ export default function CategoryGrid() {
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="font-display text-2xl font-black uppercase tracking-tight text-zinc-950 group-hover:text-zinc-700 transition">
+                  <h3 className="font-display text-2xl font-black uppercase tracking-tight text-white transition group-hover:text-gold">
                     {cat.title}
                   </h3>
-                  <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+                  <p className="mt-1 text-xs leading-relaxed text-zinc-400">
                     {cat.subtitle}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-zinc-900 transition group-hover:text-zinc-600">
+              <div className="mt-6 flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-gold transition group-hover:text-white">
                 <span>Ver produtos</span>
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </div>

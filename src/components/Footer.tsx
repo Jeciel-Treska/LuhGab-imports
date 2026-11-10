@@ -49,12 +49,13 @@ const SECURITY = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-zinc-800 bg-zinc-950 text-zinc-400">
+    <footer className="relative border-t border-gold/30 bg-[#060608] text-zinc-400">
+      <div aria-hidden className="rule-brand absolute inset-x-0 top-0" />
       {/* Ofertas pelo WhatsApp */}
-      <section aria-labelledby="newsletter-title" className="border-b border-zinc-800 py-12">
+      <section aria-labelledby="newsletter-title" className="border-b border-white/10 bg-gradient-to-r from-[#1a0808] via-[#0c0c0f] to-[#1a0808] py-12">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 sm:px-6 lg:flex-row">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
+            <span className="text-xs font-bold uppercase tracking-widest text-gold">
               Clube LuhGab VIP
             </span>
             <h2 id="newsletter-title" className="mt-1 font-display text-2xl font-black uppercase text-white sm:text-3xl">
@@ -65,7 +66,7 @@ export default function Footer() {
             href={buildWhatsAppUrl("Olá! Quero receber as ofertas da LuhGab Imports pelo WhatsApp.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-bold text-zinc-950 transition hover:bg-zinc-200"
+            className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 text-sm font-bold text-white transition hover:bg-emerald-500"
           >
             <WhatsAppIcon className="h-4 w-4" aria-hidden />
             Quero receber ofertas
@@ -95,7 +96,7 @@ export default function Footer() {
 
         {COLUMNS.map((column) => (
           <nav key={column.title} aria-label={column.title}>
-            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-white">
+            <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-gold">
               {column.title}
             </h3>
             <ul className="space-y-2.5 text-sm">
@@ -106,12 +107,12 @@ export default function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="transition hover:text-white"
+                      className="transition hover:text-gold"
                     >
                       {link.label}
                     </a>
                   ) : (
-                    <Link href={link.href} className="transition hover:text-white">
+                    <Link href={link.href} className="transition hover:text-gold">
                       {link.label}
                     </Link>
                   )}
@@ -123,12 +124,12 @@ export default function Footer() {
       </div>
 
       {/* Selos & Copyright */}
-      <div className="border-t border-zinc-900 py-8">
+      <div className="border-t border-white/10 py-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-xs text-zinc-400 sm:px-6 md:flex-row">
           <div className="flex flex-wrap items-center gap-6">
             {SECURITY.map(({ icon: Icon, label }) => (
               <span key={label} className="flex items-center gap-1.5">
-                <Icon className="h-4 w-4 text-emerald-400" /> {label}
+                <Icon className="h-4 w-4 text-gold" /> {label}
               </span>
             ))}
           </div>
@@ -137,7 +138,7 @@ export default function Footer() {
             <Link
               href="/admin"
               title="Painel do Lojista"
-              className="inline-flex min-h-[44px] items-center gap-1.5 text-zinc-500 transition hover:text-zinc-200 md:min-h-0"
+              className="inline-flex min-h-[44px] items-center gap-1.5 text-zinc-400 transition hover:text-gold md:min-h-0"
             >
               <Lock className="h-3.5 w-3.5" aria-hidden /> Área do Lojista
             </Link>

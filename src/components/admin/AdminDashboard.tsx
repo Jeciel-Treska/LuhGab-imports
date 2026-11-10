@@ -380,7 +380,7 @@ export default function AdminDashboard({
   };
 
   return (
-    <div className="bg-white pb-32 text-zinc-950">
+    <div className="admin-light bg-white pb-32 text-zinc-950">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
         {/* Cabeçalho */}
         <header className="flex flex-wrap items-center gap-3">

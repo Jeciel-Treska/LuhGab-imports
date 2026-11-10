@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 // TestimonialsSection fica fora até existirem depoimentos reais (ver data/testimonials.ts).
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#F8F9FA]">
+    <div className="min-h-screen text-white">
       <PromoHeroBanner />
       <CategoryGrid />
       <BestSellers />
